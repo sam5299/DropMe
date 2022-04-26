@@ -1,12 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { Platform, StyleSheet, Text, View,StatusBar  } from 'react-native';
+import BottomBar from './Component/BottomBar';
+
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+
+      <>  
+      <NavigationContainer>
+      <BottomBar/>
+      </NavigationContainer>
+
+      </>
+
   );
 }
 
@@ -16,5 +22,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop:  Platform.OS ==="android"  ? StatusBar.currentHeight :0,
   },
 });
