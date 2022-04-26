@@ -21,21 +21,33 @@ async function encryptPassword(password) {
 
 //get unique id for newly registering user.
 async function getUniqueId() {
-  let lastId = await User.find({}).estimatedDocumentCount();
-  return lastId + 1;
+  try {
+    let lastId = await User.find({}).estimatedDocumentCount();
+    return lastId + 1;
+  } catch(ex) {
+    return ex;
+  }
 }
 
 //check if user already present with same input fields
 async function isUserExists(mobileNo) {
-  return await User.findOne({ mobileNumber: mobileNo });
+  try {
+    return await User.findOne({ mobileNumber: mobileNo });
+  } catch(ex) {
+    return ex;
+  }
 }
 
 //function to get all Users
-async function getUser() {
+async function getUser(id) {
   console.log("called getUser");
-  let user = await User.find({}, { _id: 0, profile: 0 });
-  if (user.length === 0) return "Users not found";
-  else return user;
+  try {
+    let user = await User.findOne({userId:id}, { _id: 0, userId:0, password:0,__v:0 });
+    if (user.length === 0) return "Users not found";
+    else return user;
+  } catch(ex) {
+    return ex;
+  }
 }
 
 //addUser updated function
@@ -59,6 +71,33 @@ async function validateLogin(loginData) {
   return await schema.validate(loginData);
 }
 
+//function to check whather license detail's already present or not
+async function isLicenseDetailsPresent(userId) {
+  let licenseDetails = await User.find({userId:userId},{licenseNumber:1,licensePhoto:1,_id:0});
+  console.log(licenseDetails);
+  if(licenseDetails.licenseNumber==null && licenseDetails.licensePhoto==null){
+    return false;
+  }
+  return true;
+}
+
+//Joi validation for license Number 
+async function validateLicenseNumber(licenseNumber) {
+  let joiDrivingLicenseSchema = Joi.object({
+    licenseNumber: Joi.string().pattern(/^(([A-Z]{2}[0-9]{2})( )|([A-Z]{2}-[0-9]{2}))((19|20)[0-9][0-9])[0-9]{7}$/)
+  });
+  return await joiDrivingLicenseSchema.validate(licenseNumber);
+}
+
+//function to update user's licenseNumber and licenseDocument image path
+async function updateUserLicenseDetails(userId, licenseNumber, licensePhotoPath) {
+  let user = await User.findOne({userId: userId});
+  user.licenseNumber = licenseNumber;
+  user.licensePhoto = licensePhotoPath;
+  return user.save();
+}
+
+
 //authenticate user for login
 async function loginPasswordAuthentication(plainPassword, hashedPassword) {
   return await bcrypt.compare(plainPassword, hashedPassword);
@@ -71,4 +110,7 @@ module.exports = {
   addUserUpdated,
   validateLogin,
   loginPasswordAuthentication,
+  validateLicenseNumber,
+  updateUserLicenseDetails,
+  isLicenseDetailsPresent
 };

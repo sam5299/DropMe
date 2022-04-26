@@ -8,16 +8,40 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(fileUpload({ useTempFiles: true, tempFileDir: "../image_files/" }));
 
+//function to return default path of images if not provided in req body by user
+function getDefaultPath(req, docName) {
+  if(docName==="Profile") return "./image_files/userProfile.webp";
+
+  if(docName==="vehicle") {
+    if(req.body.vehicleType==="Bike") return "./image_files/bike.png";
+    if(req.body.vehicleType==="Car") return "./image_files/car.png";
+  }
+
+  if(docName==="rcbook") return "./image_files/credit-card.png";
+}
+
+//function to extract image from req body
+function getFile(req, docName) {
+  if (docName==="Profile") return req.files.profile;
+
+  if (docName==="vehicle") return req.files.vehicleImage;
+
+  if (docName==="rcbook") return req.files.rcBook;
+
+  if (docName==="licensePhoto") return req.files.licensePhoto;
+}
+
+
 function uploadFileNew(req, docType, id, docName) {
   if (!req.files || Object.keys(req.files).length === 0) {
-    let filepath = "./image_files/userProfile.webp";
+    let filepath = getDefaultPath(req, docName);
     return filepath;
   } else {
     let filename = `${docType}_${id}_${docName}.jpg`;
     let filepath = "./image_files/" + filename;
-    let profile = req.files.profile;
-    profile.mv(filepath, function (err) {
-      if (err) return "./image_files/userProfile.webp"; //default filepath
+    let imageFile = getFile(req, docName);
+    imageFile.mv(filepath, function (err) {
+      if (err) return getDefaultPath(req, docName); //default filepath
     });
     console.log("final path:" + filepath);
     return filepath;

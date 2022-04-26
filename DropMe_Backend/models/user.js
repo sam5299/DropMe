@@ -8,17 +8,20 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   mobileNumber: { type: String, unique: true, required: true },
-  alternativeNumber: { type: String, required: true },
   gender: { type: String, required: true },
-  dob: { type: String, required: true },
   profile: { type: String, required: true },
   password: { type: String, minlength: 6, maxlength: 1024, require: true },
+  licenseNumber : {type: String, minlength:16, maxlength:16, default: null},
+  licensePhoto: {type:String, default:null},
+  sumOfRating : {type: Number,default: 0 },
+  totalNumberOfRides : {type: Number, default: 0},
+  totalNumberOfRatedRides: {type: Number, default: 0}
 });
 
 //object of userSchema export it letter
 const User = mongoose.model("User", userSchema);
 
-//Joi validation logic
+//Joi validation logic for regitration
 async function isUserDataValidate(userData) {
   let joiSchema = Joi.object({
     userId: Joi.number().required(),
@@ -30,12 +33,7 @@ async function isUserDataValidate(userData) {
       .length(10)
       .pattern(/^[0-9]+$/)
       .required(),
-    alternativeNumber: Joi.string()
-      .length(10)
-      .pattern(/^[0-9]+$/)
-      .required(),
     gender: Joi.string().required(),
-    dob: Joi.string().required(),
     password: new PasswordComplexity({
       min: 8,
       max: 255,
@@ -44,7 +42,7 @@ async function isUserDataValidate(userData) {
       numeric: 1,
       symbol: 1,
       requirementCount: 4,
-    }),
+    }).required(),
     profile: Joi.string(),
   });
   return joiSchema.validate(userData);
