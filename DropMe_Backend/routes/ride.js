@@ -9,7 +9,8 @@ const {
     createRide,
     getRides,
     getUserRides,
-    deleteRide
+    deleteRide ,
+    savePicture
 } = require('../services/ride');
 router.use(express.json());
 
@@ -17,7 +18,7 @@ router.use(express.json());
 
 //ride creat route
 router.post("/createRide", auth, async(req, res) => {
-
+    let userId=req.body.userId;
     delete req.body.userId;
     let { error } = validateRideDetails(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -28,7 +29,8 @@ router.post("/createRide", auth, async(req, res) => {
         if (!newRide)
             return res.status(400).send("Something went wrong try again latter.");
             // After that save the ipc of created ride vehicle
-        return res.status(200).send("Ride added:" + newRide); 
+        savePicture(`${newRide.vehicleNumber}_${userId}`)
+        return res.status(200).send(newRide); 
     } catch (ex) {
         return res.status(500).send("something failed!! try again latter:" + ex);
     }

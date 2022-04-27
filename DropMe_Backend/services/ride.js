@@ -1,9 +1,10 @@
 const express = require("express");
 const { Ride } = require('../models/ride')
+const fs = require('fs');
 
 // create ride function
 async function createRide(rideDetails) {
-    console.log("Saving");
+    //console.log("Saving");
     const newRide = new Ride(rideDetails)
     return await newRide.save()
 
@@ -20,6 +21,17 @@ async function getRides(Source, Destination, Date, Time) {
     })
 }
 
+// Add trip request
+async function addTripRequest(rideId,tripId){
+    let rideObj =await Ride.find({_id:rideId})
+    if(!rideObj)
+    return null;
+    rideObj.requestedTripList=rideObj.requestedTripList.push(tripId);
+    return await rideObj.save()
+
+}
+
+
 // get ride by user id
 async function getUserRides(userId) {
     return await Ride.find({
@@ -34,9 +46,20 @@ async function deleteRide(rideId) {
     })
 }
 
+
+
+
+
+// To save image of vehicle after creating ride 
+function savePicture(fileName){
+
+}
+
 module.exports = {
     createRide,
     getRides,
     getUserRides,
-    deleteRide
+    deleteRide,
+    savePicture,
+    addTripRequest
 }

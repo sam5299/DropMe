@@ -1,11 +1,13 @@
 const config = require("config");
 const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 const app = express();
 const user = require("./routes/user");
 const vehicle = require("./routes/vehicle");
 const ride = require("./routes/ride");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
+const wallet = require("./routes/wallet");
+
 
 
 app.use(bodyParser.json()); // to support JSON-encoded bodies
@@ -18,6 +20,7 @@ app.use(
 app.use("/user", user);
 app.use("/vehicle", vehicle);
 app.use("/ride", ride);
+app.use("/wallet",wallet)
 
 
 if (!config.get("jwtPrivateKey")) {
