@@ -36,8 +36,8 @@ router.use(express.json());
 router.post("/createRide", auth, async(req, res) => {
 
     delete req.body.userId;
-    let result = validateRideDetails(req.body);
-    if (!result) return res.status(400).send(error.details[0].message);
+    let {error} = validateRideDetails(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
 
     try {
