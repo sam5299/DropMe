@@ -9,20 +9,19 @@ export default function App() {
       <NativeBaseProvider>
         <View style={styles.container}>
           <BookRide />
-          
         </View>
       </NativeBaseProvider>
     </SafeAreaProvider>
   );
+}
 // import { NavigationContainer } from '@react-navigation/native';
 // import { Platform, StyleSheet, Text, View,StatusBar  } from 'react-native';
 // import BottomBar from './Component/BottomBar';
 
-
 // export default function App() {
 //   return (
 
-//       <>  
+//       <>
 //       <NavigationContainer>
 //       <BottomBar/>
 //       </NavigationContainer>
@@ -35,9 +34,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop:  Platform.OS ==="android"  ? StatusBar.currentHeight :0,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
 });
