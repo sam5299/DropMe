@@ -8,28 +8,9 @@ const { Ride, validateRideDetails } = require('../models/ride');
 const {
     createRide,
     getRides,
-    getUserRides
+    getUserRides,
+    deleteRide
 } = require('../services/ride');
-const { route } = require("./user");
-// const {
-//     getUniqueId,
-//     addUserUpdated,
-//     isUserExists,
-//     validateLogin,
-//     getUser,
-//     loginPasswordAuthentication,
-// } = require("../services/user");
-
-
-
-// const { isUserDataValidate } = require("../models/user");
-// const {
-//     uploadFile,
-//     uploadFileWithParam,
-// } = require("../middleware/upload_file");
-
-// const fileUpload = require("express-fileupload");
-
 router.use(express.json());
 
 
@@ -46,21 +27,27 @@ router.post("/createRide", auth, async(req, res) => {
         let newRide = await createRide(req.body)
         if (!newRide)
             return res.status(400).send("Something went wrong try again latter.");
-        return res.status(200).send("Ride added:" + newRide); // After that save the ipc of created ride vehicle
+            // After that save the ipc of created ride vehicle
+        return res.status(200).send("Ride added:" + newRide); 
     } catch (ex) {
         return res.status(500).send("something failed!! try again latter:" + ex);
     }
-    //res.send("Okay");
 });
 
+
+// get Rides details by Source Destination Date and Time
 router.get('/getRides', auth, async(req, res) => {
-    let Source = req.body.Source;
-    let Destination = req.body.Destination;
-    let Date = req.body.Date;
-    let Time = req.body.Time;
-    // console.log("@@", req.body);
-    if (Source == "" || Destination == "" || Date == "" || Time == "")
+    let inpParams = req.body;
+
+    if ( !("Source" in inpParams && "Destination" in inpParams &&
+        "Date" in inpParams && "Time" in inpParams))
         return res.status(400).send("Please add Source, Destination , Date and Time")
+
+    let Source = inpParams.Source;
+    let Destination = inpParams.Destination;
+    let Date = inpParams.Date;
+    let Time = inpParams.Time;
+
     try {
         let rides = await getRides(Source, Destination, Date, Time);
         if (rides.length == 0)
@@ -71,6 +58,8 @@ router.get('/getRides', auth, async(req, res) => {
     }
 })
 
+
+//   get Rides of the particular Rider
 router.get('/getUserRides/:id', auth, async(req, res) => {
     let id = req.params.id
     try {
@@ -85,8 +74,22 @@ router.get('/getUserRides/:id', auth, async(req, res) => {
 })
 
 
-router.put('updateRide/:id', auth, async(req, res) => {
+// router.put('updateRide/:id', auth, async(req, res) => {
+//     let rideId = req.params.id;
+
+// })
+
+
+// Delete a ride by its id
+router.delete('/deleteRide/:id', auth, async(req, res) => {
     let rideId = req.params.id;
+    try {
+        let result = await deleteRide(rideId)
+        if (result) return res.status(200).send("Ride deleted");
+        else return res.status(400).send("Ride not found");
+    } catch (ex) {
+        return res.status(500).send("something failed!! try again later:" + ex);
+    }
 
 })
 

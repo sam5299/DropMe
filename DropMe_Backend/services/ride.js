@@ -27,9 +27,16 @@ async function getUserRides(userId) {
     })
 }
 
+// delete a ride by its id
+async function deleteRide(rideId) {
+    return await Ride.findOneAndDelete({
+        _id: rideId
+    })
+}
 
 module.exports = {
     createRide,
     getRides,
-    getUserRides
+    getUserRides,
+    deleteRide
 }
