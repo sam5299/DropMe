@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const auth = require("../middleware/auth");
 const {uploadFileNew} = require('../middleware/upload_file');
 const {Vehicle,validateVehicleDetails } = require('../models/vehicle');
-const {checkVehicleAlreadyExitst, addVehicle, getVehicleList, getVehicleDetails, deleteVehicle} = require('../services/vehicle');
+const {checkVehicleAlreadyExitst, addVehicle, getVehicleList, getVehicleDetails, deleteVehicle, isRidePresentWithVehicle} = require('../services/vehicle');
 const {
   uploadFile, 
   uploadFileWithParam,
@@ -81,6 +81,9 @@ router.delete("/deleteVehicle/:vehicleNumber",auth, async(req, res)=> {
  
   if(!vehicleDetails) return res.status(404).send("Vehicle with given vehicle number does not exists.");
   
+  let isRidePresent = await isRidePresentWithVehicle(vehicleDetails.vehicleNumber);
+  if(isRidePresent) return res.status(400).send("You cannot remove vehicle which have pending rides. Cancel rides or try after completing rides.");
+
   let deleteResult = await deleteVehicle(vehicleDetails);
 
   return res.status(200).send("delete vehicle called:"+deleteResult);

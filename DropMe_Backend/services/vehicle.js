@@ -1,4 +1,5 @@
 const {Vehicle} = require('../models/vehicle');
+const {Ride} = require("../models/ride");
 const fs = require('fs');
 
 //function to check if vehicle number already exists 
@@ -36,6 +37,14 @@ function deleteVehicleImages(imagePath) {
     }
 }
 
+//function to check is there any ride presnet using this vehicle
+async function isRidePresentWithVehicle(vehicleNumber) {
+    console.log("Vehicle number:"+vehicleNumber);
+    let ride = await Ride.find({vehicleNumber:vehicleNumber});
+    if(!ride) return false;
+    return true;
+}
+
 //function to remove vehicle from Vehicle collection
 async function deleteVehicle(vehicleDetails) {
     try {
@@ -51,4 +60,4 @@ async function deleteVehicle(vehicleDetails) {
     }
 }
 
-module.exports = {checkVehicleAlreadyExitst, addVehicle, getVehicleList, getVehicleDetails, deleteVehicle};
+module.exports = {checkVehicleAlreadyExitst, addVehicle, getVehicleList, getVehicleDetails, deleteVehicle, isRidePresentWithVehicle};
