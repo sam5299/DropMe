@@ -4,6 +4,7 @@ const app = express();
 const user = require("./routes/user");
 const vehicle = require("./routes/vehicle");
 const ride = require("./routes/ride");
+const trip = require("./routes/trip");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
@@ -18,7 +19,7 @@ app.use(
 app.use("/user", user);
 app.use("/vehicle", vehicle);
 app.use("/ride", ride);
-
+app.use('/trip', trip);
 
 if (!config.get("jwtPrivateKey")) {
   console.error(

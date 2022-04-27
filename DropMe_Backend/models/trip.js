@@ -6,7 +6,7 @@ let tripSchema = new mongoose.Schema({
     destination: {type:String, required:true},
     date: {type:String, required:true},
     time: {type:String, required:true},
-    passengeId: {type:Object, required:true}  
+    User: {type:String, required:true}  
 });
 
 let Trip = mongoose.model('trip', tripSchema);
@@ -18,7 +18,7 @@ function validateTrip(body) {
         destination: Joi.string().required(),
         date: Joi.string().required(),
         time: Joi.string().required(),
-        passengeId: Joi.object().required()
+        User: Joi.string().required()
     });
     return joiTripValidationSchema.validate(body);
 }
