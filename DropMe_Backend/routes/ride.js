@@ -5,15 +5,20 @@ const bodyParser = require("body-parser");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const { Ride, validateRideDetails } = require('../models/ride');
-const {createRide}=require('../services/ride')
+const {
+    createRide,
+    getRides,
+    getUserRides
+} = require('../services/ride');
+const { route } = require("./user");
 // const {
-    //     getUniqueId,
-    //     addUserUpdated,
-    //     isUserExists,
-    //     validateLogin,
-    //     getUser,
-    //     loginPasswordAuthentication,
-    // } = require("../services/user");
+//     getUniqueId,
+//     addUserUpdated,
+//     isUserExists,
+//     validateLogin,
+//     getUser,
+//     loginPasswordAuthentication,
+// } = require("../services/user");
 
 
 
@@ -26,9 +31,6 @@ const {createRide}=require('../services/ride')
 // const fileUpload = require("express-fileupload");
 
 router.use(express.json());
-// router.use(bodyParser.urlencoded({ extended: true }));
-
-// router.use(fileUpload({ useTempFiles: true, tempFileDir: "../image_files" }));
 
 
 
@@ -36,63 +38,56 @@ router.use(express.json());
 router.post("/createRide", auth, async(req, res) => {
 
     delete req.body.userId;
-    let result = validateRideDetails(req.body);
-    if (!result) return res.status(400).send(error.details[0].message);
+    let { error } = validateRideDetails(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
 
     try {
         let newRide = await createRide(req.body)
         if (!newRide)
             return res.status(400).send("Something went wrong try again latter.");
-        return res.status(200).send("Ride added:" + newRide);// After that save the ipc of created ride vehicle
+        return res.status(200).send("Ride added:" + newRide); // After that save the ipc of created ride vehicle
     } catch (ex) {
-        return res.status(500).send("something failed!! try again latter:"+ex);
+        return res.status(500).send("something failed!! try again latter:" + ex);
     }
     //res.send("Okay");
 });
 
+router.get('/getRides', auth, async(req, res) => {
+    let Source = req.body.Source;
+    let Destination = req.body.Destination;
+    let Date = req.body.Date;
+    let Time = req.body.Time;
+    // console.log("@@", req.body);
+    if (Source == "" || Destination == "" || Date == "" || Time == "")
+        return res.status(400).send("Please add Source, Destination , Date and Time")
+    try {
+        let rides = await getRides(Source, Destination, Date, Time);
+        if (rides.length == 0)
+            return res.status(400).send("No rides found");
+        return res.status(200).send(rides);
+    } catch (ex) {
+        return res.status(500).send("something failed!! try again latter:" + ex);
+    }
+})
+
+router.get('/getUserRides/:id', auth, async(req, res) => {
+    let id = req.params.id
+    try {
+        let rideData = await getUserRides(id)
+        if (rideData.length == 0)
+            return res.status(400).send("No rides found");
+        return res.status(200).send(rideData);
+    } catch (ex) {
+        return res.status(500).send("something failed!! try again latter:" + ex);
+    }
+
+})
 
 
+router.put('updateRide/:id', auth, async(req, res) => {
+    let rideId = req.params.id;
 
-
-
-
-
-
-
-
-
-
-
-
-
-// router.post("/login", async(req, res) => {
-//     let { error } = await validateLogin(req.body);
-//     if (error) return res.status(400).send(error.details[0].message);
-
-//     let user = await isUserExists(req.body.mobileNumber);
-//     if (!user) return res.status(400).send("Invalid mobile number or password");
-
-//     let validPassword = await loginPasswordAuthentication(
-//         req.body.password,
-//         user.password
-//     );
-//     if (!validPassword) return res.status(400).send("Invalid email or password");
-
-//     const token = jwt.sign({ userId: user.userId }, config.get("jwtPrivateKey"));
-
-//     return res.header("x-auth-token", token).status(200).send(true);
-// });
-
-// router.get("/getUser/:id", auth, async(req, res) => {
-//     try {
-//         let user = await getUser(req.params.id);
-//         if (!user) return res.status(404).send("No users present!!");
-//         return res.status(200).send(user);
-//     } catch (ex) {
-//         console.log("exception");
-
-//     }
-// });
+})
 
 module.exports = router;
