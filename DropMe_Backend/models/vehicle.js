@@ -27,6 +27,7 @@ function validateVehicleDetails(vehicleData) {
         vehicleClass: Joi.string().required(),
         rcBookImagePath: Joi.string().required(),
         vehicleImagePath: Joi.string().required(),
+        pucImagePath: Joi.string().required(),
         userId: Joi.number().required()
     });
     return joiVehicleSchema.validate(vehicleData);

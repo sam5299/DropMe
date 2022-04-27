@@ -18,6 +18,8 @@ function getDefaultPath(req, docName) {
   }
 
   if(docName==="rcbook") return "./image_files/credit-card.png";
+
+  if(docName==="puc") return "./image_files/puc.jpeg";
 }
 
 //function to extract image from req body
@@ -29,6 +31,8 @@ function getFile(req, docName) {
   if (docName==="rcbook") return req.files.rcBook;
 
   if (docName==="licensePhoto") return req.files.licensePhoto;
+
+  if(docName==="puc") return req.files.pucPhoto;
 }
 
 
@@ -39,6 +43,7 @@ function uploadFileNew(req, docType, id, docName) {
   } else {
     let filename = `${docType}_${id}_${docName}.jpg`;
     let filepath = "./image_files/" + filename;
+    console.log(filepath);
     let imageFile = getFile(req, docName);
     imageFile.mv(filepath, function (err) {
       if (err) return getDefaultPath(req, docName); //default filepath
