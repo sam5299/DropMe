@@ -7,8 +7,11 @@ function auth(req, res, next) {
 
   try {
     let payload = jwt.verify(token, config.get("jwtPrivateKey"));
-    //console.log(payload);
+    console.log(payload);
     req.body.userId = payload.userId;
+    req.body.User=payload.User;
+    //console.log("req.body:"+JSON.stringify(req.body));
+    
     next();
   } catch (ex) {
     return res.status(400).send("Invalid token");
