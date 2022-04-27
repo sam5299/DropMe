@@ -20,7 +20,7 @@ app.use(
 app.use("/user", user);
 app.use("/vehicle", vehicle);
 app.use("/ride", ride);
-app.use("/wallet",wallet)
+app.use("/wallet", wallet);
 
 
 if (!config.get("jwtPrivateKey")) {

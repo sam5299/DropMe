@@ -12,6 +12,7 @@ const {
     deleteRide ,
     savePicture
 } = require('../services/ride');
+const { func } = require("joi");
 router.use(express.json());
 
 
@@ -32,7 +33,7 @@ router.post("/createRide", auth, async(req, res) => {
         savePicture(`${newRide.vehicleNumber}_${userId}`)
         return res.status(200).send(newRide); 
     } catch (ex) {
-        return res.status(500).send("something failed!! try again latter:" + ex);
+        return res.status(400).send("something failed!! try again latter:" + ex);
     }
 });
 
@@ -75,6 +76,7 @@ router.get('/getUserRides/:id', auth, async(req, res) => {
 
 })
 
+// get Ride details by its id
 
 // router.put('updateRide/:id', auth, async(req, res) => {
 //     let rideId = req.params.id;
@@ -94,5 +96,8 @@ router.delete('/deleteRide/:id', auth, async(req, res) => {
     }
 
 })
+
+
+
 
 module.exports = router;
