@@ -13,7 +13,7 @@ router.post("/searchForRide",auth,  async(req, res)=>{
 
     let rides = await getRides(req.body.source, req.body.destination, req.body.date, req.body.time);
 
-    sendRideRequest("6268fab263310c1dcd56ecbd");
+    //sendRideRequest(req.body, "6268fab263310c1dcd56ecbd");
 
     return res.status(200).send("/searchForRide called and result:"+rides);
 });
