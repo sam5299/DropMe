@@ -11,6 +11,7 @@ const vehicleSchema = new mongoose.Schema({
     vehicleClass : {type:String, required:true},
     rcBookImagePath: {type: String},
     vehicleImagePath: {type:String, required:true},
+    pucImagePath: {type:String, required: true},
     userId: {type: Number, required:true}
 });
  
@@ -28,6 +29,7 @@ function validateVehicleDetails(vehicleData) {
         vehicleClass: Joi.string().required(),
         rcBookImagePath: Joi.string().required(),
         vehicleImagePath: Joi.string().required(),
+        pucImagePath: Joi.string().required(),
         userId: Joi.number().required()
       });
       return joiVehicleSchema.validate(vehicleData);

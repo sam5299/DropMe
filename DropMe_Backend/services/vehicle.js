@@ -1,4 +1,5 @@
 const {Vehicle} = require('../models/vehicle');
+const fs = require('fs');
 
 //function to check if vehicle number already exists 
 async function checkVehicleAlreadyExitst(vno) {
@@ -16,4 +17,38 @@ async function getVehicleList(userId) {
     return await Vehicle.find({userId:userId});
 }
 
-module.exports = {checkVehicleAlreadyExitst, addVehicle, getVehicleList};
+//function to getVehicleDetails by vehicle number
+async function getVehicleDetails(vehicleNumber) {
+    return await Vehicle.findOne({vehicleNumber: vehicleNumber});
+}
+
+//function to delete images of vehicle and rcbook after
+function deleteVehicleImages(imagePath) {
+    console.log("image path delete: "+imagePath);
+    if (fs.existsSync(imagePath)) {
+        fs.unlink(imagePath, (err) => {
+            if (err) {
+                return false;
+            }
+            console.log(`${imagePath} is deleted`);
+            return true;
+        })
+    }
+}
+
+//function to remove vehicle from Vehicle collection
+async function deleteVehicle(vehicleDetails) {
+    try {
+        let deleteResultVehicleImage = deleteVehicleImages(vehicleDetails.vehicleImagePath);
+        console.log(`Vehicle image of vehicle number ${vehicleDetails.vehicleNumber} delete ${deleteResultVehicleImage}`);
+        console.log(vehicleDetails.rcBookImagePath);
+        let result = deleteVehicleImages(vehicleDetails.rcBookImagePath);
+        console.log(`RcBook of vehicle number ${vehicleDetails.vehicleNumber} delete ${result}`);
+        
+        return await Vehicle.findOneAndDelete({vehicleNumber:vehicleDetails.vehicleNumber});
+    } catch(ex) {
+        return ex;  
+    }
+}
+
+module.exports = {checkVehicleAlreadyExitst, addVehicle, getVehicleList, getVehicleDetails, deleteVehicle};

@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const auth = require("../middleware/auth");
 const {uploadFileNew} = require('../middleware/upload_file');
 const {Vehicle,validateVehicleDetails } = require('../models/vehicle');
-const {checkVehicleAlreadyExitst, addVehicle, getVehicleList} = require('../services/vehicle');
+const {checkVehicleAlreadyExitst, addVehicle, getVehicleList, getVehicleDetails, deleteVehicle} = require('../services/vehicle');
 const {
   uploadFile, 
   uploadFileWithParam,
@@ -47,6 +47,7 @@ router.post("/addVehicle", auth, async(req, res)=>{
 
     req.body.rcBookImagePath = " ";
     req.body.vehicleImagePath = " ";
+    req.body.pucImagePath = " ";
     
     let {error} = validateVehicleDetails(req.body);
     if(error) return res.status(400).send(error.details[0].message);
@@ -56,7 +57,8 @@ router.post("/addVehicle", auth, async(req, res)=>{
     
     req.body.rcBookImagePath = uploadFileNew(req,`v_${req.body.vehicleNumber}`,req.body.userId,"rcbook");
     req.body.vehicleImagePath = uploadFileNew(req,`v_${req.body.vehicleNumber}`,req.body.userId,"vehicle");
-    
+    req.body.pucImagePath = uploadFileNew(req, `v_${req.body.vehicleNumber}`,req.body.userId, "puc");
+
     vehicle = await addVehicle(req.body);
     if(!vehicle) return res.status(400).send("Something went wrong.Cannot add vehicle try again latter.");
     return res.status(200).send(vehicle);
@@ -66,11 +68,22 @@ router.post("/addVehicle", auth, async(req, res)=>{
   }
 });
 
+//endpoint to get vehicle list of perticular user
 router.get('/getVehicleList', auth, async(req, res)=> {
-    //console.log("userId:"+req.body.userId);
-    let vehicleList = await getVehicleList(req.body.userId); //write getVehicleList function
-    //console.log("vehicle list:"+vehicleList);
+    let vehicleList = await getVehicleList(req.body.userId); 
+    if(vehicleList.length==0) return res.status(404).send("No vehicles found");
     return res.status(200).send(vehicleList);
+});
+ 
+//endpoint to delete vehicle of user by vehicle number
+router.delete("/deleteVehicle/:vehicleNumber",auth, async(req, res)=> {
+  let vehicleDetails = await getVehicleDetails(req.params.vehicleNumber);
+ 
+  if(!vehicleDetails) return res.status(404).send("Vehicle with given vehicle number does not exists.");
+  
+  let deleteResult = await deleteVehicle(vehicleDetails);
+
+  return res.status(200).send("delete vehicle called:"+deleteResult);
 });
 
 module.exports = router;

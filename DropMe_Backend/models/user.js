@@ -5,7 +5,8 @@ const mongoose = require("mongoose");
 //definfing user schema
 const userSchema = new mongoose.Schema({
   userId: { type: Number, required: true },
-  name: { type: String, required: true },
+  fname: { type: String, required: true },
+  lname: { type: String, required: true },
   email: { type: String, required: true },
   mobileNumber: { type: String, unique: true, required: true },
   gender: { type: String, required: true },
@@ -25,7 +26,8 @@ const User = mongoose.model("User", userSchema);
 async function isUserDataValidate(userData) {
   let joiSchema = Joi.object({
     userId: Joi.number().required(),
-    name: Joi.string().max(20).required(),
+    fname: Joi.string().max(20).required(),
+    lname: Joi.string().max(20).required(),
     email: Joi.string()
       .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "io"] } })
       .required(),

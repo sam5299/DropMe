@@ -15,7 +15,9 @@ app.use(
   })
 );
 app.use("/user", user);
-app.use("/vehicle", vehicle);
+app.use("/vehicle", vehicle)
+
+
 
 if (!config.get("jwtPrivateKey")) {
   console.error(
