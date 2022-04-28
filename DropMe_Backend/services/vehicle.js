@@ -3,8 +3,9 @@ const {Ride} = require("../models/ride");
 const fs = require('fs');
 
 //function to check if vehicle number already exists 
-async function checkVehicleAlreadyExitst(vno) {
-    return await Vehicle.findOne({vehicleNumber:vno});
+async function checkVehicleAlreadyExits(vno) {
+    let vehicleObj= await Vehicle.findOne({vehicleNumber:vno});
+    return vehicleObj;
 }
 
 //function to add vehicle
@@ -15,12 +16,12 @@ async function addVehicle(body) {
 
 //function to get list of vehicle and vehicle class of perticular user
 async function getVehicleList(userId) {
-    return await Vehicle.find({userId:userId});
+    return await Vehicle.find({userId:userId , isDeleted:false});
 }
 
 //function to getVehicleDetails by vehicle number
 async function getVehicleDetails(vehicleNumber) {
-    return await Vehicle.findOne({vehicleNumber: vehicleNumber});
+    return await Vehicle.findOne({vehicleNumber: vehicleNumber ,isDeleted:false });
 }
 
 //function to delete images of vehicle and rcbook after
@@ -41,23 +42,25 @@ function deleteVehicleImages(imagePath) {
 async function isRidePresentWithVehicle(vehicleNumber) {
     console.log("Vehicle number:"+vehicleNumber);
     let ride = await Ride.find({vehicleNumber:vehicleNumber});
-    if(!ride) return false;
+    console.log("Ride detail's:"+ride);
+    if(ride.length==0) return false;
     return true;
 }
 
 //function to remove vehicle from Vehicle collection
 async function deleteVehicle(vehicleDetails) {
     try {
-        let deleteResultVehicleImage = deleteVehicleImages(vehicleDetails.vehicleImagePath);
-        console.log(`Vehicle image of vehicle number ${vehicleDetails.vehicleNumber} delete ${deleteResultVehicleImage}`);
-        console.log(vehicleDetails.rcBookImagePath);
-        let result = deleteVehicleImages(vehicleDetails.rcBookImagePath);
-        console.log(`RcBook of vehicle number ${vehicleDetails.vehicleNumber} delete ${result}`);
-        
-        return await Vehicle.findOneAndDelete({vehicleNumber:vehicleDetails.vehicleNumber});
+       // let deleteResultVehicleImage = deleteVehicleImages(vehicleDetails.vehicleImagePath);
+        // console.log(`Vehicle image of vehicle number ${vehicleDetails.vehicleNumber} delete ${deleteResultVehicleImage}`);
+        // console.log(vehicleDetails.rcBookImagePath);
+        //let result = deleteVehicleImages(vehicleDetails.rcBookImagePath);
+        // console.log(`RcBook of vehicle number ${vehicleDetails.vehicleNumber} delete ${result}`);
+        let vehicleObj = await Vehicle.findOne({vehicleNumber:vehicleDetails.vehicleNumber});
+        vehicleObj.isDeleted=true;
+        return await vehicleObj.save()
     } catch(ex) {
         return ex;  
     }
 }
 
-module.exports = {checkVehicleAlreadyExitst, addVehicle, getVehicleList, getVehicleDetails, deleteVehicle, isRidePresentWithVehicle};
+module.exports = {checkVehicleAlreadyExits, addVehicle, getVehicleList, getVehicleDetails, deleteVehicle, isRidePresentWithVehicle};

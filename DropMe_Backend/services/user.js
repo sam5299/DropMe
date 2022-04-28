@@ -73,7 +73,7 @@ async function validateLogin(loginData) {
 
 //function to check whather license detail's already present or not
 async function isLicenseDetailsPresent(userId) {
-  let licenseDetails = await User.find({userId:userId},{licenseNumber:1,licensePhoto:1,_id:0});
+  let licenseDetails = await User.findOne({userId:userId},{licenseNumber:1,licensePhoto:1,_id:0});
   console.log(licenseDetails);
   if(licenseDetails.licenseNumber===null && licenseDetails.licensePhoto===null){
     return false;

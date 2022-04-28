@@ -4,12 +4,26 @@ const Joi = require('joi');
 const vehicleSchema = new mongoose.Schema({
     vehicleNumber: { type: String, required: true },
     vehicleName: { type: String, required: true },
-    vehicleType: { type: String, required: true },
-    fuelType: { type: String, required: true },
     seatingCapacity: { type: Number, max: 6, required: true },
-    vehicleClass: { type: String, required: true },
     rcBookImagePath: { type: String },
     vehicleImagePath: { type: String, required: true },
+    pucImagePath: { type: String, required: true },
+    isDeleted: { type: Boolean, default: false },
+    vehicleClass: {
+        type: String,
+        enum: ["SUV", "HatchBack", "Sedan", "NormalBike", "SportBike", "Scooter"],
+        required: true
+    },
+    vehicleType: {
+        type: String,
+        enum: ["Car", "Bike"],
+        required: true
+    },
+    fuelType: {
+        type: String,
+        enum: ["Petrol", "Diesel", "CNG", "Electric"],
+        required: true
+    },
     userId: { type: Number, required: true }
 });
 
@@ -21,13 +35,14 @@ function validateVehicleDetails(vehicleData) {
             "object.regex": "Please enter valid vehicle number"
         }),
         vehicleName: Joi.string().min(1).max(255).required(),
-        vehicleType: Joi.string().required(),
-        fuelType: Joi.string().required(),
+        vehicleType: Joi.string().valid("Car", "Bike").required(),
+        fuelType: Joi.string().valid("Petrol", "Diesel", "CNG", "Electric").required(),
+        vehicleClass: Joi.string().valid("SUV","HatchBack","Sedan","NormalBike","SportBike","Scooter").required(),
         seatingCapacity: Joi.number().required().min(1).max(8),
-        vehicleClass: Joi.string().required(),
         rcBookImagePath: Joi.string().required(),
         vehicleImagePath: Joi.string().required(),
         pucImagePath: Joi.string().required(),
+
         userId: Joi.number().required()
     });
     return joiVehicleSchema.validate(vehicleData);
