@@ -10,7 +10,7 @@ const {
   uploadFile, 
   uploadFileWithParam,
 } = require("../middleware/upload_file");
-const {validateLicenseNumber, updateUserLicenseDetails, isLicenseDetailsPresent} = require('../services/user');
+const {validateLicenseNumber, updateUserLicenseDetails, isLicenseDetailsPresent, isLicenseNumberExists} = require('../services/user');
 
 const fileUpload = require("express-fileupload");
 router.use(bodyParser.json());
@@ -24,26 +24,33 @@ router.get("/getVehicle", auth, (req, res) => {
 
 // route to add new vehicle for logged in user
 router.post("/addVehicle", auth, async(req, res)=>{
+  delete req.body.User;
   try {
     //add license number and license photo code below if present in req body
-    if(req.body.licenseNumber && req.files.licensePhoto) {
-      let licencePresent = await isLicenseDetailsPresent(req.body.userId); //write code in user
-      console.log(licencePresent);
-      if(!licencePresent) {
-        let {error} = await validateLicenseNumber({licenseNumber: req.body.licenseNumber});
-        if(error) return res.status(400).send(error.details[0].message);
+    let licencePresent = await isLicenseDetailsPresent(req.body.userId); //write code in user
+    console.log(licencePresent);
+    if(!licencePresent) {
+      if(req.body.licenseNumber && req.files.licensePhoto) {
+          let {error} = await validateLicenseNumber({licenseNumber: req.body.licenseNumber});
+          if(error) return res.status(400).send(error.details[0].message);
   
-        let licensePath = uploadFileNew(req,"User",req.body.userId,"licensePhoto" );
+          let isLicenseNumberPresent = await isLicenseNumberExists(req.body.licenseNumber);
+
+          if(isLicenseNumberPresent) return res.status(400).send("Licence number already present");
   
-        let updatedUser = await updateUserLicenseDetails(req.body.userId, req.body.licenseNumber, licensePath);
-        
-        if(!updatedUser) return res.status(400).send("Something went wrong cannot add license detail's.");
-  
-        let newBody = _.pick(req.body, ['vehicleName','vehicleNumber', 'vehicleType','seatingCapacity','vehicleClass','vehicleImage','rcBook','fuelType', 'userId']);
-        
-        req.body = newBody; //exclude the license properties.
-      }
-      }
+          let licensePath = uploadFileNew(req,"User",req.body.userId,"licensePhoto" );
+    
+          let updatedUser = await updateUserLicenseDetails(req.body.userId, req.body.licenseNumber, licensePath);
+          
+          if(!updatedUser) return res.status(400).send("Something went wrong cannot add license detail's.");
+    
+          let newBody = _.pick(req.body, ['vehicleName','vehicleNumber', 'vehicleType','seatingCapacity','vehicleClass','vehicleImage','rcBook','fuelType', 'userId']);
+          
+          req.body = newBody; //exclude the license properties.
+        } else {
+          return res.status(400).send("Licence number and license image is require.");
+        }
+        }
 
     req.body.rcBookImagePath = " ";
     req.body.vehicleImagePath = " ";
