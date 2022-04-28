@@ -6,6 +6,7 @@ const app = express();
 const user = require("./routes/user");
 const vehicle = require("./routes/vehicle");
 const ride = require("./routes/ride");
+const trip = require("./routes/trip");
 const wallet = require("./routes/wallet");
 
 
@@ -20,12 +21,9 @@ app.use(
 app.use("/user", user);
 app.use("/vehicle", vehicle);
 app.use("/ride", ride);
-<<<<<<< HEAD
-app.use('/trip', trip);
-=======
-app.use("/wallet",wallet)
+app.use("/wallet",wallet);
+app.use("/trip", trip);
 
->>>>>>> refs/remotes/origin/master
 
 if (!config.get("jwtPrivateKey")) {
   console.error(

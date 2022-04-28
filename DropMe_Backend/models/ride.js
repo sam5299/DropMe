@@ -10,7 +10,7 @@ const rideSchema = new mongoose.Schema({
     vehicleNumber: { type: String, required: true },
     availableSeats: { type: Number, min: 1, max: 8, required: true },
     distance: { type: Number, min: 1, required: true },
-    requestedTripList: { type: Array },
+    requestedTripList: {type:Array},
     status: {
         type: String,
         enum: ["Created", "Canceled", "Completed"],

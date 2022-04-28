@@ -1,6 +1,7 @@
-const Trip = require('../models/trip');
+const {Trip} = require('../models/trip');
 const Ride = require("../models/ride");
 const req = require('express/lib/request');
+const {addTripRequest} = require('./ride');
 
 //function to get available trip with id
 async function getTrip(tripBody) {
@@ -8,7 +9,7 @@ async function getTrip(tripBody) {
 }
 
 //function to add newTrip into Trip collection
-async function addTrip(tripBody) {
+async function addNewTrip(tripBody) {
     let NewTrip = new Trip(tripBody);
     let trip = await NewTrip.save();
     return trip._id;
@@ -19,9 +20,13 @@ async function requestRide(tripBody, rid) {
     let tripId = null;
     
     let trip = await getTrip(tripBody);
-    console.log(trip);
+    //console.log(trip);
     if(trip) tripId = trip._id;
     else tripId = await addNewTrip(tripBody);
-
+    //console.log("tripid which is to store:"+tripId);
+    let requestedTrip = await addTripRequest(rid, tripId);
+    //console.log(requestedTrip);
+    return requestedTrip;
 }
- 
+
+module.exports = {requestRide};

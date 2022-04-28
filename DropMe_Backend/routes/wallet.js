@@ -24,6 +24,4 @@ router.post('/', auth, async(req, res) => {
 })
 
 
-
-
-router.use(express.json());
+module.exports = router;
