@@ -27,8 +27,10 @@ const VehicleClass = () => {
       placeholder="Select Vehicle Class "
       onValueChange={(itemValue) => setVehicleClass(itemValue)}
     >
+      <Select.Item shadow={2} label="Select Vehicle Class" disabled={true} />
       {vehicleClasses.map((item) => (
         <Select.Item
+          shadow={2}
           key={item.id}
           label={item.username}
           value={item.username}

@@ -4,7 +4,7 @@ import { Box } from "native-base";
 
 const GoogleMap = () => {
   return (
-    <Box w="auto" h="30%" m="2" bg="white">
+    <Box w="auto" h="45%" m="2" bg="white">
       Google Map
     </Box>
   );

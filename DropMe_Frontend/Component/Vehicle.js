@@ -1,22 +1,9 @@
 import { View, Text } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Select } from "native-base";
-import axios from "axios";
 
-const Vehicle = () => {
+const Vehicle = ({ vehicles }) => {
   const [service, setService] = useState("");
-  const [services, setServices] = useState([]);
-
-  useEffect(async () => {
-    try {
-      const list = await axios.get(
-        "https://jsonplaceholder.typicode.com/users"
-      );
-      setServices(list.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
 
   return (
     <Select
@@ -26,8 +13,10 @@ const Vehicle = () => {
       placeholder="Select Vehicle "
       onValueChange={(itemValue) => setService(itemValue)}
     >
-      {services.map((item) => (
+      <Select.Item shadow={2} label="Select Vehicle" disabled={true} />
+      {vehicles.map((item) => (
         <Select.Item
+          shadow={2}
           key={item.id}
           label={item.username}
           value={item.username}

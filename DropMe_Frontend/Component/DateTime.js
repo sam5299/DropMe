@@ -1,84 +1,93 @@
-import { View, Text } from "react-native";
 import React, { useState } from "react";
-import { Box, Modal, Button, Icon, Input } from "native-base";
-import CalendarPicker from "react-native-calendar-picker/CalendarPicker";
+import { Box, Modal, Icon, Input, Container, IconButton } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import Time from "./Time";
+import { Button } from "@rneui/themed";
 
-const DateTime = () => {
-  const [selectedStartDate, setSelectedStartDate] = useState("Select Date");
+const DateTime = ({ dispatch }) => {
+  const [selectedStartDate, setSelectedStartDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
 
-  const onDateChange = (date, type) => {
-    //function to handle the date change
-    const dateTime = date.toString();
-    let position = dateTime.search("12");
-    const currentDate = dateTime.substring(0, position);
-    setSelectedStartDate(currentDate);
+  const [selectedTime, setTime] = useState(new Date());
+  const [showClock, setClock] = useState(false);
+
+  const onChange = (event, selectedTime) => {
+    setClock(false);
+    setTime(selectedTime);
+    const hourse = selectedTime.getHours();
+    const min = selectedTime.getMinutes();
+    const time = `${hourse}:${min}`;
+    dispatch({ type: "time", payload: time });
   };
+
+  const onDateChange = (event, date) => {
+    //function to handle the date change
+    setShowModal(false);
+    setSelectedStartDate(date);
+    const curr = date.toDateString();
+    dispatch({ type: "date", payload: curr });
+  };
+
+  const hourse = selectedTime.getHours();
+  const min = selectedTime.getMinutes();
+  const time = `${hourse}:${min}`;
+
+  const curr = selectedStartDate.toDateString();
 
   return (
     <Box flexDirection="row" mt="5" justifyContent="space-between">
-      <Box mx="3">
+      <Box>
+        <Container mx="3">
+          <Input
+            isDisabled={true}
+            w="175"
+            placeholder={curr}
+            InputRightElement={
+              <MaterialCommunityIcons
+                name="calendar-arrow-left"
+                color="black"
+                size={40}
+                onPress={() => setShowModal(true)}
+              />
+            }
+          />
+          {showModal && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={selectedStartDate}
+              mode="date"
+              is24Hour={true}
+              onChange={onDateChange}
+            />
+          )}
+        </Container>
+      </Box>
+      <Container mx="3">
         <Input
           isDisabled={true}
           w="175"
-          placeholder={selectedStartDate}
+          placeholder={time}
           InputRightElement={
             <MaterialCommunityIcons
-              name="calendar"
+              name="clock"
               color="black"
               size={40}
-              onPress={() => setShowModal(true)}
+              onPress={() => setClock(true)}
             />
           }
         />
 
-        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-          <Modal.Content w="100%">
-            <Modal.Body>
-              <Box>
-                <CalendarPicker
-                  startFromMonday={true}
-                  minDate={new Date()}
-                  previousTitle="Previous"
-                  nextTitle="Next"
-                  todayBackgroundColor="#e6ffe6"
-                  selectedDayColor="#A8A8A8"
-                  selectedDayTextColor="#000000"
-                  scaleFactor={375}
-                  width={375}
-                  onDateChange={onDateChange}
-                />
-              </Box>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button.Group space={2}>
-                <Button
-                  variant="ghost"
-                  colorScheme="blueGray"
-                  onPress={() => {
-                    setShowModal(false);
-                    setSelectedStartDate(selectedStartDate);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onPress={() => {
-                    setShowModal(false);
-                  }}
-                >
-                  Save
-                </Button>
-              </Button.Group>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
-      </Box>
-      <Box>
-        <Time />
-      </Box>
+        {showClock && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={selectedTime}
+            mode="time"
+            is24Hour={true}
+            onChange={onChange}
+          />
+        )}
+      </Container>
     </Box>
   );
 };

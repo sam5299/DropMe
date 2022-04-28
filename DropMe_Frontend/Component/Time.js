@@ -3,14 +3,13 @@ import React, { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Container, Input, Modal } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { Button } from "@rneui/base";
 
 const Time = () => {
   const [selectedTime, setTime] = useState(new Date());
-  const [showModal, setShowModal] = useState(false);
+  const [showClock, setClock] = useState(false);
 
   const onChange = (event, selectedTime) => {
-    setShowModal(false);
+    setClock(false);
     setTime(selectedTime);
   };
 
@@ -30,12 +29,12 @@ const Time = () => {
             name="clock"
             color="black"
             size={40}
-            onPress={() => setShowModal(true)}
+            onPress={() => setClock(true)}
           />
         }
       />
 
-      {showModal && (
+      {showClock && (
         <DateTimePicker
           testID="dateTimePicker"
           value={selectedTime}
