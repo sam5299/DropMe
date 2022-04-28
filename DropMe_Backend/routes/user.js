@@ -18,6 +18,8 @@ const {
   uploadFileWithParam,
 } = require("../middleware/upload_file");
 
+const { createWallet }=require('../services/wallet')
+
 const fileUpload = require("express-fileupload");
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -44,6 +46,8 @@ router.post("/register", async (req, res) => {
       user = await addUserUpdated(req);
       if (!user)
         return res.status(400).send("Something went wrong try again latter.");
+      let walletResult=await createWallet(user._id);
+      //console.log(walletResult);
       return res.status(200).send("User added:" + user);
     } catch (ex) {
       if (ex.name === "ValidationError") {

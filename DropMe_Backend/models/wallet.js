@@ -1,16 +1,15 @@
 const mongoose = require('mongoose')
 const Joi = require('joi');
-const { string } = require('joi');
 
 
 const walletSchema = new mongoose.Schema({
-    creditPoint: { type: Number, required: true, },
-    safetyPoints: { type: Number, require: true },
+    creditPoint: { type: Number, required: true },
+    safetyPoint: { type: Number, require: true },
     User: { type: String, required: true }
 })
 
 
-const Wallet = new mongoose.model('Wallet', walletSchema);
+const Wallet =  mongoose.model('Wallet', walletSchema);
  
 function validateWalletDetails(details){
     const joiWalletSchemas=new Joi.object({
@@ -18,6 +17,8 @@ function validateWalletDetails(details){
         safetyPoint:Joi.number().required(),
         User:Joi.string().required()
     })
+    return joiWalletSchemas.validate(details);
+
 }
 
-module.exports = { Wallet, validateWalletDetails }
+module.exports = { Wallet, validateWalletDetails };
