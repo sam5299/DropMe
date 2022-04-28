@@ -1,6 +1,7 @@
 const express = require("express");
 const { Ride } = require('../models/ride')
 const fs = require('fs');
+const req = require("express/lib/request");
 
 // create ride function
 async function createRide(rideDetails) {
@@ -23,10 +24,10 @@ async function getRides(Source, Destination, Date, Time) {
 
 // Add trip request
 async function addTripRequest(rideId,tripId){
-    let rideObj =await Ride.find({_id:rideId})
-    if(!rideObj)
-    return null;
-    rideObj.requestedTripList=rideObj.requestedTripList.push(tripId);
+    
+    let [rideObj] =await Ride.find({_id:rideId});
+    if(!rideObj) return null;
+    rideObj.requestedTripList.push(tripId);
     return await rideObj.save()
 
 }

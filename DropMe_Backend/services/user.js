@@ -52,7 +52,7 @@ async function getUser(id) {
 
 //addUser updated function
 async function addUserUpdated(req) {
-  let path = uploadFileNew(req, "User", req.body.name, "Profile");
+  let path = uploadFileNew(req, "User", req.body.userId, "Profile");
   req.body.profile = path;
   req.body.password = await encryptPassword(req.body.password);
   const newUser = new User(req.body);
@@ -75,7 +75,7 @@ async function validateLogin(loginData) {
 async function isLicenseDetailsPresent(userId) {
   let licenseDetails = await User.find({userId:userId},{licenseNumber:1,licensePhoto:1,_id:0});
   console.log(licenseDetails);
-  if(licenseDetails.licenseNumber==null && licenseDetails.licensePhoto==null){
+  if(licenseDetails.licenseNumber===null && licenseDetails.licensePhoto===null){
     return false;
   }
   return true;
@@ -88,6 +88,12 @@ async function validateLicenseNumber(licenseNumber) {
   });
   return await joiDrivingLicenseSchema.validate(licenseNumber);
 }
+
+//function to check if licenseNumber in body already exists
+async function isLicenseNumberExists(licenceNum) {
+  return await User.findOne({licenseNumber:licenceNum});
+}
+
 
 //function to update user's licenseNumber and licenseDocument image path
 async function updateUserLicenseDetails(userId, licenseNumber, licensePhotoPath) {
@@ -112,5 +118,6 @@ module.exports = {
   loginPasswordAuthentication,
   validateLicenseNumber,
   updateUserLicenseDetails,
-  isLicenseDetailsPresent
+  isLicenseDetailsPresent,
+  isLicenseNumberExists
 };
