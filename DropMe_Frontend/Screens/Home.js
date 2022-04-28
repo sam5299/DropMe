@@ -5,9 +5,11 @@ import BottomBar from "../Component/BottomBar";
 
 const Home = () => {
   return (
-    <NavigationContainer>
-      <BottomBar />
-    </NavigationContainer>
+    <>
+      <NavigationContainer>
+        <BottomBar />
+      </NavigationContainer>
+    </>
   );
 };
 

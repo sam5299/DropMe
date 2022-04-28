@@ -2,14 +2,20 @@
 
 import { View, Text } from "react-native";
 import React, { useState, useEffect } from "react";
-import { Box, Select } from "native-base";
+import { Box, Select, Slider } from "native-base";
 import axios from "axios";
 
 const VehicleAndClass = ({ dispatch }) => {
   const [vehicles, setVehicles] = useState([]);
   const [service, setService] = useState("");
   const [vehicleClass, setVehicleClass] = useState("");
-  const [capacity, setCapacity] = useState(0);
+  const [capacity, setCapacity] = useState(2);
+
+  const vehicleCapacity = (v) => {
+    const seats = Math.floor(v);
+    setCapacity(seats);
+    dispatch({ type: "vehicleSeats", payload: seats });
+  };
 
   useEffect(async () => {
     try {
@@ -24,15 +30,17 @@ const VehicleAndClass = ({ dispatch }) => {
 
   return (
     <Box>
-      <Box flexDirection="row" mt={5} ml={3} justifyContent="space-between">
+      <Box mt={5} ml={3} alignItems="center" justifyContent="center">
         <Select
-          w="175"
+          mr="1"
+          w="100%"
           selectedValue={service}
           accessibilityLabel="Select Vehicle"
           placeholder="Select Vehicle "
           onValueChange={(itemValue) => {
             setService(itemValue);
             dispatch({ type: "vehicle", payload: itemValue });
+            dispatch({ type: "vehicleClass", payload: "XUV" });
           }}
         >
           <Select.Item shadow={2} label="Select Vehicle" disabled={true} />
@@ -45,50 +53,28 @@ const VehicleAndClass = ({ dispatch }) => {
             />
           ))}
         </Select>
-        <Select
-          mr={1}
-          w="175"
-          selectedValue={vehicleClass}
-          accessibilityLabel="Select Vehicle Class"
-          placeholder="Select Vehicle Class "
-          onValueChange={(itemValue) => {
-            setVehicleClass(itemValue);
-            dispatch({ type: "vehicleClass", payload: itemValue });
-          }}
-        >
-          <Select.Item
-            shadow={2}
-            label="Select Vehicle Class"
-            disabled={true}
-          />
-          {vehicles.map((item) => (
-            <Select.Item
-              shadow={2}
-              key={item.id}
-              label={item.username}
-              value={item.username}
-            />
-          ))}
-        </Select>
       </Box>
-      <Box mt={5} ml={3} mr="2">
-        <Select
-          selectedValue={capacity}
-          w="100%"
-          accessibilityLabel="Select Capacity"
-          placeholder="Select Capacity"
-          onValueChange={(itemValue) => {
-            setCapacity(itemValue);
-            dispatch({ type: "vehicleCapacity", payload: itemValue });
+      <Box mt={5} alignItems={"center"}>
+        <Text textAlign="center">Available Seats: {capacity}</Text>
+        <Slider
+          isDisabled={false}
+          mt={"2"}
+          w="300"
+          maxW="300"
+          defaultValue={0}
+          minValue={0}
+          maxValue={8}
+          accessibilityLabel="Available Seats"
+          step={1}
+          onChange={(v) => {
+            vehicleCapacity(v);
           }}
         >
-          <Select.Item shadow={2} label="Select Capacity" disabled={true} />
-          <Select.Item shadow={2} label="1" value="1" />
-          <Select.Item shadow={2} label="2" value="2" />
-          <Select.Item shadow={2} label="3" value="3" />
-          <Select.Item shadow={2} label="4" value="4" />
-          <Select.Item shadow={2} label="5" value="5" />
-        </Select>
+          <Slider.Track>
+            <Slider.FilledTrack />
+          </Slider.Track>
+          <Slider.Thumb />
+        </Slider>
       </Box>
     </Box>
   );

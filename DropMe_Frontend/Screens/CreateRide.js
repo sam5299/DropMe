@@ -14,9 +14,9 @@ const initialState = {
   time: "",
   vehicle: "",
   vehicleClass: "",
-  vehicleCapacity: "",
-  rideFor: "",
-  rideType: "",
+  vehicleSeats: "",
+  rideFor: "Both",
+  rideType: "Paid",
 };
 
 const reducer = (state, action) => {
@@ -51,10 +51,10 @@ const reducer = (state, action) => {
         ...state,
         vehicleClass: action.payload,
       };
-    case "vehicleCapacity":
+    case "vehicleSeats":
       return {
         ...state,
-        vehicleCapacity: action.payload,
+        vehicleSeats: action.payload,
       };
     case "rideFor":
       return {
@@ -72,11 +72,14 @@ const reducer = (state, action) => {
 };
 
 const CreateRide = () => {
+  // useEffect(() => {
+  //   alert(state.vehicleSeats);
+  // }, state);
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleForm = () => {
     for (const key in state) {
-      if (state[key] === "") {
+      if (state[key] === "" || state[key] === 0) {
         const k = key.toString();
         Alert.alert("Error", `"${k}" field is missing`);
         return;
@@ -100,7 +103,7 @@ const CreateRide = () => {
         <DateTime dispatch={dispatch} />
         <VehicleAndClass dispatch={dispatch} />
         <RideForType dispatch={dispatch} />
-        <Button size="md" mt={3} w="95%" mx={3} onPress={handleForm}>
+        <Button size="md" mt={"6"} w="95%" mx={3} onPress={handleForm}>
           <Text fontSize={"lg"} color="white">
             Submit
           </Text>

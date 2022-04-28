@@ -1,10 +1,15 @@
-import { View, Text } from "react-native";
-import React, { useState } from "react";
-import { Box, Select } from "native-base";
+import { View } from "react-native";
+import React from "react";
+import { Box, Radio, Stack, Checkbox } from "native-base";
 
 const RideForType = ({ dispatch }) => {
-  const [rideFor, setRideFor] = useState("");
-  const [rideType, setRideType] = useState("");
+  const selectType = (value) => {
+    if (value == true) {
+      dispatch({ type: "rideFor", payload: "Male" });
+    } else {
+      dispatch({ type: "rideFor", payload: "Both" });
+    }
+  };
 
   return (
     <Box
@@ -14,35 +19,35 @@ const RideForType = ({ dispatch }) => {
       mt={5}
       ml={3}
     >
-      <Select
-        selectedValue={rideFor}
-        w="175"
+      <Checkbox
         accessibilityLabel="Ride For"
-        placeholder="Ride For"
-        onValueChange={(itemValue) => {
-          setRideFor(itemValue);
-          dispatch({ type: "rideFor", payload: itemValue });
-        }}
+        onChange={(value) => selectType(value)}
       >
-        <Select.Item shadow={2} label="Ride For" disabled={true} />
-        <Select.Item shadow={2} label="Male" value="1" />
-        <Select.Item shadow={2} label="Female" value="2" />
-        <Select.Item shadow={2} label="Both" value="3" />
-      </Select>
-      <Select
-        selectedValue={rideType}
-        w="175"
+        Only For Male
+      </Checkbox>
+      <Radio.Group
+        name="Ride Type"
+        defaultValue="Paid"
         accessibilityLabel="Ride Type"
-        placeholder="Ride Type"
-        onValueChange={(itemValue) => {
-          setRideType(itemValue);
-          dispatch({ type: "rideType", payload: itemValue });
-        }}
+        onChange={(value) => dispatch({ type: "rideType", payload: value })}
       >
-        <Select.Item shadow={2} label="Ride Type" disabled={true} />
-        <Select.Item shadow={2} label="Free" value="1" />
-        <Select.Item shadow={2} label="Paid" value="2" />
-      </Select>
+        <Stack
+          direction={{
+            base: "row",
+            md: "column ",
+          }}
+          mr="2"
+          space={3}
+          maxW="300px"
+        >
+          <Radio value="Paid" size="md">
+            Paid
+          </Radio>
+          <Radio value="Free" size="md">
+            Free
+          </Radio>
+        </Stack>
+      </Radio.Group>
     </Box>
   );
 };

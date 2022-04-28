@@ -12,6 +12,7 @@ const DateTime = ({ dispatch }) => {
   const [selectedTime, setTime] = useState(new Date());
   const [showClock, setClock] = useState(false);
 
+  //function to handle time change
   const onChange = (event, selectedTime) => {
     setClock(false);
     setTime(selectedTime);
@@ -21,19 +22,23 @@ const DateTime = ({ dispatch }) => {
     dispatch({ type: "time", payload: time });
   };
 
+  //function to handle date change
   const onDateChange = (event, date) => {
-    //function to handle the date change
+    if (event.type === "set") {
+      setShowModal(false);
+      setSelectedStartDate(date);
+      const curr = date.toDateString();
+      dispatch({ type: "date", payload: curr });
+      setClock(true);
+    }
     setShowModal(false);
-    setSelectedStartDate(date);
-    const curr = date.toDateString();
-    dispatch({ type: "date", payload: curr });
   };
 
   const hourse = selectedTime.getHours();
   const min = selectedTime.getMinutes();
   const time = `${hourse}:${min}`;
 
-  const curr = selectedStartDate.toDateString();
+  const curr = selectedStartDate.toDateString() + " ; " + time;
 
   return (
     <Box flexDirection="row" mt="5" justifyContent="space-between">
@@ -41,7 +46,7 @@ const DateTime = ({ dispatch }) => {
         <Container mx="3">
           <Input
             isDisabled={true}
-            w="175"
+            w="375"
             placeholder={curr}
             InputRightElement={
               <MaterialCommunityIcons
@@ -63,31 +68,15 @@ const DateTime = ({ dispatch }) => {
           )}
         </Container>
       </Box>
-      <Container mx="3">
-        <Input
-          isDisabled={true}
-          w="175"
-          placeholder={time}
-          InputRightElement={
-            <MaterialCommunityIcons
-              name="clock"
-              color="black"
-              size={40}
-              onPress={() => setClock(true)}
-            />
-          }
+      {showClock && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={selectedTime}
+          mode="time"
+          is24Hour={true}
+          onChange={onChange}
         />
-
-        {showClock && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={selectedTime}
-            mode="time"
-            is24Hour={true}
-            onChange={onChange}
-          />
-        )}
-      </Container>
+      )}
     </Box>
   );
 };
