@@ -12,7 +12,7 @@ let tripRideSchema = new mongoose.Schema({
     amount: {type:Number, required:true}
 });
 
-let TripRide = mongoose.model("tripRide",tripRideSchema);
+let TripRide = mongoose.model("trip_ride",tripRideSchema);
 
 function validateTripRide(body) {
     const joiTripRideValidateSchema = Joi.object({

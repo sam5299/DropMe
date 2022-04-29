@@ -79,9 +79,9 @@ router.post("/login", async (req, res) => {
   return res.header("x-auth-token", token).status(200).send(true);
 });
 
-router.get("/getUser/:id",auth, async (req, res) => {
+router.get("/getUser",auth, async (req, res) => {
   try {
-    let user = await getUser(req.params.id);
+    let user = await getUser(req.body.userId);
     if(!user) return res.status(404).send("No users present!!");
     return res.status(200).send(user);
   } catch(ex) {

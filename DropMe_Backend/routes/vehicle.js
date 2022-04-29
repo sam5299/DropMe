@@ -30,7 +30,7 @@ router.post("/addVehicle", auth, async(req, res) => {
         let licencePresent = await isLicenseDetailsPresent(req.body.userId); //write code in user
         console.log(licencePresent);
         if (!licencePresent) {
-            if (req.body.licenseNumber && req.files.licensePhoto) {
+            if (req.body.licenseNumber && req.files && req.files.licensePhoto) {
                 let { error } = await validateLicenseNumber({ licenseNumber: req.body.licenseNumber });
                 if (error) return res.status(400).send(error.details[0].message);
 
