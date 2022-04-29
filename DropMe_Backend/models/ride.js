@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-// const User=require('./user')
-// const Vehicle=require('./vehicle')
 const rideSchema = new mongoose.Schema({
     source: { type: String, min: 1, max: 255, required: true },
     destination: { type: String, min: 1, max: 255, required: true },

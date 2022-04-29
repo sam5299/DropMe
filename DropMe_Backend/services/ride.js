@@ -13,12 +13,13 @@ async function createRide(rideDetails) {
 }
 
 // get ride by source destination date and  time
-async function getRides(Source, Destination, Date, Time) {
+async function getRides(Source, Destination, Date, Time, seats) {
     return await Ride.find({
         source: Source,
         destination: Destination,
         date: Date,
-        time: Time
+        time: Time,
+        availableSeats:{$gte:seats}
     })
 }
 

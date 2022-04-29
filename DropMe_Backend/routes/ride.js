@@ -54,9 +54,10 @@ router.get('/getRides', auth, async(req, res) => {
     let Destination = inpParams.Destination;
     let Date = inpParams.Date;
     let Time = inpParams.Time;
+    let seats=inpParams.seats;
 
     try {
-        let rides = await getRides(Source, Destination, Date, Time);
+        let rides = await getRides(Source, Destination, Date, Time,seats);
         if (rides.length == 0)
             return res.status(400).send("No rides found");
         return res.status(200).send(rides);
