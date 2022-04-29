@@ -5,7 +5,7 @@ const {validateTrip} = require('../models/trip');
 const {getRides, addTripRequest} = require('../services/ride');
 const {requestRide} = require('../services/trip');
 router.use(express.json());
-
+ 
 router.post("/searchForRide",auth,  async(req, res)=>{
     //console.log("called")
     delete req.body.userId;
@@ -14,7 +14,7 @@ router.post("/searchForRide",auth,  async(req, res)=>{
 
     let rides = await getRides(req.body.source, req.body.destination, req.body.date, req.body.time);
 
-    let requestedRide = await requestRide(req.body, "6269a4b7d159c946c595f5f5");
+    let requestedRide = await requestRide(req.body, "626aa19602df2f6afbabbcaf");
     //console.log("requestedRide:"+requestedRide);
 
     return res.status(200).send("/searchForRide called and result:"+rides);

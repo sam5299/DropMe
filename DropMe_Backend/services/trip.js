@@ -29,4 +29,16 @@ async function requestRide(tripBody, rid) {
     return requestedTrip;
 }
 
-module.exports = {requestRide};
+//function to return details of Trip and User who crated that trip
+async function getTripDetails(tripId) {
+    return await Trip.find({_id:tripId})
+                     .populate('User', '-_id profile fname lname ')
+                     .select('source destination ');
+}
+
+//function to generate 4 digit trip token for each accepted trip request
+function generateTripToken() {
+    return Math.floor(Math.random() * 1000000) + 1;
+}
+
+module.exports = {requestRide, getTripDetails, generateTripToken};

@@ -47,7 +47,18 @@ async function deleteRide(rideId) {
     })
 }
 
+// to get list ride of all trips who has reuqested for perticular ride
+async function getTripRequestList(rid) {
+    return await Ride.findOne({_id: rid}, {_id:0, requestedTripList:1});
+}
 
+async function removeTripId(rideId, tripId) {
+    let rideObj = await Ride.findOne({_id:rideId});
+    console.log(rideObj.requestedTripList);
+    let index = rideObj.requestedTripList.indexOf(tripId);
+    rideObj.requestedTripList.splice(index, 1);
+    return rideObj.save();
+}
 
 
 
@@ -62,5 +73,7 @@ module.exports = {
     getUserRides,
     deleteRide,
     savePicture,
-    addTripRequest
+    addTripRequest,
+    getTripRequestList,
+    removeTripId
 }
