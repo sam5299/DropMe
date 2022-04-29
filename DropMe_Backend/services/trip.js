@@ -33,7 +33,7 @@ async function requestRide(tripBody, rid) {
 async function getTripDetails(tripId) {
     return await Trip.find({_id:tripId})
                      .populate('User', '-_id profile fname lname ')
-                     .select('source destination ');
+                     .select('source destination amount');
 }
 
 //function to generate 4 digit trip token for each accepted trip request

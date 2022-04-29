@@ -102,13 +102,16 @@ router.post("/acceptRejectTripRequest", auth, async(req, res)=> {
     delete req.body.User;
     console.log(req.body.token);
 
+    
     let {error} = validateTripRide(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-
+    
+    return res.status(200).send(req.body);
 
     let result = addAcceptedTrip(req.body);
     if(!result) return res.status(400).send("something went wrong cannot accept trip");
     
+
     let rideObj = await removeTripId(req.body.rideId, req.body.tripId);
     return res.status(200).send("Ride accepted:"+rideObj);
 } )
