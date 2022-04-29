@@ -28,11 +28,11 @@ function getFile(req, docName) {
 
   if (docName==="vehicle") return req.files.vehicleImage;
 
-  if (docName==="rcbook") return req.files.rcBook;
+  if (docName==="rcbook") return req.files.rcBookImage;
 
-  if (docName==="licensePhoto") return req.files.licensePhoto;
+  if (docName==="license") return req.files.licenseImage;
 
-  if(docName==="puc") return req.files.pucPhoto;
+  if(docName==="puc") return req.files.pucImage;
 }
 
 
@@ -43,7 +43,8 @@ function uploadFileNew(req, docType, id, docName) {
   } else {
     let filename = `${docType}_${id}_${docName}.jpg`;
     let filepath = "./image_files/" + filename;
-    console.log(filepath);
+    //console.log(filepath);
+    console.log("docname:"+docName);
     let imageFile = getFile(req, docName);
     imageFile.mv(filepath, function (err) {
       if (err) return getDefaultPath(req, docName); //default filepath

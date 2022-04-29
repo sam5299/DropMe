@@ -30,7 +30,7 @@ router.post("/addVehicle", auth, async(req, res) => {
         let licencePresent = await isLicenseDetailsPresent(req.body.userId); //write code in user
         console.log(licencePresent);
         if (!licencePresent) {
-            if (req.body.licenseNumber && req.files.licensePhoto) {
+            if (req.files && req.body.licenseNumber && req.files.licenseImage) {
                 let { error } = await validateLicenseNumber({ licenseNumber: req.body.licenseNumber });
                 if (error) return res.status(400).send(error.details[0].message);
 
@@ -51,29 +51,28 @@ router.post("/addVehicle", auth, async(req, res) => {
 
         req.body = newBody; //exclude the license properties.
 
-        if (!req.files.pucPhoto) return res.status(400).send("PUC image is required!");
+        if (!req.files.pucImage) return res.status(400).send("PUC image is required!");
         if (!req.files.vehicleImage) return res.status(400).send("Vehicle image is required");
-        if (!req.files.rcBook) return res.status(400).send("Vehicle RCBook image  is required");
+        if (!req.files.rcBookImage) return res.status(400).send("Vehicle RCBook image  is required");
 
-        req.body.rcBookImagePath = " ";
-        req.body.vehicleImagePath = " ";
-        req.body.pucImagePath = " ";
+        req.body.rcBookImage = " ";
+        req.body.vehicleImage = " ";
+        req.body.pucImage = " ";
 
         let { error } = validateVehicleDetails(req.body);
         if (error) return res.status(400).send(error.details[0].message);
         console.log("Validation done");
 
         let vehicle = await checkVehicleAlreadyExits(req.body.vehicleNumber);
-        // vehicle != null    vehicle != null    vehicle != null
         if (vehicle != null) {
             if (vehicle.isDeleted == false) return res.status(400).send("Vehicle already exists, cannot add!", vehicle);
             console.log("Check vehicle already exists done");
             if (vehicle.userId != parseInt(req.body.userId)){
             
                 vehicle.userId = parseInt(req.body.userId)
-                req.body.rcBookImagePath = uploadFileNew(req, `v_${req.body.vehicleNumber}`, req.body.userId, "rcbook");
-                req.body.vehicleImagePath = uploadFileNew(req, `v_${req.body.vehicleNumber}`, req.body.userId, "vehicle");
-                req.body.pucImagePath = uploadFileNew(req, `v_${req.body.vehicleNumber}`, req.body.userId, "puc");
+                req.body.rcBookImage = uploadFileNew(req, `v_${req.body.vehicleNumber}`, req.body.userId, "rcbook");
+                req.body.vehicleImage = uploadFileNew(req, `v_${req.body.vehicleNumber}`, req.body.userId, "vehicle");
+                req.body.pucImage = uploadFileNew(req, `v_${req.body.vehicleNumber}`, req.body.userId, "puc");
                 console.log("Setting images paths done");
             }
             vehicle.isDeleted = false;
@@ -85,11 +84,9 @@ router.post("/addVehicle", auth, async(req, res) => {
             
         }
 
-        //  vehicle != null    vehicle != null    vehicle != null 
-
-        req.body.rcBookImagePath = uploadFileNew(req, `v_${req.body.vehicleNumber}`, req.body.userId, "rcbook");
-        req.body.vehicleImagePath = uploadFileNew(req, `v_${req.body.vehicleNumber}`, req.body.userId, "vehicle");
-        req.body.pucImagePath = uploadFileNew(req, `v_${req.body.vehicleNumber}`, req.body.userId, "puc");
+        req.body.rcBookImage = uploadFileNew(req, `v_${req.body.vehicleNumber}`, req.body.userId, "rcbook");
+        req.body.vehicleImage = uploadFileNew(req, `v_${req.body.vehicleNumber}`, req.body.userId, "vehicle");
+        req.body.pucImage = uploadFileNew(req, `v_${req.body.vehicleNumber}`, req.body.userId, "puc");
         console.log("Setting images paths done");
 
         vehicle = await addVehicle(req.body);

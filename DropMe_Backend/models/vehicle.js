@@ -5,9 +5,9 @@ const vehicleSchema = new mongoose.Schema({
     vehicleNumber: { type: String, required: true },
     vehicleName: { type: String, required: true },
     seatingCapacity: { type: Number, max: 6, required: true },
-    rcBookImagePath: { type: String },
-    vehicleImagePath: { type: String, required: true },
-    pucImagePath: { type: String, required: true },
+    rcBookImage: { type: String },
+    vehicleImage: { type: String, required: true },
+    pucImage: { type: String, required: true },
     isDeleted: { type: Boolean, default: false },
     vehicleClass: {
         type: String,
@@ -39,9 +39,9 @@ function validateVehicleDetails(vehicleData) {
         fuelType: Joi.string().valid("Petrol", "Diesel", "CNG", "Electric").required(),
         vehicleClass: Joi.string().valid("SUV","HatchBack","Sedan","NormalBike","SportBike","Scooter").required(),
         seatingCapacity: Joi.number().required().min(1).max(8),
-        rcBookImagePath: Joi.string().required(),
-        vehicleImagePath: Joi.string().required(),
-        pucImagePath: Joi.string().required(),
+        rcBookImage: Joi.string().required(),
+        vehicleImage: Joi.string().required(),
+        pucImage: Joi.string().required(),
 
         userId: Joi.number().required()
     });

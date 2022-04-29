@@ -1,7 +1,4 @@
-const config = require("config");
-const jwt = require("jsonwebtoken");
 const express = require("express");
-const bodyParser = require("body-parser");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const { Ride, validateRideDetails } = require('../models/ride');
