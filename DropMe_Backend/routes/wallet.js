@@ -17,7 +17,7 @@ router.use(express.json());
 // create the wallet object
 router.post('/createWallet', auth, async(req, res) => {
 
-    let { error } = validateWalletDetails({ "creditPoint": 0, "safetyPoint": 0, "User": req.body.User });
+    let { error } = validateWalletDetails({ "creditPoint": 0, "safetyPoint": 0,"usedCreditPoint":0 ,"User": req.body.User });
     if (error) return res.status(400).send(error.details[0].message);
     try {
         let newWallet = await createWallet( req.body.User );
@@ -29,6 +29,9 @@ router.post('/createWallet', auth, async(req, res) => {
     }
 
 })
+
+
+
 
 
 // Update wallet balance with positive or negative number
