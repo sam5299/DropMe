@@ -6,12 +6,12 @@ let tripSchema = new mongoose.Schema({
     destination: {type:String, required:true},
     date: {type:String, required:true},
     time: {type:String, required:true},
-    User: {type:String, required:true}  
+    User: {type:mongoose.Schema.Types.ObjectId, ref:"User", required:true}  
 });
 
 let Trip = mongoose.model('trip', tripSchema);
 
-//validation function for creating new trip
+// function for creating new trip
 function validateTrip(body) {
     let joiTripValidationSchema = Joi.object({
         source: Joi.string().required(),
