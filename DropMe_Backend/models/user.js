@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   profile: { type: String, required: true },
   password: { type: String, minlength: 6, maxlength: 1024, require: true },
   licenseNumber : {type: String, minlength:16, maxlength:16, default: null},
-  licensePhoto: {type:String, default:null},
+  licenseImage: {type:String, default:null},
   sumOfRating : {type: Number,default: 0 },
   totalNumberOfRides : {type: Number, default: 0},
   totalNumberOfRatedRides: {type: Number, default: 0}
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
 //object of userSchema export it letter
 const User = mongoose.model("User", userSchema);
 
-//Joi validation logic for regitration
+//Joi validation logic for registration
 async function isUserDataValidate(userData) {
   let joiSchema = Joi.object({
     userId: Joi.number().required(),
