@@ -14,7 +14,7 @@ async function getWallet(userId) {
 }
 
 
-//  Updat balance by +/-number
+//  Update balance by +/-number
 async function updateWallet(userId, amount) {
     let [walletObj] = await Wallet.find({ User: userId })
         //console.log(walletObj);
@@ -23,6 +23,13 @@ async function updateWallet(userId, amount) {
 }
 
 
+//  Update updateUsedCreditPoints by +/-number
+async function updateUsedCredit(userId, amount) {
+    let [walletObj] = await Wallet.find({ User: userId })
+        //console.log(walletObj);
+    walletObj.usedCreditPoint = walletObj.usedCreditPoint + parseInt(amount)
+    return await walletObj.save()
+}
 
 
 // convert safety points into credit points
@@ -50,6 +57,7 @@ async function addPenalty(userId, penalty) {
 module.exports = {
     createWallet,
     updateWallet,
+    updateUsedCredit,
     addSafetyPoints,
     addPenalty,
     getWallet
