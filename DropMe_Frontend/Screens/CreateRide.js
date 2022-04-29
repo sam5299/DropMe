@@ -95,6 +95,7 @@ const CreateRide = () => {
         backgroundColor: "#f5f5f5",
         height: "100%",
         flexDirection: "column",
+        marginTop: "0%",
       }}
     >
       <GoogleMap />

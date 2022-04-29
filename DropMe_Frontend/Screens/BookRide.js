@@ -74,7 +74,7 @@ const BookRide = () => {
         <SourceDestination dispatch={dispatch} />
         <DateTime dispatch={dispatch} />
         <PickupPoint dispatch={dispatch} />
-        <Button size="md" mt="40%" w="95%" mx={3} onPress={handleForm}>
+        <Button size="md" mt="35%" w="95%" mx={3} onPress={handleForm}>
           <Text fontSize={"lg"} color="white">
             Submit
           </Text>

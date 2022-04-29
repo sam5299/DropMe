@@ -9,7 +9,7 @@ const VehicleAndClass = ({ dispatch }) => {
   const [vehicles, setVehicles] = useState([]);
   const [service, setService] = useState("");
   const [vehicleClass, setVehicleClass] = useState("");
-  const [capacity, setCapacity] = useState(2);
+  const [capacity, setCapacity] = useState(0);
 
   const vehicleCapacity = (v) => {
     const seats = Math.floor(v);
