@@ -65,7 +65,7 @@ router.post("/addVehicle", auth, async(req, res) => {
 
         let vehicle = await checkVehicleAlreadyExits(req.body.vehicleNumber);
         if (vehicle != null) {
-            if (vehicle.isDeleted == false) return res.status(400).send("Vehicle already exists, cannot add!", vehicle);
+            if (vehicle.isDeleted == false) return res.status(400).send("Vehicle already exists, cannot add!");
             console.log("Check vehicle already exists done");
             if (vehicle.userId != parseInt(req.body.userId)){
             

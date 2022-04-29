@@ -46,17 +46,18 @@ router.post("/createRide", auth, async(req, res) => {
 router.get('/getRides', auth, async(req, res) => {
     let inpParams = req.body;
 
-    if ( !("Source" in inpParams && "Destination" in inpParams &&
-        "Date" in inpParams && "Time" in inpParams))
+    if ( !("source" in inpParams && "destination" in inpParams &&
+        "date" in inpParams && "time" in inpParams))
         return res.status(400).send("Please add Source, Destination , Date and Time")
 
     let Source = inpParams.Source;
     let Destination = inpParams.Destination;
     let Date = inpParams.Date;
     let Time = inpParams.Time;
+    let seats=inpParams.seats;
 
     try {
-        let rides = await getRides(Source, Destination, Date, Time);
+        let rides = await getRides(Source, Destination, Date, Time,seats);
         if (rides.length == 0)
             return res.status(400).send("No rides found");
         return res.status(200).send(rides);
