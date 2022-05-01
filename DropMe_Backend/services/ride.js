@@ -48,11 +48,19 @@ async function deleteRide(rideId) {
     })
 }
 
-// to get list ride of all trips who has reuqested for perticular ride
+// to get list of all trip who has reuqested for perticular ride
 async function getTripRequestList(rid) {
     return await Ride.findOne({_id: rid}, {_id:0, requestedTripList:1});
 }
+ 
+// reduce availableSeat of ride after successfully accepting ride
+async function reduceAvailableSeats(rid, seatCount) {
+    let ride = await Ride.findOne({_id:rid});
+    ride.availableSeats = ride.availableSeats - seatCount;
+    return ride.save();
+}
 
+//remove trip id from requestList array of Ride
 async function removeTripId(rideId, tripId) {
     let rideObj = await Ride.findOne({_id:rideId});
     console.log(rideObj.requestedTripList);
@@ -60,8 +68,6 @@ async function removeTripId(rideId, tripId) {
     rideObj.requestedTripList.splice(index, 1);
     return rideObj.save();
 }
-
-
 
 // To save image of vehicle after creating ride 
 function savePicture(fileName){
@@ -76,5 +82,6 @@ module.exports = {
     savePicture,
     addTripRequest,
     getTripRequestList,
+    reduceAvailableSeats,
     removeTripId
 }

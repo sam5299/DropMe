@@ -27,7 +27,7 @@ router.post("/requestRide/:rid", auth, async(req, res)=> {
     if(error) return res.status(400).send(error.details[0].message);
 
     let balance = await getWallet(req.body.User);
-    if(balance.creditPoint<req.body.amount) return res.status(400).send("You don't have sufficent credit points to request for this trip. Please add credit point and try again.");
+    if(balance.creditPoint<(req.body.amount+balance.usedCreditPoint)) return res.status(400).send("You don't have sufficent credit points to request for this trip. Please add credit point and try again.");
 
     let requestedRide = await requestRide(req.body, req.params.rid);
     if(!requestRide) return res.status(400).send("something failed cannot request ride");

@@ -34,7 +34,7 @@ async function requestRide(tripBody, rid) {
 async function getTripDetails(tripId) {
     return await Trip.find({_id:tripId})
                      .populate('User', '-_id profile fname lname ')
-                     .select('source destination amount');
+                     .select('source destination distance seatRequest');
 }
 
 //function to generate 4 digit trip token for each accepted trip request
@@ -45,7 +45,8 @@ function generateTripToken() {
 // calculate trip amount
 async function calculateTripAmount(vehicleId,distance){
 
-    let vehicleObj= Vehicle.findOne({_id:vehicleId});
+    let vehicleObj= await Vehicle.findOne({_id:vehicleId});
+    //console.log("Vehicle Object:"+vehicleObj);
     let vehicleClass=vehicleObj.vehicleClass;
     let vehicleType=vehicleObj.vehicleType;
     let classFactor = 1;
@@ -90,7 +91,8 @@ async function calculateTripAmount(vehicleId,distance){
                 break;
         }
     }
-    return Math.round(fuelFactor * classFactor * distance);
+    let amount = Math.round(fuelFactor * classFactor * distance);
+    return amount;
 }
 
 
