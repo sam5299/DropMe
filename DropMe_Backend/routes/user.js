@@ -19,7 +19,7 @@ const {
 } = require("../middleware/upload_file");
 
 const { createWallet }=require('../services/wallet')
-
+const {getNotification}=require('../services/notification')
 const fileUpload = require("express-fileupload");
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -75,7 +75,9 @@ router.post("/login", async (req, res) => {
 
   //console.log("User details:"+user._id);
   const token = jwt.sign({ userId: user.userId , User:user._id }, config.get("jwtPrivateKey"));
- // console.log(token);
+  //console.log(token);
+  //  let notifications=await getNotification(user._id)
+   // if(notifications)console.log("@@@"+notifications);
   return res.header("x-auth-token", token).status(200).send(true);
 });
 

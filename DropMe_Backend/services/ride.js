@@ -8,8 +8,6 @@ async function createRide(rideDetails) {
     //console.log("Saving");
     const newRide = new Ride(rideDetails)
     return await newRide.save()
-
-
 }
 
 // get ride by source destination date and  time
