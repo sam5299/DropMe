@@ -3,7 +3,7 @@ const { Wallet } = require('../models/wallet')
 
 // Create a wallet 
 async function createWallet(userId) {
-    const newWallet = new Wallet({ "creditPoint": 0, "safetyPoint": 0, "User": userId });
+    const newWallet = new Wallet({ "creditPoint": 0, "usedCreditPoint":0, "safetyPoint": 0, "User": userId });
     return await newWallet.save()
 }
 

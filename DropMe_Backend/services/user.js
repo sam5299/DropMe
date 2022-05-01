@@ -3,6 +3,7 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
+const genPassword =require('generate-password');
 
 //multer with whole configuration for saving images into image_files folder.
 const { User } = require("../models/user");
@@ -75,7 +76,7 @@ async function validateLogin(loginData) {
 async function isLicenseDetailsPresent(userId) {
   let licenseDetails = await User.findOne({userId:userId},{licenseNumber:1,licensePhoto:1,_id:0});
   console.log(licenseDetails);
-  if(licenseDetails.licenseNumber===null && licenseDetails.licensePhoto===null){
+  if(licenseDetails.licenseNumber===null || licenseDetails.licensePhoto===null){
     return false;
   }
   return true;
@@ -109,6 +110,24 @@ async function loginPasswordAuthentication(plainPassword, hashedPassword) {
   return await bcrypt.compare(plainPassword, hashedPassword);
 }
 
+//get random generated password for forgot password
+async function generateRandomPassword() {
+  var password = genPassword.generate({
+    length: 8,
+    numbers: true, 
+    uppercase: true,
+    lowercase: true,
+    symbols: true,
+    exclude: `^$&()~"!-'<>{}[]=`,
+    strict: true
+  });
+  return password;
+}
+
+async function mailSend() {
+  
+}
+
 module.exports = {
   getUniqueId,
   isUserExists,
@@ -119,5 +138,6 @@ module.exports = {
   validateLicenseNumber,
   updateUserLicenseDetails,
   isLicenseDetailsPresent,
-  isLicenseNumberExists
+  isLicenseNumberExists,
+  generateRandomPassword
 };

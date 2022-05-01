@@ -11,6 +11,7 @@ const {
   validateLogin,
   getUser,
   loginPasswordAuthentication,
+  generateRandomPassword
 } = require("../services/user");
 const { isUserDataValidate } = require("../models/user");
 const {
@@ -53,13 +54,14 @@ router.post("/register", async (req, res) => {
       if (ex.name === "ValidationError") {
         console.error(Object.values(ex.errors).map((val) => val.message));
       }
-      return res.status(400).send("Please fill all the details");
+      return res.status(400).send("Please fill all the details:"+ex);
     }
   } catch(ex) {
     res.status(500).send("something failed!! try again latter");
   }
 });
 
+//endpoint for user login
 router.post("/login", async (req, res) => {
   let { error } = await validateLogin(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -80,6 +82,18 @@ router.post("/login", async (req, res) => {
    // if(notifications)console.log("@@@"+notifications);
   return res.header("x-auth-token", token).status(200).send(true);
 });
+
+//endpoint for forgot password
+router.put('/forgotPassword', async(req, res)=> {
+  if(!req.body.mobileNumber) return res.status(404).send("mobileNumber is require");
+
+   let user = await isUserExists(req.body.mobileNumber);
+   if(!user) return res.status(400).send("Invalid detail's");
+    
+   let newPassword = await generateRandomPassword();
+   console.log(newPassword);
+   return res.status(200).send("new password:"+newPassword);
+})
 
 router.get("/getUser",auth, async (req, res) => {
   try {
