@@ -50,14 +50,14 @@ router.get('/getRides', auth, async(req, res) => {
         "date" in inpParams && "time" in inpParams))
         return res.status(400).send("Please add Source, Destination , Date and Time")
 
-    let Source = inpParams.Source;
-    let Destination = inpParams.Destination;
-    let Date = inpParams.Date;
-    let Time = inpParams.Time;
+    let Source = inpParams.source;
+    let Destination = inpParams.destination;
+    let Date = inpParams.date;
+    let Time = inpParams.time;
     let seats=inpParams.seats;
-
+    let gender=inpParams.gender;
     try {
-        let rides = await getRides(Source, Destination, Date, Time,seats);
+        let rides = await getRides(Source, Destination, Date, Time,seats,gender);
         if (rides.length == 0)
             return res.status(400).send("No rides found");
         return res.status(200).send(rides);
