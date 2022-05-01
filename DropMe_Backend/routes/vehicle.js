@@ -18,7 +18,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(fileUpload({ useTempFiles: true, tempFileDir: "../image_files" }));
 
 router.get("/getVehicle", auth, (req, res) => {
-    console.log("getVehile called");
+    console.log("getVehicle called");
     return res.status(200).send("getVehicle called");
 });
 

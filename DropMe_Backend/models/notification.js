@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Joi = require('joi')
 
 const notificationSchema = new mongoose.Schema({
-    formUser: {
+    fromUser: {
         type: String,
         required: true
     },
@@ -13,6 +13,10 @@ const notificationSchema = new mongoose.Schema({
     message: {
         type: String,
         required: true
+    },
+    isRead:{
+        type:Boolean,
+        default:false
     }
 });
 

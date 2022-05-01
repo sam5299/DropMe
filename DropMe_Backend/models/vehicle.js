@@ -9,6 +9,7 @@ const vehicleSchema = new mongoose.Schema({
     vehicleImage: { type: String, required: true },
     pucImage: { type: String, required: true },
     isDeleted: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: false },
     vehicleClass: {
         type: String,
         enum: ["SUV", "HatchBack", "Sedan", "NormalBike", "SportBike", "Scooter"],
@@ -42,7 +43,6 @@ function validateVehicleDetails(vehicleData) {
         rcBookImage: Joi.string().required(),
         vehicleImage: Joi.string().required(),
         pucImage: Joi.string().required(),
-
         userId: Joi.number().required()
     });
     return joiVehicleSchema.validate(vehicleData);
