@@ -10,13 +10,16 @@ const {
     savePicture,
     getTripRequestList,
     removeTripId,
+    reduceAvailableSeats,
 } = require('../services/ride');
 
-const {getTripDetails, generateTripToken} = require("../services/trip");
+const {getTripDetails, generateTripToken, calculateTripAmount} = require("../services/trip");
 const {validateTripRide} = require("../models/trip_ride");
 
 const { func } = require("joi");
 const { addAcceptedTrip } = require("../services/trip_ride");
+const { Trip } = require("../models/trip");
+const { updateUsedCredit } = require("../services/wallet");
 router.use(express.json());
 
 
@@ -27,8 +30,6 @@ router.post("/createRide", auth, async(req, res) => {
     delete req.body.userId;
     let { error } = validateRideDetails(req.body);
     if (error) return res.status(400).send(error.details[0].message);
-
-
     try {
         let newRide = await createRide(req.body)
         if (!newRide)
@@ -44,10 +45,10 @@ router.post("/createRide", auth, async(req, res) => {
 
 // get Rides details by Source Destination Date and Time
 router.get('/getRides', auth, async(req, res) => {
-    let inpParams = req.body;
+    let body = req.body;
 
-    if ( !("source" in inpParams && "destination" in inpParams &&
-        "date" in inpParams && "time" in inpParams))
+    if ( !("source" in body && "destination" in body &&
+        "date" in body && "time" in body))
         return res.status(400).send("Please add Source, Destination , Date and Time")
 
     let Source = inpParams.source;
@@ -102,13 +103,35 @@ router.post("/acceptRejectTripRequest", auth, async(req, res)=> {
     delete req.body.User;
     console.log(req.body.token);
 
+    let vehicle = await Ride.findOne({_id:req.body.rideId}, {_id:0, Vehicle:1});
+
+    let trip = await Trip.findOne({_id:req.body.tripId},{_id:0,distance:1,User:1, seatRequest:1});
+
+    console.log("trip:"+trip.User);
+
+    amount = await calculateTripAmount(vehicle.Vehicle, trip.distance);
+    
+    req.body.amount = amount;
+    console.log("amount:"+typeof(req.body.amount));
+    
     let {error} = validateTripRide(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-
-
+    
+    //return res.status(200).send(req.body);
+ 
+    //accept trip and add tripid and rideid into trip_ride collection
     let result = addAcceptedTrip(req.body);
     if(!result) return res.status(400).send("something went wrong cannot accept trip");
     
+    //add trip amount into usedCredit as  trip is booked 
+    let updatedWallet = await updateUsedCredit(trip.User,req.body.amount);
+    if(!updatedWallet) return res.status("failed to updated balance");
+
+    //update the availableSeats and reduce number of seats for accepted trip
+    let updatedAvailableSeat = await reduceAvailableSeats(req.body.rideId, trip.seatRequest ); //write function to reduce availableSeat
+    console.log("Updated availableSeat:"+updatedAvailableSeat);
+
+    //remove trip id from requestedTripList in Ride collection
     let rideObj = await removeTripId(req.body.rideId, req.body.tripId);
     return res.status(200).send("Ride accepted:"+rideObj);
 } )

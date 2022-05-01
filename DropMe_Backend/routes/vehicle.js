@@ -26,6 +26,7 @@ router.get("/getVehicle", auth, (req, res) => {
 router.post("/addVehicle", auth, async(req, res) => {
     delete req.body.User;
     try {
+        //console.log("req object:"+JSON.stringify(req.body));
         //add license number and license photo code below if present in req body
         let licencePresent = await isLicenseDetailsPresent(req.body.userId); //write code in user
         console.log(licencePresent);
@@ -38,7 +39,7 @@ router.post("/addVehicle", auth, async(req, res) => {
 
                 if (isLicenseNumberPresent) return res.status(400).send("Licence number already present");
 
-                let licensePath = uploadFileNew(req, "User", req.body.userId, "licensePhoto");
+                let licensePath = uploadFileNew(req, "User", req.body.userId, "license");
 
                 let updatedUser = await updateUserLicenseDetails(req.body.userId, req.body.licenseNumber, licensePath);
 
@@ -100,6 +101,7 @@ router.post("/addVehicle", auth, async(req, res) => {
 
 //endpoint to get vehicle list of perticular user
 router.get('/getVehicleList', auth, async(req, res) => {
+    console.log("Get vehicle list:"+JSON.stringify(req.body));
     let vehicleList = await getVehicleList(req.body.userId);
     if (vehicleList.length == 0) return res.status(404).send("No vehicles found");
     return res.status(200).send(vehicleList);
