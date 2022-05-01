@@ -31,7 +31,7 @@ const Login = ({ navigation }) => {
       alignItems={"center"}
       justifyContent={"center"}
       flex="1"
-      bg={"#8c92ac"}
+      bg={"#F0F8FF"}
     >
       <Box
         width={"90%"}
@@ -52,24 +52,36 @@ const Login = ({ navigation }) => {
         }}
       >
         <FormControl m="5" isInvalid={error}>
+          <Text color="rgba(6,182,212,1.00)" fontSize={"lg"} mb="2">
+            Welcome!
+          </Text>
           <Stack space={6} m="2">
-            <Text>Welcome</Text>
             <Input
+              size={"md"}
               w="85%"
               InputLeftElement={
                 <Icon
                   as={<MaterialCommunityIcons name="account" />}
                   size={6}
                   ml="2"
-                  color="#00827f"
+                  color="rgba(6,182,212,1.00)"
                 />
               }
               placeholder="Username"
               onChangeText={(value) => setUsername(value)}
             />
             <Input
+              size={"md"}
               w="85%"
               type={show ? "text" : "password"}
+              InputLeftElement={
+                <Icon
+                  as={<MaterialCommunityIcons name={"security"} />}
+                  size={6}
+                  ml="2"
+                  color="#06B6D4"
+                />
+              }
               InputRightElement={
                 <Icon
                   as={
@@ -77,7 +89,7 @@ const Login = ({ navigation }) => {
                   }
                   size={6}
                   mr="2"
-                  color="#00827f"
+                  color="#06B6D4"
                   onPress={() => setShow(!show)}
                 />
               }
@@ -85,13 +97,28 @@ const Login = ({ navigation }) => {
               onChangeText={(value) => setUserpassword(value)}
             />
             <Button w="85%" onPress={handleLogin}>
-              SignIn
+              Sign In
             </Button>
           </Stack>
           <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
             Incorrect Username or Password.
           </FormControl.ErrorMessage>
         </FormControl>
+        <Box justifyContent={"space-between"} flexDirection="row">
+          <Text m="2" fontSize={"sm"} color="#D0CFCF">
+            {"Don't have an account? "}
+            <Text
+              bold
+              color="rgba(6,182,212,1.00)"
+              onPress={() => navigation.navigate("Registration")}
+            >
+              Sign Up
+            </Text>
+          </Text>
+          <Text m="2" color="rgba(6,182,212,1.00)">
+            Forgot Password?
+          </Text>
+        </Box>
       </Box>
     </Box>
   );
