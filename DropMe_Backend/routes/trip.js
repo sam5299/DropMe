@@ -12,9 +12,9 @@ router.get("/searchForRide",auth,  async(req, res)=>{
     delete req.body.userId;
     let {error} = validateTrip(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-
-    let rides = await getRides(req.body.source, req.body.destination, req.body.date, req.body.time, req.body.seatRequest);
-    if(rides.length==0) return res.status(404).send("No matching rides found.");
+    let userObj= await User.findOne({_id:req.body.userId})
+    let gender=userObj.gender;
+    let rides = await getRides(req.body.source, req.body.destination, req.body.date, req.body.time,gender);
     return res.status(200).send("/searchForRide called and result:"+rides);
 });
 

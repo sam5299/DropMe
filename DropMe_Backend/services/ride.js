@@ -11,14 +11,18 @@ async function createRide(rideDetails) {
 }
 
 // get ride by source destination date and  time
-async function getRides(Source, Destination, Date, Time, seats) {
+async function getRides(Source, Destination, Date, Time, seats, gender) {
+    console.log("here");
     return await Ride.find({
         source: Source,
         destination: Destination,
         date: Date,
         time: Time,
         availableSeats:{$gte:seats}
-    })
+      //  rideFor:{$or:{gender,"Both"}}
+        
+    
+    }).find({ $or:[{"rideFor":gender},{"rideFor":"Both"}]})
 }
 
 // Add trip request
