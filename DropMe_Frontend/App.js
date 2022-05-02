@@ -1,11 +1,11 @@
-import 'react-native-gesture-handler';
+import "react-native-gesture-handler";
 import { Box, NativeBaseProvider } from "native-base";
 import { StyleSheet, Text, View, Platform, StatusBar } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-
-
-import Home from './Screens/Home';
-
+import Main from "./Component/Authentication/Main";
+import { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import Splash from "./Screens/Splash";
 
 export default function App() {
   const [animating, setAnimating] = useState(false);
@@ -18,9 +18,10 @@ export default function App() {
   }, []);
   return (
     <SafeAreaProvider>
-      
       <NativeBaseProvider style={styles.container}>
-      <Home/>
+        <NavigationContainer>
+          {animating ? <Splash /> : <Main />}
+        </NavigationContainer>
       </NativeBaseProvider>
     </SafeAreaProvider>
   );

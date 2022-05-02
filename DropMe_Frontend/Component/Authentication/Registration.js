@@ -1,5 +1,4 @@
-import { View } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import {
   Box,
   Button,
@@ -14,13 +13,63 @@ import {
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const Registration = ({ navigation }) => {
-  const [error, setError] = useState(false);
+  const [error, setError] = useState({ isError: false, missingField: "" });
   const [show, setShow] = useState(false);
-  const [missingField, setField] = useState(" ");
+
+  const initialState = {
+    name: "",
+    email: "",
+    mobileNumber: "",
+    gender: "Male",
+    password: "",
+  };
+
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case "name":
+        return {
+          ...state,
+          name: action.payload,
+        };
+      case "mobileNumber":
+        return {
+          ...state,
+          mobileNumber: action.payload,
+        };
+      case "email":
+        return {
+          ...state,
+          email: action.payload,
+        };
+      case "gender":
+        return {
+          ...state,
+          gender: action.payload,
+        };
+      case "password":
+        return {
+          ...state,
+          password: action.payload,
+        };
+      case "default":
+        return state;
+    }
+  };
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  //useEffect(() => alert(state.password), [state]);
 
   const handleRegistration = () => {
-    setError(true);
-    setTimeout(() => setError(false), 5000);
+    for (const key in state) {
+      if (state[key] === "") {
+        const errorField = key.toString();
+        setError({ isError: true, missingField: errorField });
+        setTimeout(() => setError({ isError: false, missingField: "" }), 4000);
+        return;
+      }
+    }
+    navigation.navigate("DropMe");
   };
 
   return (
@@ -48,7 +97,7 @@ const Registration = ({ navigation }) => {
           backgroundColor: "gray.50",
         }}
       >
-        <FormControl m="5" isInvalid={error}>
+        <FormControl m="5" isInvalid={error.isError}>
           <Text color="rgba(6,182,212,1.00)" fontSize={"lg"} mb="2">
             Hello!
           </Text>
@@ -66,6 +115,9 @@ const Registration = ({ navigation }) => {
                 />
               }
               placeholder="Enter the full name"
+              onChangeText={(value) =>
+                dispatch({ type: "name", payload: value })
+              }
             />
             <Input
               keyboardType="numeric"
@@ -80,6 +132,9 @@ const Registration = ({ navigation }) => {
                 />
               }
               placeholder="Mobile No"
+              onChangeText={(value) =>
+                dispatch({ type: "mobileNumber", payload: value })
+              }
             />
 
             <Input
@@ -94,24 +149,10 @@ const Registration = ({ navigation }) => {
                 />
               }
               placeholder="Email"
-            />
-
-            <Button
-              w="85%"
-              variant="outline"
-              leftIcon={
-                <Icon
-                  as={<MaterialCommunityIcons name="calendar-arrow-left" />}
-                  size={6}
-                  color="rgba(6,182,212,1.00)"
-                  mx={"1"}
-                />
+              onChangeText={(value) =>
+                dispatch({ type: "email", payload: value })
               }
-            >
-              <Text color={"gray.400"} mr="40">
-                Date Of Birth
-              </Text>
-            </Button>
+            />
             <Box flexDirection={"row"}>
               <Text fontSize={"md"} mr="2">
                 Gender:
@@ -120,6 +161,9 @@ const Registration = ({ navigation }) => {
                 name="Gender"
                 defaultValue="Male"
                 accessibilityLabel="Gender"
+                onChange={(value) =>
+                  dispatch({ type: "gender", payload: value })
+                }
               >
                 <Stack
                   mt={"1"}
@@ -166,13 +210,16 @@ const Registration = ({ navigation }) => {
                 />
               }
               placeholder="Create Password"
+              onChangeText={(value) =>
+                dispatch({ type: "password", payload: value })
+              }
             />
             <Button w="85%" onPress={handleRegistration}>
               Sign Up
             </Button>
           </Stack>
           <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-            Please enter {missingField} field.
+            Please enter {error.missingField} field.
           </FormControl.ErrorMessage>
         </FormControl>
       </Box>

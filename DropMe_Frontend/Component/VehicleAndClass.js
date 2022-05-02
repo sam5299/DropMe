@@ -9,7 +9,7 @@ const VehicleAndClass = ({ dispatch }) => {
   const [vehicles, setVehicles] = useState([]);
   const [service, setService] = useState("");
   const [vehicleClass, setVehicleClass] = useState("");
-  const [capacity, setCapacity] = useState(0);
+  const [capacity, setCapacity] = useState(1);
 
   const vehicleCapacity = (v) => {
     const seats = Math.floor(v);
@@ -61,8 +61,8 @@ const VehicleAndClass = ({ dispatch }) => {
           mt={"2"}
           w="300"
           maxW="300"
-          defaultValue={0}
-          minValue={0}
+          defaultValue={1}
+          minValue={1}
           maxValue={8}
           accessibilityLabel="Available Seats"
           step={1}

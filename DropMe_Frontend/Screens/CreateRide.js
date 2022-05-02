@@ -1,11 +1,11 @@
 import { Alert, View } from "react-native";
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import SourceDestination from "../Component/SourceDestination";
 import GoogleMap from "../Component/GoogleMap";
 import DateTime from "../Component/DateTime";
 import VehicleAndClass from "../Component/VehicleAndClass";
 import RideForType from "../Component/RideForType";
-import { Button, FormControl, Text } from "native-base";
+import { Button, FormControl, Text, WarningOutlineIcon } from "native-base";
 
 const initialState = {
   source: "",
@@ -14,7 +14,7 @@ const initialState = {
   time: "",
   vehicle: "",
   vehicleClass: "",
-  vehicleSeats: "",
+  vehicleSeats: "1",
   rideFor: "Both",
   rideType: "Paid",
 };
@@ -76,12 +76,14 @@ const CreateRide = () => {
   //   alert(state.vehicleSeats);
   // }, state);
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [error, setError] = useState({ isError: false, missingField: "" });
 
   const handleForm = () => {
     for (const key in state) {
-      if (state[key] === "" || state[key] === 0) {
+      if (state[key] === "") {
         const k = key.toString();
-        Alert.alert("Error", `"${k}" field is missing`);
+        setError({ isError: true, missingField: k });
+        setTimeout(() => setError({ isError: false, missingField: "" }), 4000);
         return;
       }
     }
@@ -99,7 +101,7 @@ const CreateRide = () => {
       }}
     >
       <GoogleMap />
-      <FormControl>
+      <FormControl isInvalid={error.isError}>
         <SourceDestination dispatch={dispatch} />
         <DateTime dispatch={dispatch} />
         <VehicleAndClass dispatch={dispatch} />
@@ -109,6 +111,9 @@ const CreateRide = () => {
             Submit
           </Text>
         </Button>
+        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+          Please enter {error.missingField} field.
+        </FormControl.ErrorMessage>
       </FormControl>
     </View>
   );

@@ -1,10 +1,17 @@
 import { Alert, View } from "react-native";
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import SourceDestination from "../Component/SourceDestination";
 import GoogleMap from "../Component/GoogleMap";
 import DateTime from "../Component/DateTime";
 import PickupPoint from "../Component/BookRide/PickupPoint";
-import { Button, FormControl, Text } from "native-base";
+import {
+  Button,
+  FormControl,
+  Text,
+  Slider,
+  Box,
+  WarningOutlineIcon,
+} from "native-base";
 
 const initialState = {
   source: "",
@@ -12,6 +19,7 @@ const initialState = {
   date: "",
   time: "",
   pickupPoint: "",
+  seatRequest: "1",
 };
 
 const reducer = (state, action) => {
@@ -41,19 +49,28 @@ const reducer = (state, action) => {
         ...state,
         pickupPoint: action.payload,
       };
+    case "seatRequest":
+      return {
+        ...state,
+        seatRequest: action.payload,
+      };
     default:
       return state;
   }
 };
 
 const BookRide = () => {
+  const [error, setError] = useState({ isTrue: false, field: "" });
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleForm = () => {
     for (const key in state) {
       if (state[key] === "") {
         const k = key.toString();
-        Alert.alert("Error", `"${k}" field is missing`);
+        setError({ isTrue: true, field: k });
+        setTimeout(() => {
+          setError({ isTrue: false, field: "" });
+        }, 4000);
         return;
       }
     }
@@ -70,15 +87,38 @@ const BookRide = () => {
       }}
     >
       <GoogleMap />
-      <FormControl>
+      <FormControl isInvalid={error.isTrue}>
         <SourceDestination dispatch={dispatch} />
         <DateTime dispatch={dispatch} />
         <PickupPoint dispatch={dispatch} />
-        <Button size="md" mt="35%" w="95%" mx={3} onPress={handleForm}>
+        <Box mt={5} alignItems={"center"}>
+          <Text textAlign="center">Select Seats: {state.seatRequest}</Text>
+          <Slider
+            isDisabled={false}
+            mt={"2"}
+            w="300"
+            maxW="300"
+            defaultValue={1}
+            minValue={1}
+            maxValue={8}
+            accessibilityLabel="Available Seats"
+            step={1}
+            onChange={(v) => dispatch({ type: "seatRequest", payload: v })}
+          >
+            <Slider.Track>
+              <Slider.FilledTrack />
+            </Slider.Track>
+            <Slider.Thumb />
+          </Slider>
+        </Box>
+        <Button size="md" mt="5%" w="95%" mx={3} onPress={handleForm}>
           <Text fontSize={"lg"} color="white">
             Submit
           </Text>
         </Button>
+        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+          Please enter {error.field} field.
+        </FormControl.ErrorMessage>
       </FormControl>
     </View>
   );
