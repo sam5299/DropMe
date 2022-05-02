@@ -3,6 +3,7 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
+const passwordComplexity = require('joi-password-complexity');
 const genPassword =require('generate-password');
 
 //multer with whole configuration for saving images into image_files folder.
@@ -43,7 +44,7 @@ async function isUserExists(mobileNo) {
 async function getUser(id) {
   console.log("called getUser");
   try {
-    let user = await User.findOne({userId:id}, { _id: 0, userId:0, password:0,__v:0 });
+    let user = await User.findOne({_id:id}, {userId:0,__v:0 });
     if (user.length === 0) return "Users not found";
     else return user;
   } catch(ex) {
@@ -124,9 +125,70 @@ async function generateRandomPassword() {
   return password;
 }
 
-async function mailSend() {
-  
+//function to check password complexity 
+function validatePassword(password) {
+   let joiSchema = Joi.object({
+      password: new passwordComplexity({
+        min: 8,
+      max: 255,
+      lowerCase: 1,
+      upperCase: 1,
+      numeric: 1,
+      symbol: 1,
+      requirementCount: 4,
+      })
+   });
+   return joiSchema.validate(password);
 }
+
+// p to send mail of password reset
+async function mailSend(mailId, password) {
+  let message = "User your new password for DropMe is "+password+"\n\n\n\nPlease update your password after login";
+    
+        let result = await nodemailerService(mailId, message);
+        if(result){
+            console.log("Password set!");
+            return true;
+        }
+        else return false;
+}
+
+
+//method to call nodemailer and send mail
+function nodemailerService(mail,message){
+    return new Promise((resolve,reject)=>{
+        let nodemailer = require('nodemailer');
+        let transporter = nodemailer.createTransport({
+            service:"gmail",
+            port:587,
+            secure:false,
+            auth:{
+                user:"dropmeagos@gmail.com",
+                pass:"Dropme@agos4"
+            }
+        });
+    
+        
+        let mailOptions = {
+            from:"dropmeagos@gmail.com",
+            to:mail,
+            subject:"DropMe user forgot password",
+            text:message
+        }
+    
+        transporter.sendMail(mailOptions,(error,info)=>{
+            if(error){
+                console.log("Error while sending mail "+error);
+                resolve(false);
+            }
+            else{
+                console.log("Email sent");
+                resolve(true);
+            }
+        });
+    });
+};
+
 
 module.exports = {
   getUniqueId,
@@ -139,5 +201,8 @@ module.exports = {
   updateUserLicenseDetails,
   isLicenseDetailsPresent,
   isLicenseNumberExists,
-  generateRandomPassword
+  generateRandomPassword,
+  mailSend,
+  encryptPassword,
+  validatePassword
 };
