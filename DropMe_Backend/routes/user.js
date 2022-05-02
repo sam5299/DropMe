@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const router = express.Router();
 const auth = require("../middleware/auth");
+const _ = require('lodash');
 const {
   getUniqueId,
   addUserUpdated,
@@ -11,7 +12,10 @@ const {
   validateLogin,
   getUser,
   loginPasswordAuthentication,
-  generateRandomPassword
+  generateRandomPassword,
+  mailSend,
+  encryptPassword,
+  validatePassword
 } = require("../services/user");
 const { isUserDataValidate } = require("../models/user");
 const {
@@ -92,12 +96,49 @@ router.put('/forgotPassword', async(req, res)=> {
     
    let newPassword = await generateRandomPassword();
    console.log(newPassword);
+   
+   let result = await mailSend(user.email, newPassword);
+   if(!result) return res.status(400).send("Something failed. Try again latter. ");
+ 
+   user.password = await encryptPassword(newPassword);
+   
+   user = await user.save();
+   if(!user) return res.status(400).send("Cannot reset password!");
+
    return res.status(200).send("new password:"+newPassword);
+});
+
+// route to change password of user
+router.put("/changePassword", auth, async(req, res)=> {
+  try {
+    if(!req.body.oldPassword) return res.status(400).send("oldPassword is required.");
+    if(!req.body.newPassword) return res.status(400).send("newPassword is required.");
+
+    let user = await getUser(req.body.User);
+    console.log("User:"+user);
+    if(!user) return res.status(400).send("cannot changed password.");
+
+    let result = await loginPasswordAuthentication(req.body.oldPassword, user.password);
+    if(!result) return res.status(400).send("Old password not matched.");
+
+    let {error} = validatePassword({password:req.body.newPassword});
+    if(error) return res.status(400).send(error.details[0].message);   
+
+    user.password = await encryptPassword(req.body.newPassword);
+    await user.save();
+    return res.status(200).send(user);
+  } catch (ex){
+    console.log(ex);
+    return res.status(500).send("Something failed");
+  }    
 })
 
+// api to get details of user who logged in maily will be used for profile.                                                                                                                                                                                                                                                                                                   
 router.get("/getUser",auth, async (req, res) => {
   try {
-    let user = await getUser(req.body.userId);
+    let user = await getUser(req.body.User);
+    user = _.pick(user, ["name", "email", "profile","mobileNumber","sumOfRating", "totalNumberOfRatedRides"]);
+    console.log(user);
     if(!user) return res.status(404).send("No users present!!");
     return res.status(200).send(user);
   } catch(ex) {
