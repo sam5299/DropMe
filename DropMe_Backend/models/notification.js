@@ -2,14 +2,8 @@ const mongoose = require('mongoose')
 const Joi = require('joi')
 
 const notificationSchema = new mongoose.Schema({
-    fromUser: {
-        type: String,
-        required: true
-    },
-    toUser: {
-        type: String,
-        required: true
-    },
+    fromUser: {type:mongoose.Schema.Types.ObjectId, ref:"User", required:true},
+    toUser:{type:mongoose.Schema.Types.ObjectId, ref:"User", required:true},
     message: {
         type: String,
         required: true

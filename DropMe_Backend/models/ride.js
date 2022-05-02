@@ -11,7 +11,7 @@ const rideSchema = new mongoose.Schema({
     requestedTripList: {type:Array},
     status: {
         type: String,
-        enum: ["Created", "Canceled", "Completed"],
+        enum: ["Created", "Cancelled", "Completed"],
         default: "Created",
         required: true
     },
@@ -38,7 +38,7 @@ const rideSchema = new mongoose.Schema({
 });
 
 const Ride = mongoose.model('ride', rideSchema);
-// status: Joi.string().valid("Created", "Canceled", "Completed").required(),
+// status: Joi.string().valid("Created", "Cancelled", "Completed").required(),
 function validateRideDetails(rideData) {
     let joiRideSchema = Joi.object({
         source: Joi.string().min(1).max(255).required(),

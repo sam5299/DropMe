@@ -25,9 +25,9 @@ async function updateWallet(userId, amount) {
 
 //  Update updateUsedCreditPoints by +/-number
 async function updateUsedCredit(userId, amount) {
-    console.log("Amount in wallet:"+amount);
+    //console.log("Amount in wallet:"+amount);
     let walletObj = await Wallet.findOne({ User: userId });
-    console.log("@@@"+walletObj);
+    //console.log("@@@"+walletObj);
     //walletObj.usedCreditPoint = walletObj.usedCreditPoint + amount;
     walletObj.usedCreditPoint+= amount;
     return await walletObj.save();
