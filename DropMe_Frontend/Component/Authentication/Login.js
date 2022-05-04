@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -12,11 +12,15 @@ import {
 } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import { AuthContext } from "../Context";
+
 const Login = ({ navigation }) => {
   const [userName, setUsername] = useState("");
   const [userPassword, setUserpassword] = useState("");
   const [error, setError] = useState(false);
   const [show, setShow] = React.useState(false);
+
+  const { signIn } = useContext(AuthContext);
 
   const handleLogin = () => {
     if (userName === "" || userPassword === "") {
@@ -24,7 +28,7 @@ const Login = ({ navigation }) => {
       setTimeout(() => setError(false), 5000);
       return;
     }
-    navigation.navigate("Home");
+    signIn(userName, userPassword);
   };
   return (
     <Box
@@ -57,6 +61,8 @@ const Login = ({ navigation }) => {
           </Text>
           <Stack space={6} m="2">
             <Input
+              maxLength={10}
+              keyboardType="numeric"
               size={"md"}
               w="85%"
               InputLeftElement={
@@ -67,7 +73,7 @@ const Login = ({ navigation }) => {
                   color="rgba(6,182,212,1.00)"
                 />
               }
-              placeholder="Username"
+              placeholder="Mobile No"
               onChangeText={(value) => setUsername(value)}
             />
             <Input
