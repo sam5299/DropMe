@@ -5,24 +5,29 @@ const mongoose = require("mongoose");
 //definfing user schema
 const userSchema = new mongoose.Schema({
   userId: { type: Number, required: true },
-  name: { type: String, required: true },
+  fname: { type: String, required: true },
+  lname: { type: String, required: true },
   email: { type: String, required: true },
   mobileNumber: { type: String, unique: true, required: true },
-  alternativeNumber: { type: String, required: true },
   gender: { type: String, required: true },
-  dob: { type: String, required: true },
   profile: { type: String, required: true },
   password: { type: String, minlength: 6, maxlength: 1024, require: true },
+  licenseNumber : {type: String, minlength:16, maxlength:16, default: null},
+  licenseImage: {type:String, default:null},
+  sumOfRating : {type: Number,default: 0 },
+  totalNumberOfRides : {type: Number, default: 0},
+  totalNumberOfRatedRides: {type: Number, default: 0}
 });
 
 //object of userSchema export it letter
 const User = mongoose.model("User", userSchema);
 
-//Joi validation logic
+//Joi validation logic for registration
 async function isUserDataValidate(userData) {
   let joiSchema = Joi.object({
     userId: Joi.number().required(),
-    name: Joi.string().max(20).required(),
+    fname: Joi.string().max(20).required(),
+    lname: Joi.string().max(20).required(),
     email: Joi.string()
       .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "io"] } })
       .required(),
@@ -30,12 +35,7 @@ async function isUserDataValidate(userData) {
       .length(10)
       .pattern(/^[0-9]+$/)
       .required(),
-    alternativeNumber: Joi.string()
-      .length(10)
-      .pattern(/^[0-9]+$/)
-      .required(),
     gender: Joi.string().required(),
-    dob: Joi.string().required(),
     password: new PasswordComplexity({
       min: 8,
       max: 255,
@@ -44,7 +44,7 @@ async function isUserDataValidate(userData) {
       numeric: 1,
       symbol: 1,
       requirementCount: 4,
-    }),
+    }).required(),
     profile: Joi.string(),
   });
   return joiSchema.validate(userData);
