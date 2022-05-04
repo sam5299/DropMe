@@ -6,12 +6,13 @@ const rideSchema = new mongoose.Schema({
     time: { type: String, required: true },
     date: { type: String, required: true },
     vehicleNumber: { type: String, required: true },
-    availableSeats: { type: Number, min: 1, max: 8, required: true },
+    availableSeats: { type: Number, min: 0, max: 8, required: true },
     distance: { type: Number, min: 1, required: true },
     requestedTripList: {type:Array},
     status: {
         type: String,
-        enum: ["Created", "Canceled", "Completed"],
+        enum: ["Created", "Cancelled", "Completed"],
+        default: "Created",
         required: true
     },
     rideType: {
@@ -37,7 +38,7 @@ const rideSchema = new mongoose.Schema({
 });
 
 const Ride = mongoose.model('ride', rideSchema);
-
+// status: Joi.string().valid("Created", "Cancelled", "Completed").required(),
 function validateRideDetails(rideData) {
     let joiRideSchema = Joi.object({
         source: Joi.string().min(1).max(255).required(),
@@ -47,7 +48,6 @@ function validateRideDetails(rideData) {
         availableSeats: Joi.number().required().min(1).max(8),
         distance: Joi.number().required().min(1),
         requestedTripList: Joi.array(),
-        status: Joi.string().valid("Created", "Canceled", "Completed").required(),
         rideFor: Joi.string().valid("Male", "Female", "Both").required(),
         rideType: Joi.string().valid("Free", "Paid").required(),
         vehicleNumber: Joi.string().regex(/^([A-Z|a-z]{2}\s{1}\d{2}\s{1}[A-Z|a-z]{1,2}\s{1}\d{1,4})?([A-Z|a-z]{3}\s{1}\d{1,4})?$/).required().messages({

@@ -19,7 +19,7 @@ function validateTripRide(body) {
         status: Joi.string().valid("Booked","Initiated","Success","Cancelled", "Rejected"),
         tripId: Joi.string().required(),
         rideId: Joi.string().required(),
-        amount: Joi.number(),
+        amount: Joi.number().required(),
         token: Joi.number().required()
     });
     return joiTripRideValidateSchema.validate(body);

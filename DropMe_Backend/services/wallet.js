@@ -3,7 +3,7 @@ const { Wallet } = require('../models/wallet')
 
 // Create a wallet 
 async function createWallet(userId) {
-    const newWallet = new Wallet({ "creditPoint": 0, "safetyPoint": 0, "User": userId });
+    const newWallet = new Wallet({ "creditPoint": 0, "usedCreditPoint":0, "safetyPoint": 0, "User": userId });
     return await newWallet.save()
 }
 
@@ -25,10 +25,12 @@ async function updateWallet(userId, amount) {
 
 //  Update updateUsedCreditPoints by +/-number
 async function updateUsedCredit(userId, amount) {
-    let [walletObj] = await Wallet.find({ User: userId })
-        //console.log(walletObj);
-    walletObj.usedCreditPoint = walletObj.usedCreditPoint + parseInt(amount)
-    return await walletObj.save()
+    //console.log("Amount in wallet:"+amount);
+    let walletObj = await Wallet.findOne({ User: userId });
+    //console.log("@@@"+walletObj);
+    //walletObj.usedCreditPoint = walletObj.usedCreditPoint + amount;
+    walletObj.usedCreditPoint+= amount;
+    return await walletObj.save();
 }
 
 

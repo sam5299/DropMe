@@ -10,15 +10,24 @@ async function createRide(rideDetails) {
     return await newRide.save()
 }
 
+// function to get ride details by its rid
+async function getRideDetails(rid, user) {
+    return await Ride.findOne({_id:rid,User:user, status:"Created"});
+}
+
 // get ride by source destination date and  time
-async function getRides(Source, Destination, Date, Time, seats) {
+async function getRides(Source, Destination, Date, Time, seats, gender) {
+    console.log("here");
     return await Ride.find({
         source: Source,
         destination: Destination,
         date: Date,
         time: Time,
-        availableSeats:{$gte:seats}
-    })
+        availableSeats:{$gte:seats},
+      //  rideFor:{$or:{gender,"Both"}}
+        status:"Created"
+    
+    }).find({ $or:[{"rideFor":gender},{"rideFor":"Both"}]})
 }
 
 // Add trip request
@@ -46,11 +55,19 @@ async function deleteRide(rideId) {
     })
 }
 
-// to get list ride of all trips who has reuqested for perticular ride
+// to get list of all trip who has reuqested for perticular ride
 async function getTripRequestList(rid) {
     return await Ride.findOne({_id: rid}, {_id:0, requestedTripList:1});
 }
+ 
+// reduce availableSeat of ride after successfully accepting ride
+async function reduceAvailableSeats(rid, seatCount) {
+    let ride = await Ride.findOne({_id:rid});
+    ride.availableSeats = ride.availableSeats - seatCount;
+    return ride.save();
+}
 
+//remove trip id from requestList array of Ride
 async function removeTripId(rideId, tripId) {
     let rideObj = await Ride.findOne({_id:rideId});
     console.log(rideObj.requestedTripList);
@@ -59,20 +76,34 @@ async function removeTripId(rideId, tripId) {
     return rideObj.save();
 }
 
-
+//function to return timedifference between ride time and current time
+function getTimeDifference(rideDate) {
+    let d1 = new Date(Date.parse(rideDate));
+    let d2 = new Date(Date.parse(Date()));//"Mon May 02 2022;06:30");
+    let hrs=Math.round((d1-d2)/(1000*60*60));
+    console.log(hrs);
+    console.log(d1.toString())
+    console.log(d2.toString())
+    return hrs;
+}
 
 // To save image of vehicle after creating ride 
 function savePicture(fileName){
 
 }
 
+
+
 module.exports = {
     createRide,
     getRides,
+    getRideDetails,
     getUserRides,
     deleteRide,
     savePicture,
     addTripRequest,
     getTripRequestList,
-    removeTripId
+    reduceAvailableSeats,
+    removeTripId,
+    getTimeDifference
 }
