@@ -6,11 +6,12 @@ import Registration from "./Registration";
 import Splash from "../Splash";
 import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Forgot from "./Forgot";
 
 const Stack = createNativeStackNavigator();
 
 const Main = () => {
-  // const [userToken, setUserToken] = useState(null);
+  const url = "http://192.168.43.87:3100";
 
   const initialState = {
     userName: null,
@@ -53,15 +54,11 @@ const Main = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const authContext = useMemo(
     () => ({
-      signIn: async (userName, password) => {
-        let userToken = null;
-        if (userName === "12" && password === "pass") {
-          userToken = "abc";
-          try {
-            await AsyncStorage.setItem("userToken", userToken);
-          } catch (e) {
-            console.log(e);
-          }
+      signIn: async (userName, userToken) => {
+        try {
+          await AsyncStorage.setItem("userToken", userToken);
+        } catch (e) {
+          console.log(e);
         }
         dispatch({ type: "LOGIN", id: userName, token: userToken });
       },
@@ -73,7 +70,9 @@ const Main = () => {
         }
         dispatch({ type: "LOGOUT" });
       },
-      signUp: () => {},
+      getUrl: () => {
+        return url;
+      },
     }),
     []
   );
@@ -108,6 +107,7 @@ const Main = () => {
             component={Registration}
             options={{ headerStyle: { height: 10 } }}
           />
+          <Stack.Screen name="Forgot Password" component={Forgot} />
         </Stack.Navigator>
       ) : (
         <Home />

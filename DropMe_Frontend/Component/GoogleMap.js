@@ -5,7 +5,7 @@ import MapView from "react-native-maps";
 
 const GoogleMap = () => {
   return (
-    <Box w="auto" h="45%" m="2" bg="white">
+    <Box w="auto" h="40%" m="1" bg="white">
       <Text>Google Map</Text>
     </Box>
   );

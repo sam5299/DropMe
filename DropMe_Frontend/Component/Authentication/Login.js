@@ -13,6 +13,7 @@ import {
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { AuthContext } from "../Context";
+import axios from "axios";
 
 const Login = ({ navigation }) => {
   const [userName, setUsername] = useState("");
@@ -20,15 +21,27 @@ const Login = ({ navigation }) => {
   const [error, setError] = useState(false);
   const [show, setShow] = React.useState(false);
 
-  const { signIn } = useContext(AuthContext);
+  const { signIn, getUrl } = useContext(AuthContext);
+  const url = getUrl();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (userName === "" || userPassword === "") {
       setError(true);
       setTimeout(() => setError(false), 5000);
       return;
     }
-    signIn(userName, userPassword);
+    const details = { mobileNumber: userName, password: userPassword };
+    try {
+      const result = await axios.post(url + "/user/login", details);
+      // if details are true then it will redirect to home page
+      if (result.data) {
+        signIn(userName, result.headers["x-auth-token"]);
+      }
+    } catch (error) {
+      console.log(error.response.data);
+      setError(true);
+      setTimeout(() => setError(false), 5000);
+    }
   };
   return (
     <Box
@@ -107,7 +120,7 @@ const Login = ({ navigation }) => {
             </Button>
           </Stack>
           <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-            Incorrect Username or Password.
+            Invalid Mobile No or Password.
           </FormControl.ErrorMessage>
         </FormControl>
         <Box justifyContent={"space-between"} flexDirection="row">
@@ -121,7 +134,11 @@ const Login = ({ navigation }) => {
               Sign Up
             </Text>
           </Text>
-          <Text m="2" color="rgba(6,182,212,1.00)">
+          <Text
+            m="2"
+            color="rgba(6,182,212,1.00)"
+            onPress={() => navigation.navigate("Forgot Password")}
+          >
             Forgot Password?
           </Text>
         </Box>

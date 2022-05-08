@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import { Box, Modal, Icon, Input, Container, IconButton } from "native-base";
+import {
+  Box,
+  Modal,
+  Icon,
+  Input,
+  Container,
+  IconButton,
+  Button,
+  Text,
+} from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import Time from "./Time";
-import { Button } from "@rneui/themed";
+import DateBirth from "./ReusableComponents/DateBirth";
 
 const DateTime = ({ dispatch }) => {
   const [selectedStartDate, setSelectedStartDate] = useState(new Date());
@@ -41,33 +49,35 @@ const DateTime = ({ dispatch }) => {
   const curr = selectedStartDate.toDateString() + " ; " + time;
 
   return (
-    <Box flexDirection="row" mt="5" justifyContent="space-between">
-      <Box>
-        <Container mx="3">
-          <Input
-            isDisabled={true}
-            w="375"
-            placeholder={curr}
-            InputRightElement={
-              <MaterialCommunityIcons
-                name="calendar-arrow-left"
-                color="black"
-                size={40}
-                onPress={() => setShowModal(true)}
-              />
-            }
+    <Box ml={3} mt="5" w={"95%"} flexDir={"row"}>
+      <Button
+        flexBasis={"400"}
+        flexShrink="1"
+        flexGrow={1}
+        justifyContent="space-between"
+        variant="outline"
+        rightIcon={
+          <Icon
+            as={<MaterialCommunityIcons name="calendar-arrow-left" />}
+            size={6}
+            color="rgba(6,182,212,1.00)"
+            ml={40}
           />
-          {showModal && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={selectedStartDate}
-              mode="date"
-              is24Hour={true}
-              onChange={onDateChange}
-            />
-          )}
-        </Container>
-      </Box>
+        }
+        onPress={() => setShowModal(true)}
+      >
+        <Text color={"gray.400"}>{curr}</Text>
+      </Button>
+      {showModal && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={selectedStartDate}
+          mode="date"
+          is24Hour={true}
+          onChange={onDateChange}
+        />
+      )}
+
       {showClock && (
         <DateTimePicker
           testID="dateTimePicker"

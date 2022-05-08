@@ -8,8 +8,7 @@ const vehicle = require("./routes/vehicle");
 const ride = require("./routes/ride");
 const trip = require("./routes/trip");
 const wallet = require("./routes/wallet");
-const notification=require("./routes/notification")
-
+const notification = require("./routes/notification");
 
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(
@@ -21,10 +20,9 @@ app.use(
 app.use("/user", user);
 app.use("/vehicle", vehicle);
 app.use("/ride", ride);
-app.use("/wallet",wallet);
+app.use("/wallet", wallet);
 app.use("/trip", trip);
 app.use("/notification", notification);
-
 
 if (!config.get("jwtPrivateKey")) {
   console.error(
@@ -37,6 +35,6 @@ if (!config.get("jwtPrivateKey")) {
 mongoose
   .connect("mongodb+srv://DropMe:Project4@cluster0.psfti.mongodb.net/test")
   .then(() => console.log("Connected to dropme_sample"))
-  .catch((err) => console.log("error connecting to database:",err));
+  .catch((err) => console.log("error connecting to database:", err));
 
 app.listen(3100, () => console.log("connected to server"));

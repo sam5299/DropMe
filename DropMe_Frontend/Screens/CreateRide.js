@@ -1,11 +1,20 @@
 import { Alert, View } from "react-native";
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import SourceDestination from "../Component/SourceDestination";
 import GoogleMap from "../Component/GoogleMap";
 import DateTime from "../Component/DateTime";
 import VehicleAndClass from "../Component/VehicleAndClass";
 import RideForType from "../Component/RideForType";
-import { Button, FormControl, Text, WarningOutlineIcon } from "native-base";
+import {
+  Box,
+  Button,
+  FormControl,
+  Text,
+  WarningOutlineIcon,
+} from "native-base";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { AuthContext } from "../Component/Context";
 
 const initialState = {
   source: "",
@@ -72,11 +81,25 @@ const reducer = (state, action) => {
 };
 
 const CreateRide = () => {
-  // useEffect(() => {
-  //   alert(state.vehicleSeats);
-  // }, state);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [error, setError] = useState({ isError: false, missingField: "" });
+  const [gender, setGender] = useState("");
+
+  const { getUrl } = useContext(AuthContext);
+  const url = getUrl();
+
+  useEffect(async () => {
+    try {
+      const userToken = await AsyncStorage.getItem("userToken");
+
+      const result = await axios.get(url + "/user/getUser", {
+        headers: { "x-auth-token": userToken },
+      });
+      setGender(result.data.gender);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  }, []);
 
   const handleForm = () => {
     for (const key in state) {
@@ -91,22 +114,14 @@ const CreateRide = () => {
   };
 
   return (
-    <View
-      style={{
-        width: "100%",
-        backgroundColor: "#f5f5f5",
-        height: "100%",
-        flexDirection: "column",
-        marginTop: "0%",
-      }}
-    >
+    <Box flex={1} bg={"#f5f5f5"} flexDirection="column">
       <GoogleMap />
       <FormControl isInvalid={error.isError}>
         <SourceDestination dispatch={dispatch} />
         <DateTime dispatch={dispatch} />
         <VehicleAndClass dispatch={dispatch} />
-        <RideForType dispatch={dispatch} />
-        <Button size="md" mt={"6"} w="95%" mx={3} onPress={handleForm}>
+        <RideForType type={{ dispatch: dispatch, rideFor: gender }} />
+        <Button size="md" mt={"5"} w="95%" ml={2} onPress={handleForm}>
           <Text fontSize={"lg"} color="white">
             Submit
           </Text>
@@ -115,7 +130,7 @@ const CreateRide = () => {
           Please enter {error.missingField} field.
         </FormControl.ErrorMessage>
       </FormControl>
-    </View>
+    </Box>
   );
 };
 

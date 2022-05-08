@@ -13,10 +13,12 @@ import {
 } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { AuthContext } from "../Context";
+import axios from "axios";
 
 const Registration = ({ navigation }) => {
   const [show, setShow] = useState(false);
-  const { signUp } = useContext(AuthContext);
+  const { getUrl } = useContext(AuthContext);
+  const url = getUrl();
 
   const initialState = {
     name: "",
@@ -67,7 +69,7 @@ const Registration = ({ navigation }) => {
 
   // useEffect(() => alert(state), [state]);
 
-  const handleRegistration = () => {
+  const handleRegistration = async () => {
     let isTrue = validate({
       name: { minlength: 3, required: true },
       email: { email: true, required: true },
@@ -83,6 +85,13 @@ const Registration = ({ navigation }) => {
     });
     if (isTrue) {
       // make a call to backend and store user details
+      try {
+        const result = await axios.post(url + "/user/register", state);
+        console.log(result.data);
+        console.log(result.headers);
+      } catch (error) {
+        console.log(error.response.data);
+      }
       navigation.navigate("DropMe");
     }
   };
@@ -147,6 +156,7 @@ const Registration = ({ navigation }) => {
             <Box>
               <Input
                 keyboardType="numeric"
+                maxLength={10}
                 size={"md"}
                 w="85%"
                 InputLeftElement={

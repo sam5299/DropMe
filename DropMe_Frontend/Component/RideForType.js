@@ -1,13 +1,14 @@
 import { View } from "react-native";
-import React from "react";
-import { Box, Radio, Stack, Checkbox } from "native-base";
+import React, { useEffect, useState } from "react";
+import { Box, Radio, Stack, Checkbox, Text } from "native-base";
 
-const RideForType = ({ dispatch }) => {
+const RideForType = ({ type }) => {
+  const t = "Only For " + type.rideFor;
   const selectType = (value) => {
     if (value == true) {
-      dispatch({ type: "rideFor", payload: "Male" });
+      type.dispatch({ type: "rideFor", payload: "Male" });
     } else {
-      dispatch({ type: "rideFor", payload: "Both" });
+      type.dispatch({ type: "rideFor", payload: "Both" });
     }
   };
 
@@ -19,17 +20,20 @@ const RideForType = ({ dispatch }) => {
       mt={5}
       ml={3}
     >
-      <Checkbox
-        accessibilityLabel="Ride For"
-        onChange={(value) => selectType(value)}
-      >
-        Only For Male
-      </Checkbox>
+      <Box flexDirection={"row"}>
+        <Checkbox
+          accessibilityLabel="Only"
+          onChange={(value) => alert(value)}
+        ></Checkbox>
+        <Text ml={"2"}>{t}</Text>
+      </Box>
       <Radio.Group
         name="Ride Type"
         defaultValue="Paid"
         accessibilityLabel="Ride Type"
-        onChange={(value) => dispatch({ type: "rideType", payload: value })}
+        onChange={(value) =>
+          type.dispatch({ type: "rideType", payload: value })
+        }
       >
         <Stack
           direction={{
