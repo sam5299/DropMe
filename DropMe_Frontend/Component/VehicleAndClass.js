@@ -32,7 +32,6 @@ const VehicleAndClass = ({ dispatch }) => {
         const list = await axios.get(url + "/vehicle/getVehicleList", {
           headers: { "x-auth-token": userToken },
         });
-        console.log(list.data);
         setVehicles(list.data);
       } catch (error) {
         console.log(error.response.data);

@@ -38,46 +38,26 @@ router.use(fileUpload({ useTempFiles: true, tempFileDir: "../image_files" }));
 router.post("/addVehicle", auth, async (req, res) => {
   delete req.body.User;
   try {
-    //console.log("req object:"+JSON.stringify(req.body));
-    //add license number and license photo code below if present in req body
-    let licencePresent = await isLicenseDetailsPresent(req.body.userId); //write code in user
-    console.log(licencePresent);
-    if (!licencePresent) {
-      if (req.files && req.body.licenseNumber && req.files.licenseImage) {
-        let { error } = await validateLicenseNumber({
-          licenseNumber: req.body.licenseNumber,
-        });
-        if (error) return res.status(400).send(error.details[0].message);
+    if ("licenseNumber" in req.body && "licenseImage" in req.body) {
+      let { error } = await validateLicenseNumber({
+        licenseNumber: req.body.licenseNumber,
+      });
+      if (error) return res.status(400).send(error.details[0].message);
+      let isLicenseNumberPresent = await isLicenseNumberExists(
+        req.body.licenseNumber
+      );
+      if (isLicenseNumberPresent)
+        return res.status(400).send("Licence number already present");
+      let updatedUser = await updateUserLicenseDetails(
+        req.body.userId,
+        req.body.licenseNumber,
+        req.body.licenseImage
+      );
 
-        let isLicenseNumberPresent = await isLicenseNumberExists(
-          req.body.licenseNumber
-        );
-
-        if (isLicenseNumberPresent)
-          return res.status(400).send("Licence number already present");
-
-        let licensePath = uploadFileNew(
-          req,
-          "User",
-          req.body.userId,
-          "license"
-        );
-
-        let updatedUser = await updateUserLicenseDetails(
-          req.body.userId,
-          req.body.licenseNumber,
-          licensePath
-        );
-
-        if (!updatedUser)
-          return res
-            .status(400)
-            .send("Something went wrong cannot add license detail's.");
-      } else {
+      if (!updatedUser)
         return res
           .status(400)
-          .send("License number and license image is require.");
-      }
+          .send("Something went wrong cannot add license detail's.");
     }
     let newBody = _.pick(req.body, [
       "vehicleName",
@@ -86,81 +66,30 @@ router.post("/addVehicle", auth, async (req, res) => {
       "seatingCapacity",
       "vehicleClass",
       "vehicleImage",
-      "rcBook",
+      "rcBookImage",
+      "pucImage",
       "fuelType",
       "userId",
     ]);
 
-    req.body = newBody; //exclude the license properties.
-
-    if (!req.files.pucImage)
-      return res.status(400).send("PUC image is required!");
-    if (!req.files.vehicleImage)
-      return res.status(400).send("Vehicle image is required");
-    if (!req.files.rcBookImage)
-      return res.status(400).send("Vehicle RCBook image  is required");
-
-    req.body.rcBookImage = " ";
-    req.body.vehicleImage = " ";
-    req.body.pucImage = " ";
+    req.body = newBody;
 
     let { error } = validateVehicleDetails(req.body);
     if (error) return res.status(400).send(error.details[0].message);
-    console.log("Validation done");
 
     let vehicle = await checkVehicleAlreadyExits(req.body.vehicleNumber);
     if (vehicle != null) {
       if (vehicle.isDeleted == false)
         return res.status(400).send("Vehicle already exists, cannot add!");
-      console.log("Check vehicle already exists done");
       if (vehicle.userId != parseInt(req.body.userId)) {
         vehicle.userId = parseInt(req.body.userId);
-        req.body.rcBookImage = uploadFileNew(
-          req,
-          `v_${req.body.vehicleNumber}`,
-          req.body.userId,
-          "rcbook"
-        );
-        req.body.vehicleImage = uploadFileNew(
-          req,
-          `v_${req.body.vehicleNumber}`,
-          req.body.userId,
-          "vehicle"
-        );
-        req.body.pucImage = uploadFileNew(
-          req,
-          `v_${req.body.vehicleNumber}`,
-          req.body.userId,
-          "puc"
-        );
-        console.log("Setting images paths done");
+        vehicle.rcBookImage = req.body.rcBookImage;
+        vehicle.pucImage = req.body.pucImage;
       }
       vehicle.isDeleted = false;
-
       let result = await vehicle.save();
       return res.status(200).send(result);
     }
-
-    req.body.rcBookImage = uploadFileNew(
-      req,
-      `v_${req.body.vehicleNumber}`,
-      req.body.userId,
-      "rcbook"
-    );
-    req.body.vehicleImage = uploadFileNew(
-      req,
-      `v_${req.body.vehicleNumber}`,
-      req.body.userId,
-      "vehicle"
-    );
-    req.body.pucImage = uploadFileNew(
-      req,
-      `v_${req.body.vehicleNumber}`,
-      req.body.userId,
-      "puc"
-    );
-    console.log("Setting images paths done");
-
     vehicle = await addVehicle(req.body);
     if (!vehicle)
       return res
@@ -168,7 +97,6 @@ router.post("/addVehicle", auth, async (req, res) => {
         .send("Something went wrong.Cannot add vehicle try again latter.");
     return res.status(200).send(vehicle);
   } catch (ex) {
-    console.log(ex);
     return res.status(500).send("Something went wrong.");
   }
 });

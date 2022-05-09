@@ -1,5 +1,5 @@
 import { Alert, View } from "react-native";
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import SourceDestination from "../Component/SourceDestination";
 import GoogleMap from "../Component/GoogleMap";
 import DateTime from "../Component/DateTime";
@@ -11,7 +11,10 @@ import {
   Slider,
   Box,
   WarningOutlineIcon,
+  ScrollView,
 } from "native-base";
+import { useValidation } from "react-native-form-validator";
+import { AuthContext } from "../Component/Context";
 
 const initialState = {
   source: "",
@@ -55,26 +58,41 @@ const reducer = (state, action) => {
         seatRequest: action.payload,
       };
     default:
-      return state;
+      return {
+        source: "",
+        destination: "",
+        date: "",
+        time: "",
+        pickupPoint: "",
+        seatRequest: "1",
+      };
   }
 };
 
-const BookRide = () => {
+const BookRide = ({ navigation }) => {
   const [error, setError] = useState({ isTrue: false, field: "" });
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const { source, destination, date, time, pickupPoint } = state;
+  const { validate, isFieldInError } = useValidation({
+    state: { source, destination, date, time, pickupPoint },
+  });
+
+  const { getUrl } = useContext(AuthContext);
+  const url = getUrl();
+
   const handleForm = () => {
-    for (const key in state) {
-      if (state[key] === "") {
-        const k = key.toString();
-        setError({ isTrue: true, field: k });
-        setTimeout(() => {
-          setError({ isTrue: false, field: "" });
-        }, 4000);
-        return;
-      }
+    let isTrue = validate({
+      source: { required: true },
+      destination: { required: true },
+      date: { required: true },
+      time: { required: true },
+      pickupPoint: { required: true },
+    });
+    if (isTrue) {
+      navigation.navigate("Available Rides");
+      dispatch({});
     }
-    Alert.alert("Success", "Ride Booked...!");
   };
 
   return (
@@ -87,39 +105,82 @@ const BookRide = () => {
       }}
     >
       <GoogleMap />
-      <FormControl isInvalid={error.isTrue}>
-        <SourceDestination dispatch={dispatch} />
-        <DateTime dispatch={dispatch} />
-        <PickupPoint dispatch={dispatch} />
-        <Box mt={5} alignItems={"center"}>
-          <Text textAlign="center">Select Seats: {state.seatRequest}</Text>
-          <Slider
-            isDisabled={false}
-            mt={"2"}
-            w="300"
-            maxW="300"
-            defaultValue={1}
-            minValue={1}
-            maxValue={8}
-            accessibilityLabel="Available Seats"
-            step={1}
-            onChange={(v) => dispatch({ type: "seatRequest", payload: v })}
-          >
-            <Slider.Track>
-              <Slider.FilledTrack />
-            </Slider.Track>
-            <Slider.Thumb />
-          </Slider>
-        </Box>
-        <Button size="md" mt="5%" w="95%" mx={3} onPress={handleForm}>
-          <Text fontSize={"lg"} color="white">
-            Submit
-          </Text>
-        </Button>
-        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-          Please enter {error.field} field.
-        </FormControl.ErrorMessage>
-      </FormControl>
+      <ScrollView>
+        <FormControl>
+          <SourceDestination dispatch={dispatch} />
+          <Box flexDirection={"row"} justifyContent="space-around">
+            {isFieldInError("source") && (
+              <FormControl.ErrorMessage
+                isInvalid={true}
+                leftIcon={<WarningOutlineIcon size="xs" />}
+              >
+                Please enter source field
+              </FormControl.ErrorMessage>
+            )}
+            {isFieldInError("destination") && (
+              <FormControl.ErrorMessage
+                isInvalid={true}
+                leftIcon={<WarningOutlineIcon size="xs" />}
+              >
+                Please enter destination field
+              </FormControl.ErrorMessage>
+            )}
+          </Box>
+          <DateTime dispatch={dispatch} />
+          <Box flexDirection={"row"} justifyContent="space-around">
+            {isFieldInError("date") && (
+              <FormControl.ErrorMessage
+                isInvalid={true}
+                leftIcon={<WarningOutlineIcon size="xs" />}
+              >
+                Please enter date
+              </FormControl.ErrorMessage>
+            )}
+            {isFieldInError("time") && (
+              <FormControl.ErrorMessage
+                isInvalid={true}
+                leftIcon={<WarningOutlineIcon size="xs" />}
+              >
+                Please enter time
+              </FormControl.ErrorMessage>
+            )}
+          </Box>
+          <PickupPoint dispatch={dispatch} />
+          {isFieldInError("pickupPoint") && (
+            <FormControl.ErrorMessage
+              isInvalid={true}
+              leftIcon={<WarningOutlineIcon size="xs" />}
+            >
+              Please enter Pickup Point
+            </FormControl.ErrorMessage>
+          )}
+          <Box mt={5} alignItems={"center"}>
+            <Text textAlign="center">Select Seats: {state.seatRequest}</Text>
+            <Slider
+              isDisabled={false}
+              mt={"2"}
+              w="300"
+              maxW="300"
+              defaultValue={1}
+              minValue={1}
+              maxValue={8}
+              accessibilityLabel="Available Seats"
+              step={1}
+              onChange={(v) => dispatch({ type: "seatRequest", payload: v })}
+            >
+              <Slider.Track>
+                <Slider.FilledTrack />
+              </Slider.Track>
+              <Slider.Thumb />
+            </Slider>
+          </Box>
+          <Button size="md" mt="5%" w="95%" mx={3} onPress={handleForm}>
+            <Text fontSize={"lg"} color="white">
+              Search Rides
+            </Text>
+          </Button>
+        </FormControl>
+      </ScrollView>
     </View>
   );
 };

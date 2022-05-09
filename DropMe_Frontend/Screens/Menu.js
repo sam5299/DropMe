@@ -58,6 +58,7 @@ const Menu = ({ navigation }) => {
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
+        onPress={() => navigation.navigate("TripsStack")}
       >
         <Box flexDir={"row"} alignItems={"center"} p="5">
           <MaterialCommunityIcons
@@ -87,7 +88,7 @@ const Menu = ({ navigation }) => {
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
-        onPress={() => navigation.navigate("AddVehicle")}
+        onPress={() => navigation.navigate("Vehicles")}
       >
         <Box flexDir={"row"} alignItems={"center"} p="5">
           <MaterialCommunityIcons
@@ -117,6 +118,7 @@ const Menu = ({ navigation }) => {
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
+        onPress={() => navigation.navigate("ViewProfile")}
       >
         <Box flexDir={"row"} alignItems={"center"} p="5">
           <MaterialCommunityIcons

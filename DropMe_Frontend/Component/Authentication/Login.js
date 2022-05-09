@@ -34,6 +34,7 @@ const Login = ({ navigation }) => {
     try {
       const result = await axios.post(url + "/user/login", details);
       // if details are true then it will redirect to home page
+      console.log("Token", result.headers["x-auth-token"]);
       if (result.data) {
         signIn(userName, result.headers["x-auth-token"]);
       }

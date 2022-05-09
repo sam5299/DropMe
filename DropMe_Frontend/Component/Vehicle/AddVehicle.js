@@ -92,7 +92,7 @@ const AddVehicle = ({ navigation }) => {
     });
 
     if (!result.cancelled) {
-      setPic(result.uri);
+      setPic("data:image/png;base64," + result.base64);
     }
   };
 
@@ -155,9 +155,10 @@ const AddVehicle = ({ navigation }) => {
   );
 
   let buttonField = (
-    <Button w={"300"} mb={5} onPress={handleAddVehicle}>
-      Add Vehicle
-    </Button>
+    <Stack direction={"row"} mb={2} space="20" justifyContent={"center"}>
+      <Button onPress={() => navigation.goBack()}>Go Back</Button>
+      <Button onPress={handleAddVehicle}>Add Vehicle</Button>
+    </Stack>
   );
 
   let ShowSpinner = (
@@ -334,11 +335,8 @@ const AddVehicle = ({ navigation }) => {
                 )}
               </Box>
               {slider}
-              {showSpinner ? ShowSpinner : buttonField}
+              {buttonField}
             </Stack>
-            <FormControl.ErrorMessage
-              leftIcon={<WarningOutlineIcon size="xs" />}
-            ></FormControl.ErrorMessage>
           </FormControl>
         </Box>
       </Box>

@@ -6,6 +6,7 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Menu from "../Screens/Menu";
 import Slide from "./Drawer/Slide";
+import BookeRideStack from "../Screens/BookeRideStack";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -31,8 +32,8 @@ export default function BottomBar() {
           }}
         />
         <Tab.Screen
-          name="Book Ride"
-          component={BookRide}
+          name="BookRideStack"
+          component={BookeRideStack}
           options={{
             tabBarLabel: "Book Ride",
             tabBarIcon: ({ color }) => (

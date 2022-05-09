@@ -97,10 +97,11 @@ const CreateRide = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [gender, setGender] = useState("");
   const [userToken, setToken] = useState(null);
+  const [isLoading, setLoading] = useState(false);
 
-  const { source, destination, date, time, rideType } = state;
+  const { source, destination, date, time, Vehicle } = state;
   const { validate, isFieldInError } = useValidation({
-    state: { source, destination, date, time, rideType },
+    state: { source, destination, date, time, Vehicle },
   });
 
   const { getUrl } = useContext(AuthContext);
@@ -118,9 +119,10 @@ const CreateRide = () => {
       }
     };
     setTimeout(() => createRide(), 2000);
-  }, []);
+  }, [userToken, gender]);
 
   const handleForm = async () => {
+    setLoading(true);
     let isTrue = validate({
       source: { required: true },
       destination: { required: true },
@@ -128,7 +130,6 @@ const CreateRide = () => {
       time: { required: true },
       Vehicle: { required: true },
     });
-
     if (isTrue) {
       try {
         const result = await axios.post(
@@ -137,11 +138,13 @@ const CreateRide = () => {
           { headers: { "x-auth-token": userToken } }
         );
         console.log(result.headers);
+        Alert.alert("Success", "Ride Created...!");
+        dispatch({});
       } catch (error) {
         console.log(error.response.data);
       }
     }
-    //Alert.alert("Success", "Ride Created...!");
+    setLoading(false);
   };
 
   return (
@@ -189,7 +192,7 @@ const CreateRide = () => {
           </Box>
           <VehicleAndClass dispatch={dispatch} />
           <Box ml={5}>
-            {isFieldInError("vehicle") && (
+            {isFieldInError("Vehicle") && (
               <FormControl.ErrorMessage
                 isInvalid={true}
                 leftIcon={<WarningOutlineIcon size="xs" />}
@@ -199,9 +202,17 @@ const CreateRide = () => {
             )}
           </Box>
           <RideForType type={{ dispatch: dispatch, rideFor: gender }} />
-          <Button size="md" mt={"5"} w="95%" ml={2} onPress={handleForm}>
+          <Button
+            isLoading={isLoading}
+            isLoadingText="Submitting"
+            size="md"
+            mt={"5"}
+            w="95%"
+            ml={2}
+            onPress={handleForm}
+          >
             <Text fontSize={"lg"} color="white">
-              Submit
+              Create Ride
             </Text>
           </Button>
         </FormControl>

@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 //import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
@@ -24,16 +24,21 @@ import * as ImagePicker from "expo-image-picker";
 import { useValidation } from "react-native-form-validator";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../Context";
 
 const UploadDocumentForVehicle = ({ route, navigation }) => {
   let [userData, setUserData] = useState({});
-  let [licenseNumber, setLicenseNumber] = useState("");
-  let [licenseImage, setLicenseImage] = useState("");
-  let [rcBookImage, setRcBookImage] = useState("");
-  let [pucImage, setPucImage] = useState("");
+  let [licenseNumber, setLicenseNumber] = useState(null);
+  let [licenseImage, setLicenseImage] = useState(null);
+  let [rcBookImage, setRcBookImage] = useState(null);
+  let [pucImage, setPucImage] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [showSpinner, setShowSpinner] = useState(false);
   const [status, setStatus] = useState({ status: "", title: "" });
+  const [userToken, setToken] = useState(null);
+
+  const { getUrl } = useContext(AuthContext);
+  const url = getUrl();
 
   const {
     Picture,
@@ -48,23 +53,29 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
   useEffect(() => {
     async function fetchUserData() {
       try {
-        let result = await axios.get(
-          "http://192.168.43.195:3100/user/getUser",
-          {
-            headers: {
-              "x-auth-token":
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsIlVzZXIiOiI2MjcyYmFiNDZmYjc5MWNjOGJmNDU2ZTkiLCJpYXQiOjE2NTE5OTYwMzJ9.rN-1EMgX6vvL8j0qV8GqZlRw3-80prPPwlEoFUvuQ0I",
-            },
-          }
-        );
-        console.log(result.data);
+        const User = await AsyncStorage.getItem("User");
+        const parseUser = JSON.parse(User);
+        setToken(parseUser.userToken);
+
+        let result = await axios.get(url + "/user/getUser", {
+          headers: {
+            "x-auth-token": parseUser.userToken,
+          },
+        });
+        // console.log(result.data);
         setUserData(result.data);
       } catch (ex) {
         console.log(ex.response.data);
+        setStatus({ status: "error", title: ex.response.data });
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 2000);
+        // console.log(ex.response.data);
       }
     }
     fetchUserData();
-  }, []);
+  }, [userData, userToken]);
 
   const uploadImage = async (docName) => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -76,10 +87,12 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
     });
 
     if (!result.cancelled) {
-      if (docName === "licenseImage") setLicenseImage(result.uri);
-      if (docName === "rcBookImage") setRcBookImage(result.uri);
-      if (docName === "pucImage") setPucImage(result.uri);
-      console.log("Image Set done");
+      if (docName === "licenseImage")
+        setLicenseImage("data:image/png;base64," + result.base64);
+      if (docName === "rcBookImage")
+        setRcBookImage("data:image/png;base64," + result.base64);
+      if (docName === "pucImage")
+        setPucImage("data:image/png;base64," + result.base64);
     }
   };
 
@@ -100,6 +113,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
       fuelType: fuelType,
       pucImage: pucImage,
     };
+    console.log(body);
     if (userData.licenseNumber === null && userData.licenseImage === null) {
       let pattern =
         /^(([A-Z]{2}[0-9]{2})( )|([A-Z]{2}-[0-9]{2}))((19|20)[0-9][0-9])[0-9]{7}$/;
@@ -112,7 +126,6 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
       //add license properties
       body.licenseNumber = licenseNumber;
       body.licenseImage = licenseImage;
-      return;
     }
 
     let isTrue = validate({
@@ -128,17 +141,11 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
     if (isTrue) {
       try {
         setShowSpinner(true);
-        const User = await AsyncStorage.getItem("User");
-        const parseUser = JSON.parse(User);
-        let result = await axios.post(
-          "http://192.168.43.195:3100/vehicle/addVehicle",
-          body,
-          {
-            headers: {
-              "x-auth-token": parseUser.userToken,
-            },
-          }
-        );
+        let result = await axios.post(url + "/vehicle/addVehicle", body, {
+          headers: {
+            "x-auth-token": userToken,
+          },
+        });
         setShowSpinner(false);
 
         setStatus({

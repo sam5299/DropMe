@@ -10,13 +10,8 @@ const trip = require("./routes/trip");
 const wallet = require("./routes/wallet");
 const notification = require("./routes/notification");
 
-app.use(bodyParser.json()); // to support JSON-encoded bodies
-app.use(
-  bodyParser.urlencoded({
-    // to support URL-encoded bodies
-    extended: false,
-  })
-);
+app.use(bodyParser.json({ limit: "50mb" })); // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use("/user", user);
 app.use("/vehicle", vehicle);
 app.use("/ride", ride);
