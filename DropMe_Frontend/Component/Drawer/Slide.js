@@ -4,6 +4,8 @@ import Menu from "../../Screens/Menu";
 import Rides from "../Rides/Rides";
 import { Text, View } from "native-base";
 import Balance from "../Wallet/Balance";
+import AddVehicle from "../Vehicle/AddVehicle";
+import UploadDocumentForVehicle from "../Vehicle/UploadDocumentForVehicle";
 
 const SliderStack = createNativeStackNavigator();
 
@@ -18,6 +20,11 @@ const Slide = () => {
         />
         <SliderStack.Screen name="Rides" component={Rides} />
         <SliderStack.Screen name="Balance" component={Balance} />
+        <SliderStack.Screen name="AddVehicle" component={AddVehicle} />
+        <SliderStack.Screen
+          name="UploadDocumentForVehicle"
+          component={UploadDocumentForVehicle}
+        />
       </SliderStack.Navigator>
     </View>
   );

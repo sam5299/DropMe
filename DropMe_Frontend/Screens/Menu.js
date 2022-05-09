@@ -18,7 +18,7 @@ const Menu = ({ navigation }) => {
 
   return (
     <VStack space={0.5} mt={2}>
-      <Box
+      <Pressable
         justifyContent={"space-between"}
         w="100%"
         h="15%"
@@ -46,8 +46,8 @@ const Menu = ({ navigation }) => {
           size={40}
           color="rgba(6,182,212,1.00)"
         />
-      </Box>
-      <Box
+      </Pressable>
+      <Pressable
         justifyContent={"space-between"}
         w="100%"
         h="15%"
@@ -75,8 +75,8 @@ const Menu = ({ navigation }) => {
           size={40}
           color="rgba(6,182,212,1.00)"
         />
-      </Box>
-      <Box
+      </Pressable>
+      <Pressable
         justifyContent={"space-between"}
         w="100%"
         h="15%"
@@ -87,6 +87,7 @@ const Menu = ({ navigation }) => {
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
+        onPress={() => navigation.navigate("AddVehicle")}
       >
         <Box flexDir={"row"} alignItems={"center"} p="5">
           <MaterialCommunityIcons
@@ -104,8 +105,8 @@ const Menu = ({ navigation }) => {
           size={40}
           color="rgba(6,182,212,1.00)"
         />
-      </Box>
-      <Box
+      </Pressable>
+      <Pressable
         justifyContent={"space-between"}
         w="100%"
         h="15%"
@@ -133,7 +134,7 @@ const Menu = ({ navigation }) => {
           size={40}
           color="rgba(6,182,212,1.00)"
         />
-      </Box>
+      </Pressable>
       <Pressable
         justifyContent={"space-between"}
         w="100%"
@@ -145,7 +146,7 @@ const Menu = ({ navigation }) => {
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
-        onPress={() => alert("heloo")}
+        onPress={() => navigation.navigate("Balance")}
       >
         <Box flexDir={"row"} alignItems={"center"} p="5">
           <MaterialCommunityIcons

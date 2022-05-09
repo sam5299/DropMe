@@ -7,6 +7,7 @@ import Splash from "../Splash";
 import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Forgot from "./Forgot";
+import axios from "axios";
 
 const Stack = createNativeStackNavigator();
 
@@ -56,7 +57,12 @@ const Main = () => {
     () => ({
       signIn: async (userName, userToken) => {
         try {
-          await AsyncStorage.setItem("userToken", userToken);
+          const result = await axios.get(url + "/user/getUser", {
+            headers: { "x-auth-token": userToken },
+          });
+          result["userToken"] = userToken;
+          const data = JSON.stringify(result);
+          await AsyncStorage.setItem("User", data);
         } catch (e) {
           console.log(e);
         }
@@ -64,9 +70,9 @@ const Main = () => {
       },
       signOut: async () => {
         try {
-          await AsyncStorage.removeItem("userToken", null);
+          await AsyncStorage.clear();
         } catch (e) {
-          console.log(e);
+          console.log(e.response.data);
         }
         dispatch({ type: "LOGOUT" });
       },
@@ -82,9 +88,13 @@ const Main = () => {
     let userToken = null;
     setTimeout(async () => {
       try {
-        userToken = await AsyncStorage.getItem("userToken");
+        const User = await AsyncStorage.getItem("User");
+        if (User !== null) {
+          const parseUser = JSON.parse(User);
+          userToken = parseUser.userToken;
+        }
       } catch (e) {
-        console.log(e);
+        console.log(e.response.data);
       }
       if (mounted) {
         dispatch({ type: "RETRIVE_TOKEN", token: userToken });

@@ -87,8 +87,6 @@ const Registration = ({ navigation }) => {
       // make a call to backend and store user details
       try {
         const result = await axios.post(url + "/user/register", state);
-        console.log(result.data);
-        console.log(result.headers);
       } catch (error) {
         console.log(error.response.data);
       }

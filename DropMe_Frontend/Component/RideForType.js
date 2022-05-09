@@ -6,7 +6,7 @@ const RideForType = ({ type }) => {
   const t = "Only For " + type.rideFor;
   const selectType = (value) => {
     if (value == true) {
-      type.dispatch({ type: "rideFor", payload: "Male" });
+      type.dispatch({ type: "rideFor", payload: type.rideFor });
     } else {
       type.dispatch({ type: "rideFor", payload: "Both" });
     }
@@ -23,7 +23,7 @@ const RideForType = ({ type }) => {
       <Box flexDirection={"row"}>
         <Checkbox
           accessibilityLabel="Only"
-          onChange={(value) => alert(value)}
+          onChange={(value) => selectType(value)}
         ></Checkbox>
         <Text ml={"2"}>{t}</Text>
       </Box>
