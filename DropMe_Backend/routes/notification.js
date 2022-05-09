@@ -3,7 +3,7 @@ const router = express.Router()
 const auth = require("../middleware/auth");
 router.use(express.json());
 const { Notification, validateNotification } = require('../models/notification')
-const { createNotification } = require('../services/notification')
+const { createNotification, getNotification } = require('../services/notification')
 
 router.post('/sendNotification/:userId/:message', auth, async(req, res) => {
     let toUserId = req.params.userId;
@@ -21,7 +21,29 @@ router.post('/sendNotification/:userId/:message', auth, async(req, res) => {
 
         if (!newNotification)
             return res.status(400).send(`Error in creating notification object`)
-        return res.status(200).send(`Notification created ${newNotification}`)
+        return res.status(200).send(newNotification)
+
+    } catch (ex) {
+        return res.status(400).send("Error to send request"+ex);
+    }
+
+})
+
+router.get('/getNotification', auth, async(req, res) => {
+    let userId = req.body.User;
+    // let notificationDetails={ "fromUser": fromUserId, "toUser": toUserId, "message": message }
+    // let {error} = validateNotification(notificationDetails)
+    //     if (error) return res.status(400).send(error.details[0].message);
+    // console.log("###",notificationDetails);
+        
+    try {
+        let NotificationList = await getNotification(userId);
+        // let result = await newNotification.save();
+    //console.log("@@@",newNotification);
+
+        if (!NotificationList)
+            return res.status(400).send(`Error in getting notifications`)
+        return res.status(200).send(NotificationList)
 
     } catch (ex) {
         return res.status(400).send("Error to send request"+ex);

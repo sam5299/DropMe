@@ -8,8 +8,8 @@ async function createNotification(details) {
 
 async function getNotification(userId) {
     let notificationList =await Notification.find({ toUser: userId, isRead:false})
-    if(notificationList.length==0)
-    return ["No any notifications"];
+    // if(notificationList.length==0)
+    // return ["No any notifications"];
     return notificationList;
 }
 

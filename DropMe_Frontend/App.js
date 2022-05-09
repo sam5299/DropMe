@@ -1,20 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import "react-native-gesture-handler";
+import { Box, NativeBaseProvider } from "native-base";
+import { StyleSheet, Text, View, Platform, StatusBar } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import Main from "./Component/Authentication/Main";
+import { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import Splash from "./Screens/Splash";
 
 export default function App() {
+  const [animating, setAnimating] = useState(false);
+
+  useEffect(() => {
+    setAnimating(true);
+    setTimeout(() => {
+      setAnimating(false);
+    }, 3000);
+  }, []);
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <NativeBaseProvider style={styles.container}>
+        <NavigationContainer>
+          {animating ? <Splash /> : <Main />}
+        </NavigationContainer>
+      </NativeBaseProvider>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
 });
