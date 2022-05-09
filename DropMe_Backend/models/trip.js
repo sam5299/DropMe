@@ -11,7 +11,7 @@ let tripSchema = new mongoose.Schema({
     seatRequest: {type:Number, required:true},
     User: {type:mongoose.Schema.Types.ObjectId, ref:"User", required:true}  
 });
-
+ 
 let Trip = mongoose.model('trip', tripSchema);
 
 // function for creating new trip

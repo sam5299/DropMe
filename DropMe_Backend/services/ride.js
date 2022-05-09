@@ -10,6 +10,11 @@ async function createRide(rideDetails) {
     return await newRide.save()
 }
 
+// function to get ride details by its rid
+async function getRideDetails(rid, user) {
+    return await Ride.findOne({_id:rid,User:user, status:"Created"});
+}
+
 // get ride by source destination date and  time
 async function getRides(Source, Destination, Date, Time, seats, gender) {
     console.log("here");
@@ -18,9 +23,9 @@ async function getRides(Source, Destination, Date, Time, seats, gender) {
         destination: Destination,
         date: Date,
         time: Time,
-        availableSeats:{$gte:seats}
+        availableSeats:{$gte:seats},
       //  rideFor:{$or:{gender,"Both"}}
-        
+        status:"Created"
     
     }).find({ $or:[{"rideFor":gender},{"rideFor":"Both"}]})
 }
@@ -71,19 +76,34 @@ async function removeTripId(rideId, tripId) {
     return rideObj.save();
 }
 
+//function to return timedifference between ride time and current time
+function getTimeDifference(rideDate) {
+    let d1 = new Date(Date.parse(rideDate));
+    let d2 = new Date(Date.parse(Date()));//"Mon May 02 2022;06:30");
+    let hrs=Math.round((d1-d2)/(1000*60*60));
+    console.log(hrs);
+    console.log(d1.toString())
+    console.log(d2.toString())
+    return hrs;
+}
+
 // To save image of vehicle after creating ride 
 function savePicture(fileName){
 
 }
 
+
+
 module.exports = {
     createRide,
     getRides,
+    getRideDetails,
     getUserRides,
     deleteRide,
     savePicture,
     addTripRequest,
     getTripRequestList,
     reduceAvailableSeats,
-    removeTripId
+    removeTripId,
+    getTimeDifference
 }

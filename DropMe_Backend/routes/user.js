@@ -46,7 +46,6 @@ router.post("/register", async (req, res) => {
       return res
         .status(400)
         .send("You are already registered! try Login or forgot password.");
-  
     try {
       user = await addUserUpdated(req);
       if (!user)
