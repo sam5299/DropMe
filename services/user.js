@@ -24,9 +24,11 @@ async function encryptPassword(password) {
 //get unique id for newly registering user.
 async function getUniqueId() {
   try {
-    let lastId = await User.find({}).estimatedDocumentCount();
-    return lastId + 1;
+    // let lastId = await User.find({});
+    let result = await User.findOne({}).sort("-userId").limit(1);
+    return result.userId + 1;
   } catch (ex) {
+    console.log(ex);
     return ex;
   }
 }
