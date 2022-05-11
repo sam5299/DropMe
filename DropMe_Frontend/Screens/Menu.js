@@ -29,6 +29,7 @@ const Menu = ({ navigation }) => {
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
+        onPress={() => navigation.navigate("RideStack")}
       >
         <Box flexDir={"row"} alignItems={"center"} p="5">
           <MaterialCommunityIcons
