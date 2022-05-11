@@ -34,6 +34,7 @@ router.use(express.json());
 
 //ride creat route
 router.post("/createRide", auth, async (req, res) => {
+  console.log("create ride request body:", req.body);
   let userId = req.body.userId;
   delete req.body.userId;
   let amount = 0;

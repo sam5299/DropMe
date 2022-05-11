@@ -86,6 +86,11 @@ const reducer = (state, action) => {
         ...state,
         seats: action.payload,
       };
+    case "distance":
+      return {
+        ...state,
+        distance: action.payload,
+      };
     default:
       return {
         source: "",
@@ -152,7 +157,6 @@ const BookRide = ({ navigation }) => {
         );
         //console.log("distance:" + parseFloat(newResult.data));
         dispatch({ type: "distance", payload: newResult.data });
-        state.distance = parseFloat(state.distance);
         console.log(state);
       } catch (error) {
         console.log("exception Book Ride");

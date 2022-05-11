@@ -1,9 +1,14 @@
 import { View, StyleSheet } from "react-native";
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Box, Stack, Text, Image } from "native-base";
+import axios from "axios";
+import { AuthContext } from "../Context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ViewProfile = () => {
-  const userDetails = {
+  const { getUrl } = useContext(AuthContext);
+  const url = getUrl();
+  const [userDetails, setUserDetails] = useState({
     name: "Aditya Bhosale",
     mobileNumber: "7507748880",
     gender: "Male",
@@ -12,7 +17,28 @@ const ViewProfile = () => {
     averageRating: 3.9,
     riderImage:
       "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.Vzahyi5u3exbb73RDnoYJgHaLH%26pid%3DApi&f=1",
-  };
+  });
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadDetails() {
+      try {
+        const User = await AsyncStorage.getItem("User");
+        const parseUser = JSON.parse(User);
+        //console.log(parseUser.data);
+
+        if (mounted) {
+          setUserDetails(parseUser.data);
+          // setToken(parseUser.userToken);
+        }
+      } catch (ex) {
+        console.log("Exception in profile", ex.response.data);
+      }
+    }
+
+    loadDetails();
+    return () => (mounted = false);
+  }, []);
   return (
     <Box flex={1} bg={"#F0F8FF"} justifyContent="center">
       <Box
@@ -38,9 +64,9 @@ const ViewProfile = () => {
           <Stack justifyContent={"center"} alignItems={"center"} space={3}>
             <Image
               source={{
-                uri: userDetails.riderImage,
+                uri: userDetails.profile,
               }}
-              alt="Alternate Text"
+              alt="Image not available"
               borderRadius={100}
               size={"xl"}
             />
@@ -60,7 +86,9 @@ const ViewProfile = () => {
               bg={"white"}
               borderRadius={10}
             >
-              <Text style={styles.details}>{userDetails.rideCount}</Text>
+              <Text style={styles.details}>
+                {userDetails.totalNumberOfRatedRides}
+              </Text>
               <Text style={styles.details}>Total{"\n"}Rides</Text>
             </Box>
 
@@ -70,7 +98,14 @@ const ViewProfile = () => {
               bg={"white"}
               borderRadius={10}
             >
-              <Text style={styles.details}>{userDetails.averageRating}</Text>
+              <Text style={styles.details}>
+                {userDetails.totalNumberOfRatedRides == 0
+                  ? 0
+                  : (
+                      userDetails.sumOfRating /
+                      userDetails.totalNumberOfRatedRides
+                    ).toPrecision(2)}
+              </Text>
               <Text style={styles.details}>Average{"\n"} Rating</Text>
             </Box>
           </Box>

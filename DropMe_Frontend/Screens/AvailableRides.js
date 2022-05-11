@@ -49,7 +49,7 @@ const AvailableRides = ({ route, navigation }) => {
           "x-auth-token": token,
         },
       });
-      console.log("Request to Ride response: ", result);
+      console.log("Request to Ride response: ", result.data);
     } catch (error) {
       console.log("Request to ride: ", error.response.data);
       alert(" Please Add credits point to wallet");

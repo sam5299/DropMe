@@ -11,7 +11,7 @@ const rideSchema = new mongoose.Schema({
   date: { type: String, required: true },
   vehicleNumber: { type: String, required: true },
   availableSeats: { type: Number, min: 0, max: 8, required: true },
-  distance: { type: Number, min: 1, required: true },
+  distance: { type: Number, required: true },
   amount: { type: Number, min: 0, required: true },
   requestedTripList: { type: Array },
   status: {
@@ -55,7 +55,7 @@ function validateRideDetails(rideData) {
     time: Joi.string().required(),
     date: Joi.string().required(),
     availableSeats: Joi.number().required().min(1).max(8),
-    distance: Joi.number().required().min(1),
+    distance: Joi.number().required(),
     amount: Joi.number().required().min(0),
     requestedTripList: Joi.array(),
     rideFor: Joi.string().valid("Male", "Female", "Both").required(),

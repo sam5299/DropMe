@@ -35,7 +35,7 @@ async function getRides(
     date: Date,
     // time: Time,
     availableSeats: { $gte: seats },
-    //User: { $ne: userId },
+    User: { $ne: userId },
     //  rideFor:{$or:{gender,"Both"}}
     status: "Created",
   })

@@ -182,18 +182,19 @@ const CreateRide = () => {
           let newResult = await axios.get(
             `${url}/map/api/directionApi/${state.s_lon}/${state.s_lat}/${state.d_lon}/${state.d_lat}`
           );
-          //console.log("distance:" + parseFloat(newResult.data));
+          //console.log("distance:" + newResult.data);
           dispatch({ type: "distance", payload: newResult.data });
         } catch (error) {
           console.log("exception is here..");
           console.log(error.response.data);
         }
-        state.distance = parseFloat(state.distance);
+        //state.distance = parseFloat(state.distance);
         const result = await axios.post(
           url + "/ride/createRide",
           { ...state },
           { headers: { "x-auth-token": userToken } }
         );
+        console.log("createride state:" + state);
         Alert.alert("Success", "Ride Created...!");
       } catch (error) {
         console.log("Create Ride:", error.response.data);

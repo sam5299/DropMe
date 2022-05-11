@@ -154,6 +154,8 @@ router.get("/getUser", auth, async (req, res) => {
       "mobileNumber",
       "sumOfRating",
       "totalNumberOfRatedRides",
+      "licenseNumber",
+      "licenseImage",
     ]);
     console.log(user);
     if (!user) return res.status(404).send("No users present!!");

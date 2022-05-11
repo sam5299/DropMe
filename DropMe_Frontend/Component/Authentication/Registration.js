@@ -156,7 +156,7 @@ const Registration = ({ navigation }) => {
             mb="2"
             textAlign={"center"}
           >
-            Registration
+            Hello!
           </Text>
 
           <TouchableHighlight

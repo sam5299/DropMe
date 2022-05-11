@@ -4,7 +4,7 @@ const router = express.Router();
 const { validateTrip } = require("../models/trip");
 const { getRides, addTripRequest } = require("../services/ride");
 const { requestRide } = require("../services/trip");
-const { getWallet } = require("../services/wallet");
+const { getWallet, updateUsedCredit } = require("../services/wallet");
 const { getUser } = require("../services/user");
 router.use(express.json());
 
