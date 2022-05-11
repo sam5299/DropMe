@@ -16,14 +16,20 @@ import {
 import { useValidation } from "react-native-form-validator";
 import { AuthContext } from "../Component/Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const initialState = {
   source: "",
+  s_lat: null,
+  s_lon: null,
   destination: "",
+  d_lat: null,
+  d_lon: null,
   date: "",
   time: "",
   pickupPoint: "",
   seats: "1",
+  distance: null,
 };
 
 const reducer = (state, action) => {
@@ -34,11 +40,31 @@ const reducer = (state, action) => {
         ...state,
         source: sourceLower,
       };
+    case "s_lat":
+      return {
+        ...state,
+        s_lat: action.payload,
+      };
+    case "s_lon":
+      return {
+        ...state,
+        s_lon: action.payload,
+      };
     case "destination":
       let destinationLower = action.payload.toLowerCase();
       return {
         ...state,
         destination: destinationLower,
+      };
+    case "d_lat":
+      return {
+        ...state,
+        d_lat: action.payload,
+      };
+    case "d_lon":
+      return {
+        ...state,
+        d_lon: action.payload,
       };
     case "date":
       return {
@@ -68,6 +94,7 @@ const reducer = (state, action) => {
         time: "",
         pickupPoint: "",
         seats: "1",
+        distance: null,
       };
   }
 };
@@ -102,7 +129,7 @@ const BookRide = ({ navigation }) => {
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
-  const handleForm = () => {
+  const handleForm = async () => {
     let isTrue = validate({
       source: { required: true },
       destination: { required: true },
@@ -111,8 +138,28 @@ const BookRide = ({ navigation }) => {
       pickupPoint: { required: true },
     });
     if (isTrue) {
+      try {
+        const result = await axios.get(
+          `${url}/map/api/reverseCoding/${state.s_lat}/${state.s_lon}`
+        );
+        const result2 = await axios.get(
+          `${url}/map/api/reverseCoding/${state.d_lat}/${state.d_lon}`
+        );
+
+        //call direction api and send lon1,lat1;lon2,lat2
+        let newResult = await axios.get(
+          `${url}/map/api/directionApi/${state.s_lon}/${state.s_lat}/${state.d_lon}/${state.d_lat}`
+        );
+        //console.log("distance:" + parseFloat(newResult.data));
+        dispatch({ type: "distance", payload: newResult.data });
+        state.distance = parseFloat(state.distance);
+        console.log(state);
+      } catch (error) {
+        console.log("exception Book Ride");
+        console.log(error);
+      }
+
       navigation.navigate("Available Rides", { ...state, gender, token });
-      dispatch({});
     }
   };
 

@@ -20,7 +20,11 @@ import { useValidation } from "react-native-form-validator";
 
 const initialState = {
   source: "",
+  s_lat: null,
+  s_lon: null,
   destination: "",
+  d_lat: null,
+  d_lon: null,
   date: "",
   time: "",
   Vehicle: "",
@@ -28,7 +32,7 @@ const initialState = {
   availableSeats: "1",
   rideFor: "Both",
   rideType: "Paid",
-  distance: 50,
+  distance: null,
 };
 
 const reducer = (state, action) => {
@@ -39,11 +43,31 @@ const reducer = (state, action) => {
         ...state,
         source: sourceLower,
       };
+    case "s_lat":
+      return {
+        ...state,
+        s_lat: action.payload,
+      };
+    case "s_lon":
+      return {
+        ...state,
+        s_lon: action.payload,
+      };
     case "destination":
       let destinationLower = action.payload.toLowerCase();
       return {
         ...state,
         destination: destinationLower,
+      };
+    case "d_lat":
+      return {
+        ...state,
+        d_lat: action.payload,
+      };
+    case "d_lon":
+      return {
+        ...state,
+        d_lon: action.payload,
       };
     case "date":
       return {
@@ -80,6 +104,11 @@ const reducer = (state, action) => {
         ...state,
         rideType: action.payload,
       };
+    case "distance":
+      return {
+        ...state,
+        distance: action.payload,
+      };
     default:
       return {
         source: "",
@@ -91,7 +120,7 @@ const reducer = (state, action) => {
         availableSeats: "1",
         rideFor: "Both",
         rideType: "Paid",
-        distance: 50,
+        distance: null,
       };
   }
 };
@@ -140,16 +169,34 @@ const CreateRide = () => {
     if (isTrue) {
       console.log(state);
       try {
+        //call api to get exact latitude longitude of source,destination lat,log
+        try {
+          const result = await axios.get(
+            `${url}/map/api/reverseCoding/${state.s_lat}/${state.s_lon}`
+          );
+          const result2 = await axios.get(
+            `${url}/map/api/reverseCoding/${state.d_lat}/${state.d_lon}`
+          );
+
+          //call direction api and send lon1,lat1;lon2,lat2
+          let newResult = await axios.get(
+            `${url}/map/api/directionApi/${state.s_lon}/${state.s_lat}/${state.d_lon}/${state.d_lat}`
+          );
+          //console.log("distance:" + parseFloat(newResult.data));
+          dispatch({ type: "distance", payload: newResult.data });
+        } catch (error) {
+          console.log("exception is here..");
+          console.log(error.response.data);
+        }
+        state.distance = parseFloat(state.distance);
         const result = await axios.post(
           url + "/ride/createRide",
           { ...state },
           { headers: { "x-auth-token": userToken } }
         );
-        console.log(result.headers);
         Alert.alert("Success", "Ride Created...!");
-        dispatch({});
       } catch (error) {
-        console.log(error.response.data);
+        console.log("Create Ride:", error.response.data);
       }
     }
     setLoading(false);

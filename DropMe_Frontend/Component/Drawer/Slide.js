@@ -7,6 +7,7 @@ import Balance from "../Wallet/Balance";
 import AddRemoveStack from "../Vehicle/AddRemoveStack";
 import TripsStack from "../Trips/TripsStack";
 import ViewProfile from "../Profile/ViewProfile";
+import RideStack from "../Rides/RideStack";
 
 const SliderStack = createNativeStackNavigator();
 
@@ -19,7 +20,11 @@ const Slide = () => {
           component={Menu}
           options={{ headerShown: false }}
         />
-        <SliderStack.Screen name="Rides" component={Rides} />
+        <SliderStack.Screen
+          name="RideStack"
+          component={RideStack}
+          options={{ headerShown: false }}
+        />
         <SliderStack.Screen name="Balance" component={Balance} />
         <SliderStack.Screen
           name="Vehicles"

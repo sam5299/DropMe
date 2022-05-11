@@ -1,25 +1,192 @@
-import { View, Text, Button } from "react-native";
-import React from "react";
-import { Input, Box } from "native-base";
+import {
+  Text,
+  View,
+  Pressable,
+  FlatList,
+  TextInput,
+  ScrollView,
+} from "react-native";
+import React, { useState, useContext } from "react";
+import { Input, Box, Stack } from "native-base";
+import { AuthContext } from "./Context";
+
+// import { Location } from "./location";
 
 const SourceDestination = ({ dispatch }) => {
+  const [startLocation, setStartLocation] = useState("");
+  const [endLocation, setEndLocation] = useState("");
+  const [showFlatList, setShowFlatList] = useState(false);
+  const [startOrEnd, setStartOrEnd] = useState(0);
+  const [data, setData] = useState();
+  const { signIn, getUrl } = useContext(AuthContext);
+  const url = getUrl();
+
+  const onChangeText = async (text, locationName) => {
+    try {
+      {
+        if (locationName === "startLocation") {
+          setStartLocation(text);
+          dispatch({ type: "source", payload: text });
+          setStartOrEnd(0);
+        }
+        if (locationName == "endLocation") {
+          setEndLocation(text);
+          dispatch({ type: "destination", payload: text });
+          setStartOrEnd(1);
+        }
+      }
+      if (text.length === 0) {
+        setShowFlatList(false);
+        return setData([]);
+      }
+      if (text.length > 2) {
+        let endpoint = `${url}/map/api/search?location=${text}&limit=${50}&countrycodes=in`;
+        const res = await fetch(endpoint);
+        if (res) {
+          const data = await res.json();
+          if (data.length > 0) {
+            setData(data);
+            setShowFlatList(true);
+          }
+        }
+      } else {
+        setShowFlatList(false);
+      }
+    } catch (exception) {
+      console.log("exception:" + exception);
+    }
+  };
+
+  const getItemText = (item) => {
+    let mainText = item.display_name;
+
+    if (item.type === "city" && item.address.state)
+      mainText += ", " + item.address.name + ", " + item.address.state;
+    return (
+      <View style={{ flexDirection: "row", alignItems: "center", padding: 15 }}>
+        <View style={{ marginLeft: 10, flexShrink: 1 }}>
+          <Text style={{ fontWeight: "700" }}>{mainText}</Text>
+          <Text style={{ fontSize: 12 }}>{item.address.country}</Text>
+        </View>
+      </View>
+    );
+  };
+
+  let flatList = (
+    <ScrollView nestedScrollEnabled={true} style={{ width: "100%" }}>
+      <View>
+        <ScrollView horizontal={true} style={{ width: "100%" }}>
+          <FlatList
+            data={data}
+            renderItem={({ item }) => (
+              <Pressable
+                onPress={() => {
+                  {
+                    //console.log("item:", item);
+                    if (startOrEnd === 0) {
+                      setStartLocation(item.display_name);
+                      dispatch({ type: "source", payload: item.display_name });
+                      dispatch({ type: "s_lat", payload: item.lat });
+                      dispatch({ type: "s_lon", payload: item.lon });
+                    }
+                    if (startOrEnd === 1) {
+                      setEndLocation(item.display_name);
+                      dispatch({
+                        type: "destination",
+                        payload: item.display_name,
+                      });
+                      dispatch({ type: "d_lat", payload: item.lat });
+                      dispatch({ type: "d_lon", payload: item.lon });
+                    }
+
+                    startOrEnd === 0
+                      ? setStartLocation(item.display_name)
+                      : setEndLocation(item.display_name);
+                  }
+                  setShowFlatList(false);
+                }}
+              >
+                {getItemText(item)}
+              </Pressable>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </ScrollView>
+      </View>
+    </ScrollView>
+  );
+
   return (
-    <Box flexDirection="row" mr="10">
+    <Box flexDirection="column">
       <Input
         mx="3"
         placeholder="Source"
-        w="50%"
-        onChangeText={(event) => dispatch({ type: "source", payload: event })}
+        value={startLocation}
+        w="95%"
+        onChangeText={(item) => onChangeText(item, "startLocation")}
       />
+      {showFlatList ? (startOrEnd === 0 ? flatList : null) : null}
       <Input
+        mt={5}
         mx="3"
         placeholder="Destination"
-        w="50%"
-        onChangeText={(event) =>
-          dispatch({ type: "destination", payload: event })
-        }
+        value={endLocation}
+        w="95%"
+        onChangeText={(item) => onChangeText(item, "endLocation")}
       />
+      {showFlatList ? (startOrEnd === 1 ? flatList : null) : null}
     </Box>
+
+    // <Stack direction={"column"} width={"100%"}>
+    //   <Text
+    //     style={{
+    //       marginLeft: 12,
+    //       marginVertical: 5,
+    //       fontSize: 12,
+    //       marginTop: 45,
+    //     }}
+    //   >
+    //     Source
+    //   </Text>
+    //   <TextInput
+    //     placeholder="source"
+    //     value={startLocation}
+    //     onChangeText={(item) => onChangeText(item, "startLocation")}
+    //     style={{
+    //       height: 48,
+    //       marginHorizontal: 12,
+    //       borderWidth: 1,
+    //       paddingHorizontal: 10,
+    //       borderRadius: 5,
+    //     }}
+    //   />
+    //   {showFlatList ? (startOrEnd === 0 ? flatList : null) : null}
+    // </Stack>
+    // <Stack direction={"column"} width={"50%"}>
+    //   <Text
+    //     style={{
+    //       marginLeft: 12,
+    //       marginVertical: 5,
+    //       fontSize: 12,
+    //       marginTop: 45,
+    //     }}
+    //   >
+    //     Destination
+    //   </Text>
+    //   <TextInput
+    //     placeholder="destination"
+    //     value={endLocation}
+    //     onChangeText={(item) => onChangeText(item, "endLocation")}
+    //     style={{
+    //       height: 48,
+    //       marginHorizontal: 12,
+    //       borderWidth: 1,
+    //       paddingHorizontal: 10,
+    //       borderRadius: 5,
+    //     }}
+    //   />
+    //   {showFlatList ? (startOrEnd === 1 ? flatList : null) : null}
+    // </Stack>
   );
 };
 

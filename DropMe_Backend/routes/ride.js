@@ -49,7 +49,7 @@ router.post("/createRide", auth, async (req, res) => {
     if (!newRide)
       return res.status(400).send("Something went wrong try again latter.");
     // After that save the ipc of created ride vehicle
-    savePicture(`${newRide.vehicleNumber}_${userId}`);
+    // savePicture(`${newRide.vehicleNumber}_${userId}`);
     return res.status(200).send(newRide);
   } catch (ex) {
     return res.status(400).send("something failed!! try again latter:" + ex);

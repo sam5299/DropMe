@@ -52,6 +52,7 @@ const AvailableRides = ({ route, navigation }) => {
       console.log("Request to Ride response: ", result);
     } catch (error) {
       console.log("Request to ride: ", error.response.data);
+      alert(" Please Add credits point to wallet");
     }
   };
 
@@ -110,9 +111,12 @@ const AvailableRides = ({ route, navigation }) => {
                 <Stack direction={"column"}>
                   <Entypo name="star" size={20} color="black" />
                   <Text fontWeight={"bold"} color={"black"} fontSize={15}>
-                    {(
-                      ride.User.sumOfRating / ride.User.totalNumberOfRatedRides
-                    ).toPrecision(2)}
+                    {ride.User.totalNumberOfRatedRides == 0
+                      ? 0.0
+                      : (
+                          ride.User.sumOfRating /
+                          ride.User.totalNumberOfRatedRides
+                        ).toPrecision(2)}
                   </Text>
                 </Stack>
               </Box>

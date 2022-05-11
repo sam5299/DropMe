@@ -1,6 +1,7 @@
 import React, { useState, useReducer, useEffect, useContext } from "react";
 import { useValidation } from "react-native-form-validator";
 import {
+  Avatar,
   Box,
   Button,
   FormControl,
@@ -11,9 +12,11 @@ import {
   Text,
   WarningOutlineIcon,
 } from "native-base";
+import * as ImagePicker from "expo-image-picker";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { AuthContext } from "../Context";
 import axios from "axios";
+import { TouchableHighlight } from "react-native";
 
 const Registration = ({ navigation }) => {
   const [show, setShow] = useState(false);
@@ -26,6 +29,8 @@ const Registration = ({ navigation }) => {
     email: "",
     gender: "Male",
     password: "",
+    profile:
+      "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png",
   };
 
   const reducer = (state, action) => {
@@ -55,6 +60,11 @@ const Registration = ({ navigation }) => {
           ...state,
           password: action.payload,
         };
+      case "profile":
+        return {
+          ...state,
+          profile: action.payload,
+        };
       case "default":
         return state;
     }
@@ -68,6 +78,24 @@ const Registration = ({ navigation }) => {
   });
 
   // useEffect(() => alert(state), [state]);
+
+  const uploadImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+      base64: true,
+    });
+
+    if (!result.cancelled) {
+      dispatch({
+        type: "profile",
+        payload: "data:image/png;base64," + result.base64,
+      });
+      //setPic("data:image/png;base64," + result.base64);
+    }
+  };
 
   const handleRegistration = async () => {
     let isTrue = validate({
@@ -119,16 +147,38 @@ const Registration = ({ navigation }) => {
         _light={{
           backgroundColor: "gray.50",
         }}
+        alignItems={"center"}
       >
-        <FormControl m="5">
-          <Text color="rgba(6,182,212,1.00)" fontSize={"lg"} mb="2">
-            Hello!
+        <FormControl m={5} alignItems={"center"}>
+          <Text
+            color="rgba(6,182,212,1.00)"
+            fontSize={"xl"}
+            mb="2"
+            textAlign={"center"}
+          >
+            Registration
           </Text>
+
+          <TouchableHighlight
+            onPress={() => uploadImage()}
+            underlayColor="rgba(0,0,0,0)"
+          >
+            <Avatar
+              bg="green.500"
+              size="xl"
+              source={{
+                uri: state.profile,
+              }}
+            >
+              Vehicle Image
+              <Avatar.Badge bg="green.500" />
+            </Avatar>
+          </TouchableHighlight>
+
           <Stack space={6} m="2">
-            <Box>
+            <Box display={"flex"} justifyContent={"center"}>
               <Input
                 size={"md"}
-                w="85%"
                 InputLeftElement={
                   <Icon
                     as={<MaterialCommunityIcons name="account" />}
@@ -156,7 +206,6 @@ const Registration = ({ navigation }) => {
                 keyboardType="numeric"
                 maxLength={10}
                 size={"md"}
-                w="85%"
                 InputLeftElement={
                   <Icon
                     as={<MaterialCommunityIcons name="phone" />}
@@ -182,7 +231,6 @@ const Registration = ({ navigation }) => {
             <Box>
               <Input
                 size={"md"}
-                w="85%"
                 InputLeftElement={
                   <Icon
                     as={<MaterialCommunityIcons name="email" />}
@@ -241,7 +289,6 @@ const Registration = ({ navigation }) => {
             <Box>
               <Input
                 size={"md"}
-                w="85%"
                 type={show ? "text" : "password"}
                 InputLeftElement={
                   <Icon
@@ -284,9 +331,7 @@ const Registration = ({ navigation }) => {
                 </>
               )}
             </Box>
-            <Button w="85%" onPress={handleRegistration}>
-              Sign Up
-            </Button>
+            <Button onPress={handleRegistration}>Sign Up</Button>
           </Stack>
         </FormControl>
       </Box>
