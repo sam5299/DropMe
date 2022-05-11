@@ -51,11 +51,11 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
   } = route.params;
 
   useEffect(() => {
+    let mounted = true;
     async function fetchUserData() {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-        setToken(parseUser.userToken);
 
         let result = await axios.get(url + "/user/getUser", {
           headers: {
@@ -63,19 +63,26 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
           },
         });
         // console.log(result.data);
-        setUserData(result.data);
+        if (mounted) {
+          setToken(parseUser.userToken);
+          setUserData(result.data);
+        }
       } catch (ex) {
-        console.log(ex.response.data);
-        setStatus({ status: "error", title: ex.response.data });
-        setShowAlert(true);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 2000);
+        console.log("Exception:", ex.response.data);
+        if (true) {
+          setStatus({ status: "error", title: ex.response.data });
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 2000);
+        }
         // console.log(ex.response.data);
       }
     }
     fetchUserData();
-  }, [userData, userToken]);
+
+    return () => (mounted = false);
+  }, []);
 
   const uploadImage = async (docName) => {
     let result = await ImagePicker.launchImageLibraryAsync({

@@ -1,15 +1,6 @@
 import { View } from "react-native";
 import { React, useState, useEffect, useContext } from "react";
-import {
-  Box,
-  Stack,
-  Center,
-  Image,
-  Text,
-  Button,
-  ScrollView,
-  Avatar,
-} from "native-base";
+import { Box, Stack, Image, Text, Button, ScrollView } from "native-base";
 import axios from "axios";
 import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -22,24 +13,28 @@ const ViewVehicles = () => {
   const url = getUrl();
 
   useEffect(() => {
+    let mounted = true;
     async function getVehicleDetails() {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-        setToken(parseUser.userToken);
 
         let result = await axios.get(url + "/vehicle/getVehicleList", {
           headers: {
             "x-auth-token": parseUser.userToken,
           },
         });
-        setVehicle(result.data);
+        if (mounted) {
+          setVehicle(result.data);
+          setToken(parseUser.userToken);
+        }
       } catch (ex) {
         console.log("Exception", ex.response.data);
       }
     }
 
     getVehicleDetails();
+    return () => (mounted = false);
   }, []);
 
   async function removeVehicle(vehicle) {
@@ -73,6 +68,19 @@ const ViewVehicles = () => {
             alignItems={"center"}
             bg={"#F0F8FF"}
             p={5}
+            borderColor="coolGray.200"
+            borderWidth="1"
+            _dark={{
+              borderColor: "coolGray.600",
+              backgroundColor: "gray.700",
+            }}
+            _web={{
+              shadow: 2,
+              borderWidth: 0,
+            }}
+            _light={{
+              backgroundColor: "gray.50",
+            }}
           >
             <Box>
               <Image
@@ -100,7 +108,7 @@ const ViewVehicles = () => {
   }
 
   return (
-    <Box h="80%" w="90%" alignItems={"center"}>
+    <Box alignItems={"center"} bg={"#F0F8FF"}>
       {vehicleDetails.length ? getVehicle() : <Text>Please add vehicle</Text>}
     </Box>
   );

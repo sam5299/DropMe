@@ -15,6 +15,7 @@ import {
 } from "native-base";
 import { useValidation } from "react-native-form-validator";
 import { AuthContext } from "../Component/Context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const initialState = {
   source: "",
@@ -22,7 +23,7 @@ const initialState = {
   date: "",
   time: "",
   pickupPoint: "",
-  seatRequest: "1",
+  seats: "1",
 };
 
 const reducer = (state, action) => {
@@ -52,10 +53,10 @@ const reducer = (state, action) => {
         ...state,
         pickupPoint: action.payload,
       };
-    case "seatRequest":
+    case "seats":
       return {
         ...state,
-        seatRequest: action.payload,
+        seats: action.payload,
       };
     default:
       return {
@@ -64,18 +65,36 @@ const reducer = (state, action) => {
         date: "",
         time: "",
         pickupPoint: "",
-        seatRequest: "1",
+        seats: "1",
       };
   }
 };
 
 const BookRide = ({ navigation }) => {
-  const [error, setError] = useState({ isTrue: false, field: "" });
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [gender, setGender] = useState("");
+  const [token, setToken] = useState("");
 
   const { source, destination, date, time, pickupPoint } = state;
   const { validate, isFieldInError } = useValidation({
     state: { source, destination, date, time, pickupPoint },
+  });
+
+  useEffect(() => {
+    let mounted = true;
+    const bookRide = async () => {
+      try {
+        const User = await AsyncStorage.getItem("User");
+        const userDetails = JSON.parse(User);
+        if (mounted) {
+          setGender(userDetails.data.gender);
+          setToken(userDetails.userToken);
+        }
+      } catch (error) {
+        console.log("BookRide: ", error.response.data);
+      }
+    };
+    bookRide();
   });
 
   const { getUrl } = useContext(AuthContext);
@@ -90,7 +109,7 @@ const BookRide = ({ navigation }) => {
       pickupPoint: { required: true },
     });
     if (isTrue) {
-      navigation.navigate("Available Rides");
+      navigation.navigate("Available Rides", { ...state, gender, token });
       dispatch({});
     }
   };
@@ -166,7 +185,7 @@ const BookRide = ({ navigation }) => {
               maxValue={8}
               accessibilityLabel="Available Seats"
               step={1}
-              onChange={(v) => dispatch({ type: "seatRequest", payload: v })}
+              onChange={(v) => dispatch({ type: "seats", payload: v })}
             >
               <Slider.Track>
                 <Slider.FilledTrack />

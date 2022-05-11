@@ -1,10 +1,43 @@
 import { View } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Box, Stack, Text, Image, Button, ScrollView } from "native-base";
 import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
+import { AuthContext } from "../Component/Context";
 
-const AvailableRides = () => {
+const AvailableRides = ({ route, navigation }) => {
+  const { source, destination, date, time, seatRequest, gender, token } =
+    route.params;
+
+  const { getUrl } = useContext(AuthContext);
+  const url = getUrl();
+
+  useEffect(() => {
+    let monted = true;
+    const availableRides = async () => {
+      try {
+        const rides = await axios.get(
+          url + "/ride/getRides",
+          {
+            source,
+            destination,
+            date,
+            time,
+            seatRequest,
+            gender,
+          },
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
+      } catch (error) {
+        console.log("AvailableRides: ", error.response.data);
+      }
+    };
+  });
+
   const [RideDetails, setRideDetails] = useState([
     {
       id: 1,

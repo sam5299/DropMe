@@ -28,20 +28,22 @@ const initialState = {
   availableSeats: "1",
   rideFor: "Both",
   rideType: "Paid",
-  distance: 20,
+  distance: 50,
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case "source":
+      let sourceLower = action.payload.toLowerCase();
       return {
         ...state,
-        source: action.payload,
+        source: sourceLower,
       };
     case "destination":
+      let destinationLower = action.payload.toLowerCase();
       return {
         ...state,
-        destination: action.payload,
+        destination: destinationLower,
       };
     case "date":
       return {
@@ -89,6 +91,7 @@ const reducer = (state, action) => {
         availableSeats: "1",
         rideFor: "Both",
         rideType: "Paid",
+        distance: 50,
       };
   }
 };
@@ -108,18 +111,22 @@ const CreateRide = () => {
   const url = getUrl();
 
   useEffect(() => {
+    let mounted = true;
     const createRide = async () => {
       try {
         const User = await AsyncStorage.getItem("User");
         const userDetails = JSON.parse(User);
-        setToken(userDetails.userToken);
-        setGender(userDetails.data.gender);
+        if (mounted) {
+          setToken(userDetails.userToken);
+          setGender(userDetails.data.gender);
+        }
       } catch (error) {
         console.log(error.response.data);
       }
     };
-    setTimeout(() => createRide(), 2000);
-  }, [userToken, gender]);
+    createRide();
+    return () => (mounted = false);
+  }, []);
 
   const handleForm = async () => {
     setLoading(true);
@@ -131,6 +138,7 @@ const CreateRide = () => {
       Vehicle: { required: true },
     });
     if (isTrue) {
+      console.log(state);
       try {
         const result = await axios.post(
           url + "/ride/createRide",
