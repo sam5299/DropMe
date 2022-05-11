@@ -29,14 +29,16 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case "source":
+      let sourceLower = action.payload.toLowerCase();
       return {
         ...state,
-        source: action.payload,
+        source: sourceLower,
       };
     case "destination":
+      let destinationLower = action.payload.toLowerCase();
       return {
         ...state,
-        destination: action.payload,
+        destination: destinationLower,
       };
     case "date":
       return {
@@ -174,7 +176,7 @@ const BookRide = ({ navigation }) => {
             </FormControl.ErrorMessage>
           )}
           <Box mt={5} alignItems={"center"}>
-            <Text textAlign="center">Select Seats: {state.seatRequest}</Text>
+            <Text textAlign="center">Select Seats: {state.seats}</Text>
             <Slider
               isDisabled={false}
               mt={"2"}

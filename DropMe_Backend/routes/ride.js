@@ -36,7 +36,12 @@ router.use(express.json());
 router.post("/createRide", auth, async (req, res) => {
   let userId = req.body.userId;
   delete req.body.userId;
-  console.log("body:", req.body);
+  let amount = 0;
+  if (req.body.rideType == "Paid") {
+    amount = await calculateTripAmount(req.body.Vehicle, req.body.distance);
+  }
+  req.body.amount = parseInt(amount);
+  // console.log("body:", req.body);
   let { error } = validateRideDetails(req.body);
   if (error) return res.status(400).send(error.details[0].message);
   try {
@@ -52,35 +57,47 @@ router.post("/createRide", auth, async (req, res) => {
 });
 
 // get Rides details by Source Destination Date and Time
-router.get("/getRides", auth, async (req, res) => {
-  let body = req.body;
-
-  if (
-    !(
-      "source" in body &&
-      "destination" in body &&
-      "date" in body &&
-      "time" in body
+router.get(
+  "/getRides/:source/:destination/:date/:time/:seats/:gender",
+  auth,
+  async (req, res) => {
+    let body = req.params;
+    console.log(body);
+    if (
+      !(
+        "source" in body &&
+        "destination" in body &&
+        "date" in body &&
+        "time" in body
+      )
     )
-  )
-    return res
-      .status(400)
-      .send("Please add Source, Destination , Date and Time");
+      return res
+        .status(400)
+        .send("Please add Source, Destination , Date and Time");
 
-  let Source = body.source;
-  let Destination = body.destination;
-  let Date = body.date;
-  let Time = body.time;
-  let seats = body.seats;
-  let gender = body.gender;
-  try {
-    let rides = await getRides(Source, Destination, Date, Time, seats, gender);
-    if (rides.length == 0) return res.status(400).send("No rides found");
-    return res.status(200).send(rides);
-  } catch (ex) {
-    return res.status(500).send("something failed!! try again latter:" + ex);
+    let Source = body.source;
+    let Destination = body.destination;
+    let Date = body.date;
+    let Time = body.time;
+    let seats = body.seats;
+    let gender = body.gender;
+    try {
+      let rides = await getRides(
+        req.body.User,
+        Source,
+        Destination,
+        Date,
+        Time,
+        seats,
+        gender
+      );
+      if (rides.length == 0) return res.status(400).send("No rides found");
+      return res.status(200).send(rides);
+    } catch (ex) {
+      return res.status(500).send("something failed!! try again latter:" + ex);
+    }
   }
-});
+);
 
 //   get Rides of the particular Rider
 router.get("/getUserRides", auth, async (req, res) => {

@@ -1,7 +1,9 @@
 const express = require("express");
 const { Ride } = require("../models/ride");
+const { User } = require("../models/user");
 const fs = require("fs");
 const req = require("express/lib/request");
+const { Vehicle } = require("../models/vehicle");
 
 // create ride function
 async function createRide(rideDetails) {
@@ -16,17 +18,35 @@ async function getRideDetails(rid, user) {
 }
 
 // get ride by source destination date and  time
-async function getRides(Source, Destination, Date, Time, seats, gender) {
-  console.log("here");
+async function getRides(
+  userId,
+  Source,
+  Destination,
+  Date,
+  Time,
+  seats,
+  gender
+) {
+  //   TripRide.find({rideId:rid, status:status}).populate("tripId","-_id User",Trip);
+  // }
   return await Ride.find({
     source: Source,
     destination: Destination,
     date: Date,
     // time: Time,
     availableSeats: { $gte: seats },
+    //User: { $ne: userId },
     //  rideFor:{$or:{gender,"Both"}}
     status: "Created",
-  }).find({ $or: [{ rideFor: gender }, { rideFor: "Both" }] });
+  })
+    .populate(
+      "User",
+      "_id profile name sumOfRating totalNumberOfRatedRides",
+      User
+    )
+    .populate("Vehicle", "_id vehicleNumber vehicleName vehicleImage", Vehicle)
+    .find({ $or: [{ rideFor: gender }, { rideFor: "Both" }] });
+  // .find({ $not: [{ User: userId }] });
 }
 
 // Add trip request

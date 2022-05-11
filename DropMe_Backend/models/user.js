@@ -6,18 +6,18 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
   userId: { type: Number, required: true },
   //fname: { type: String, required: true },
-  //lname: { type: String, required: true }, 
-  name: {type: String, required: true},
+  //lname: { type: String, required: true },
+  name: { type: String, required: true },
   email: { type: String, required: true },
   mobileNumber: { type: String, unique: true, required: true },
   gender: { type: String, required: true },
   profile: { type: String, required: true },
   password: { type: String, minlength: 6, maxlength: 1024, require: true },
-  licenseNumber : {type: String, minlength:16, maxlength:16, default: null},
-  licenseImage: {type:String, default:null},
-  sumOfRating : {type: Number,default: 0 },
-  totalNumberOfRides : {type: Number, default: 0},
-  totalNumberOfRatedRides: {type: Number, default: 0}
+  licenseNumber: { type: String, minlength: 16, maxlength: 16, default: null },
+  licenseImage: { type: String, default: null },
+  sumOfRating: { type: Number, default: 0 },
+  totalNumberOfRides: { type: Number, default: 0 },
+  totalNumberOfRatedRides: { type: Number, default: 1 },
 });
 
 //object of userSchema export it letter
