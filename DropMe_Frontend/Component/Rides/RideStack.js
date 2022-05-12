@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RideTab from "./RideTab";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Button, Icon } from "native-base";
+import Rides from "./Rides";
+//import RequestRide from "./RequestRide";
 
 const rideStack = createNativeStackNavigator();
 
@@ -19,12 +21,17 @@ const RideStack = ({ navigation }) => {
         }
         onPress={() => navigation.navigate("Menu")}
       >
-        Rides
+        Go Back
       </Button>
       <rideStack.Navigator>
         <rideStack.Screen
           name="RideTab"
           component={RideTab}
+          options={{ headerShown: false }}
+        />
+        <rideStack.Screen
+          name="Rides"
+          component={Rides}
           options={{ headerShown: false }}
         />
       </rideStack.Navigator>

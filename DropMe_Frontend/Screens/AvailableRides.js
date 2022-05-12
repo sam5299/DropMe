@@ -50,6 +50,7 @@ const AvailableRides = ({ route, navigation }) => {
         },
       });
       console.log("Request to Ride response: ", result.data);
+      alert("Request Sent");
     } catch (error) {
       console.log("Request to ride: ", error.response.data);
       alert(" Please Add credits point to wallet");
