@@ -36,6 +36,7 @@ async function getRides(
     // time: Time,
     availableSeats: { $gte: seats },
     User: { $ne: userId },
+    requestedUserList: { $nin: userId },
     //  rideFor:{$or:{gender,"Both"}}
     status: "Created",
   })
@@ -50,10 +51,11 @@ async function getRides(
 }
 
 // Add trip request
-async function addTripRequest(rideId, tripId) {
+async function addTripRequest(passengerId, rideId, tripId) {
   let [rideObj] = await Ride.find({ _id: rideId });
   if (!rideObj) return null;
   rideObj.requestedTripList.push(tripId);
+  rideObj.requestedUserList.push(passengerId);
   return await rideObj.save();
 }
 

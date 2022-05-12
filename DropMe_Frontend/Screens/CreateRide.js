@@ -125,7 +125,7 @@ const reducer = (state, action) => {
   }
 };
 
-const CreateRide = () => {
+const CreateRide = ({ navigation }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [gender, setGender] = useState("");
   const [userToken, setToken] = useState(null);
@@ -136,11 +136,14 @@ const CreateRide = () => {
     state: { source, destination, date, time, Vehicle },
   });
 
+  const [isRerender, setIsRerender] = useState(false);
+
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
   useEffect(() => {
     let mounted = true;
+    //console.log("rendered");
     const createRide = async () => {
       try {
         const User = await AsyncStorage.getItem("User");
@@ -155,7 +158,7 @@ const CreateRide = () => {
     };
     createRide();
     return () => (mounted = false);
-  }, []);
+  }, [isRerender]);
 
   const handleForm = async () => {
     setLoading(true);
@@ -182,7 +185,8 @@ const CreateRide = () => {
           let newResult = await axios.get(
             `${url}/map/api/directionApi/${state.s_lon}/${state.s_lat}/${state.d_lon}/${state.d_lat}`
           );
-          //console.log("distance:" + newResult.data);
+          console.log("185" + typeof newResult.data);
+          state.distance = newResult.data;
           dispatch({ type: "distance", payload: newResult.data });
         } catch (error) {
           console.log("exception is here..");
@@ -194,7 +198,7 @@ const CreateRide = () => {
           { ...state },
           { headers: { "x-auth-token": userToken } }
         );
-        console.log("createride state:" + state);
+
         Alert.alert("Success", "Ride Created...!");
       } catch (error) {
         console.log("Create Ride:", error.response.data);

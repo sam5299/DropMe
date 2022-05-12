@@ -12,7 +12,7 @@ import axios from "axios";
 const Stack = createNativeStackNavigator();
 
 const Main = () => {
-  const url = "http://192.168.96.17:3100";
+  const url = "http://192.168.96.181:3100";
 
   const initialState = {
     userName: null,

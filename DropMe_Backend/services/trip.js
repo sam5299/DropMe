@@ -1,5 +1,5 @@
 const { Trip } = require("../models/trip");
-const Ride = require("../models/ride");
+const { Ride } = require("../models/ride");
 const req = require("express/lib/request");
 const { addTripRequest } = require("./ride");
 const { Vehicle } = require("../models/vehicle");
@@ -24,13 +24,13 @@ async function addNewTrip(tripBody) {
 //function to request a ride
 async function requestRide(tripBody, rid) {
   let tripId = null;
-
+  //console.log(tripBody);
   let trip = await getTrip(tripBody);
   //console.log(trip);
   if (trip) tripId = trip._id;
   else tripId = await addNewTrip(tripBody);
   //console.log("tripid which is to store:"+tripId);
-  let requestedTrip = await addTripRequest(rid, tripId);
+  let requestedTrip = await addTripRequest(tripBody.User, rid, tripId);
   //console.log(requestedTrip);
   return requestedTrip;
 }
@@ -51,7 +51,7 @@ function generateTripToken() {
 // calculate trip amount
 async function calculateTripAmount(vehicleId, distance) {
   let vehicleObj = await Vehicle.findOne({ _id: vehicleId });
-  //console.log("Vehicle Object:"+vehicleObj);
+  // console.log("Vehicle Object:" + vehicleObj);
   let vehicleClass = vehicleObj.vehicleClass;
   let vehicleType = vehicleObj.vehicleType;
   let classFactor = 1;
@@ -81,7 +81,7 @@ async function calculateTripAmount(vehicleId, distance) {
   }
   if ("Car" == vehicleType) {
     console.log("Car");
-    switch (fuel) {
+    switch (vehicleObj.fuelType) {
       case "Petrol":
         fuelFactor = 2;
         break;
