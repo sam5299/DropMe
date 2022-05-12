@@ -8,7 +8,7 @@ import AddRemoveStack from "../Vehicle/AddRemoveStack";
 import TripsStack from "../Trips/TripsStack";
 import ViewProfile from "../Profile/ViewProfile";
 import RideStack from "../Rides/RideStack";
-
+import NotificationScreen from "../../Screens/NotificationScreen";
 const SliderStack = createNativeStackNavigator();
 
 const Slide = () => {
@@ -37,6 +37,8 @@ const Slide = () => {
           options={{ headerShown: false }}
         />
         <SliderStack.Screen name="ViewProfile" component={ViewProfile} />
+        <SliderStack.Screen name="Notification" component={NotificationScreen} />
+
       </SliderStack.Navigator>
     </View>
   );
