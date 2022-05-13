@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   licenseImage: { type: String, default: null },
   sumOfRating: { type: Number, default: 0 },
   totalNumberOfRides: { type: Number, default: 0 },
-  totalNumberOfRatedRides: { type: Number, default: 1 },
+  totalNumberOfRatedRides: { type: Number, default: 0 },
 });
 
 //object of userSchema export it letter

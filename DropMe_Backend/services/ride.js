@@ -37,7 +37,6 @@ async function getRides(
     availableSeats: { $gte: seats },
     User: { $ne: userId },
     requestedUserList: { $nin: userId },
-    //  rideFor:{$or:{gender,"Both"}}
     status: "Created",
   })
     .populate(
@@ -63,6 +62,7 @@ async function addTripRequest(passengerId, rideId, tripId) {
 async function getUserRides(userId) {
   return await Ride.find({
     User: userId,
+    status: "Created",
   }).populate("Vehicle", "_id vehicleNumber vehicleImage ", Vehicle);
 }
 
