@@ -24,13 +24,11 @@ const Rides = () => {
             "x-auth-token": userDetails.userToken,
           },
         });
-        if (mounted) {
-          console.log("User Rides: ", allRides.data);
-          setUserRides(allRides.data);
-          setShowRides(false);
-        }
+        setUserRides(allRides.data);
+        setShowRides(false);
       } catch (error) {
         console.log("Rides Exception: ", error.response.data);
+        setShowRides(false);
       }
     };
 
@@ -92,12 +90,22 @@ const Rides = () => {
   }
 
   if (showRides) {
-    return <Text>Loading</Text>;
+    return (
+      <Box flex={1} justifyContent="center" alignItems={"center"}>
+        <Text>Loading...!</Text>
+      </Box>
+    );
   } else {
     return (
       <Box flex={1} alignItems={"center"} pb={"5"}>
         <Box mt={2}>
-          {allRides.length ? allUserRides() : <Text>No Rides</Text>}
+          {allRides.length ? (
+            allUserRides()
+          ) : (
+            <Box flex={1} justifyContent="center" alignItems={"center"}>
+              <Text>No Rides!!!</Text>
+            </Box>
+          )}
         </Box>
       </Box>
     );

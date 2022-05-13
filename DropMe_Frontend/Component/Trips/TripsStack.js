@@ -13,17 +13,6 @@ const SliderStack = createNativeStackNavigator();
 const TripsStack = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }} collapsable={false}>
-      <Button
-        variant={"outline"}
-        w={"50%"}
-        size={"md"}
-        leftIcon={
-          <Icon as={<MaterialCommunityIcons name="arrow-left" />} size={"md"} />
-        }
-        onPress={() => navigation.navigate("Menu")}
-      >
-        Trips
-      </Button>
       <SliderStack.Navigator>
         <SliderStack.Screen
           name="RequestBookedHistory"
