@@ -4,7 +4,7 @@ const { User } = require("../models/user");
 const fs = require("fs");
 const req = require("express/lib/request");
 const { Vehicle } = require("../models/vehicle");
-const {trip_ride} = require('../models/trip_ride')
+const { trip_ride } = require("../models/trip_ride");
 
 // create ride function
 async function createRide(rideDetails) {
@@ -59,7 +59,6 @@ async function getCreatedRides(
 // })
 // }
 
-
 // Add trip request
 async function addTripRequest(passengerId, rideId, tripId) {
   let [rideObj] = await Ride.find({ _id: rideId });
@@ -74,7 +73,9 @@ async function getUserRides(userId) {
   return await Ride.find({
     User: userId,
     status: "Created",
-  }).populate("Vehicle", "_id  vehicleImage ", Vehicle);
+  })
+    .populate("Vehicle", "_id  vehicleImage ", Vehicle)
+    .populate("User", "_id name", User);
 }
 
 // delete a ride by its id

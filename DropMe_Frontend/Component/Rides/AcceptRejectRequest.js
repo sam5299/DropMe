@@ -5,7 +5,7 @@ import { AuthContext } from "../Context";
 import { Box, Stack, Text, Image, Button, ScrollView } from "native-base";
 
 const AcceptRejectRequest = ({ route, navigation }) => {
-  const { rideId, token } = route.params;
+  const { rideId, token, amount, name, vehicleNumber } = route.params;
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
@@ -43,9 +43,9 @@ const AcceptRejectRequest = ({ route, navigation }) => {
   function viewRequest() {
     return (
       <ScrollView>
-        {tripRequestList.map((ride) => (
+        {tripRequestList.map((list) => (
           <Box
-            key={ride._id}
+            key={list._id}
             mb={5}
             mx={5}
             rounded="lg"
@@ -72,7 +72,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
             >
               <Image
                 source={{
-                  //uri: ride.User.profile,
+                  //uri: list.User.profile,
                   uri: "https://stimg.cardekho.com/images/carexteriorimages/630x420/Maruti/Swift-Dzire-Tour/8862/1646139841911/front-left-side-47.jpg?tr=h-140",
                 }}
                 alt="Alternate Text"
@@ -81,7 +81,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                 bg="red.100"
               />
               <Text bold fontSize={25}>
-                {ride.User.name}
+                {list.User.name}
               </Text>
               <Stack direction={"column"} space={2}>
                 <Box flexDir={"row"}>
@@ -89,7 +89,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                     Pickup Point:
                   </Text>
                   <Text ml={2} fontSize={18}>
-                    {ride.pickupPoint}
+                    {list.pickupPoint}
                   </Text>
                 </Box>
                 <Box flexDir={"row"}>
@@ -97,7 +97,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                     Seat Request:
                   </Text>
                   <Text ml={2} fontSize={18}>
-                    {ride.seatRequest}
+                    {list.seatRequest}
                   </Text>
                 </Box>
               </Stack>
@@ -106,7 +106,9 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                   _text={{
                     color: "white",
                   }}
-                  onPress={() => alert("Accepted..!")}
+                  onPress={() =>
+                    acceptRequest(list._id, rideId, name, amount, vehicleNumber)
+                  }
                   px={5}
                 >
                   Accept
