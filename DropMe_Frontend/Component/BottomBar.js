@@ -45,7 +45,7 @@ export default function BottomBar() {
           name="Slide"
           component={Slide}
           options={{
-            tabBarLabel: "More",
+            tabBarLabel: "Menu",
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
                 name="menu-open"

@@ -7,6 +7,8 @@ const { requestRide } = require("../services/trip");
 const { getWallet, updateUsedCredit } = require("../services/wallet");
 const { getUser } = require("../services/user");
 router.use(express.json());
+const { Ride } = require("../models/ride");
+const { createNotification } = require("../services/notification");
 
 //endpoint to search riders who are travelling on route passenger searching for
 router.get("/searchForRide", auth, async (req, res) => {
@@ -49,6 +51,25 @@ router.post("/requestRide", auth, async (req, res) => {
   let requestedRide = await requestRide(req.body, rideId);
   if (!requestRide)
     return res.status(400).send("something failed cannot request ride");
+
+  //send notification to rider for trip request
+  //step1. get userId of rider from rid
+  let rideDetails = await Ride.findOne({ _id: rideId });
+  console.log("ride detail's:", rideDetails);
+
+  //step2: get user detail's
+  let user = await getUser(req.body.User);
+  console.log("user detail's:" + user);
+
+  //step3. crate object
+  let notificationObj = {
+    fromUser: req.body.User,
+    toUser: rideDetails.User,
+    message: `You got trip request from passenger ${user.name}`,
+  };
+
+  let notificationResult = createNotification(notificationObj);
+  console.log("notificationresult:", notificationResult);
 
   return res.status(200).send("request sent:" + requestedRide);
 });

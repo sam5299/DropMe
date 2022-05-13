@@ -41,7 +41,7 @@ const Menu = ({ navigation }) => {
             />
             <Stack ml={"5"} space={1}>
               <Heading size="md">Rides</Heading>
-              <Text>Manage rides</Text>
+              <Text>Manage Rides</Text>
             </Stack>
           </Box>
           <MaterialCommunityIcons
@@ -101,7 +101,7 @@ const Menu = ({ navigation }) => {
             />
             <Stack ml={"5"} space={1}>
               <Heading size="md">Vehicles</Heading>
-              <Text>Manage vehicles</Text>
+              <Text>Manage Vehicles</Text>
             </Stack>
           </Box>
           <MaterialCommunityIcons
@@ -131,7 +131,7 @@ const Menu = ({ navigation }) => {
             />
             <Stack ml={"5"} space={1}>
               <Heading size="md">Profile</Heading>
-              <Text>View your profile</Text>
+              <Text>View Profile</Text>
             </Stack>
           </Box>
           <MaterialCommunityIcons
@@ -161,7 +161,7 @@ const Menu = ({ navigation }) => {
             />
             <Stack ml={"5"} space={1}>
               <Heading size="md">Wallet</Heading>
-              <Text>Manage payments</Text>
+              <Text>Manage Payments</Text>
             </Stack>
           </Box>
           <MaterialCommunityIcons
@@ -222,7 +222,6 @@ const Menu = ({ navigation }) => {
 
 
         {/* <Button mx={2} onPress={() => signOut()}  >
-
         Logout
       <MaterialIcons name="logout" size={24} color="black" />
       </Button> */}

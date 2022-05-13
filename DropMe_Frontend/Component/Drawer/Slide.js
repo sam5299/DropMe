@@ -37,8 +37,10 @@ const Slide = () => {
           options={{ headerShown: false }}
         />
         <SliderStack.Screen name="ViewProfile" component={ViewProfile} />
-        <SliderStack.Screen name="Notification" component={NotificationScreen} />
-
+        <SliderStack.Screen
+          name="Notification"
+          component={NotificationScreen}
+        />
       </SliderStack.Navigator>
     </View>
   );
