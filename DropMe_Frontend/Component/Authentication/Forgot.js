@@ -29,6 +29,7 @@ const Forgot = () => {
   const [status, setStatus] = useState({ status: "", title: "" });
   const [showAlert, setShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
@@ -52,9 +53,9 @@ const Forgot = () => {
 
     const body = { mobileNumber: mobileNumber };
     try {
-      setShowSpinner(true);
+      setIsLoading(true);
       let result = await axios.put(url + "/user/forgotPassword", body);
-      setShowSpinner(false);
+      setIsLoading(false);
       setStatus({
         status: "success",
         title: "New password sent to your mail.",
@@ -63,7 +64,7 @@ const Forgot = () => {
 
       console.log("Result:" + result.data);
     } catch (ex) {
-      setShowSpinner(false);
+      setIsLoading(false);
       setStatus({ status: "error", title: ex.response.data });
       setShowAlert(true);
       setTimeout(() => {
@@ -74,9 +75,19 @@ const Forgot = () => {
   };
 
   let buttonField = (
-    <Button w={"85%"} onPress={handleForgotPassword}>
-      Send Password On Mail
-    </Button>
+    <Box>
+      <Button
+        isLoading={isLoading}
+        isLoadingText="Sending password.."
+        size="md"
+        w={"85%"}
+        onPress={handleForgotPassword}
+      >
+        <Text fontSize={"lg"} color="white">
+          Send password on mail
+        </Text>
+      </Button>
+    </Box>
   );
 
   let ShowSpinner = (
