@@ -64,7 +64,7 @@ const Rides = () => {
 
               <Text fontSize={25}>{ride.vehicleNumber}</Text>
               <Text fontSize={18} fontWeight="bold">
-                <FontAwesome name="rupee" size={18} color="black" />-
+                <FontAwesome name="rupee" size={18} color="black" />
                 {ride.amount}
               </Text>
               <Box justifyContent={"flex-start"}>

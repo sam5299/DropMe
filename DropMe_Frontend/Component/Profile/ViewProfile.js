@@ -16,7 +16,7 @@ const ViewProfile = () => {
     rideCount: 36,
     averageRating: 3.9,
     riderImage:
-      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.Vzahyi5u3exbb73RDnoYJgHaLH%26pid%3DApi&f=1",
+      "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png",
   });
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const ViewProfile = () => {
           <Stack justifyContent={"center"} alignItems={"center"} space={3}>
             <Image
               source={{
-                uri: userDetails.profile,
+                uri: "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png",
               }}
               alt="Image not available"
               borderRadius={100}

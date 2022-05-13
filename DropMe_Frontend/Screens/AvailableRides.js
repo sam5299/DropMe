@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { Box, Stack, Text, Image, Button, ScrollView } from "native-base";
 import { Entypo } from "@expo/vector-icons";
@@ -12,6 +12,7 @@ const AvailableRides = ({ route, navigation }) => {
   const { source, destination, date, time, gender, seats, token, pickupPoint } =
     route.params;
   const { getUrl } = useContext(AuthContext);
+  const [isLoading, setLoading] = useState(false);
   const url = getUrl();
 
   useEffect(() => {
@@ -43,17 +44,22 @@ const AvailableRides = ({ route, navigation }) => {
     tripDetails["rideId"] = ride._id;
 
     console.log("Trip: ", tripDetails);
+    setLoading(true);
     try {
       const result = await axios.post(url + "/trip/requestRide", tripDetails, {
         headers: {
           "x-auth-token": token,
         },
       });
-      console.log("Request to Ride response: ", result.data);
-      alert("Request Sent");
+      console.log("done");
+      alert(
+        `Request has been sent to rider.\nYou will receive notification once rider accept/reject your request.`
+      );
+      setLoading(false);
     } catch (error) {
       console.log("Request to ride: ", error.response.data);
       alert(" Please Add credits point to wallet");
+      setLoading(false);
     }
   };
 
@@ -97,12 +103,15 @@ const AvailableRides = ({ route, navigation }) => {
                 alignItems={"center"}
                 w="100%"
                 justifyContent={"space-evenly"}
+                borderRadius={2}
+                //borderColor="rgba(6,182,212,1.00)"
+                borderColor="black"
               >
                 <Image
                   source={{
                     uri: ride.User.profile,
                   }}
-                  alt="Image not found"
+                  alt="noimage"
                   size={"sm"}
                   borderRadius={100}
                 />
@@ -135,8 +144,22 @@ const AvailableRides = ({ route, navigation }) => {
               <Text fontWeight={"bold"} color={"black"} fontSize={18}>
                 Rs.{ride.amount == 0 ? "Free" : ride.amount}
               </Text>
-              <Button size={"md"} px="10" onPress={() => sendRequest(ride)}>
+              {/* <Button size={"md"} px="10" onPress={() => sendRequest(ride)}>
                 Send Request
+              </Button> */}
+              <Button
+                isLoading={isLoading}
+                isLoadingText="Sending request.."
+                //size="md"
+                px="10"
+                mt={"5"}
+                //w="90%"
+                ml={2}
+                onPress={() => sendRequest(ride)}
+              >
+                <Text fontSize={"lg"} color="white">
+                  Send Request
+                </Text>
               </Button>
             </Stack>
           </Box>

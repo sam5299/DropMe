@@ -11,16 +11,18 @@ async function getNotification(userId) {
     toUser: userId,
     isRead: false,
   });
-  if (notificationList.length == 0) return ["No any notifications"];
+  //if (notificationList.length == 0) return ["No any notifications"];
   return notificationList;
 }
 
 async function markAsRead(notificationId) {
   let notification = await Notification.findOne({ _id: notificationId });
-  notification.isRead = true;
+  if (!notification) {
+    notification.isRead = true;
+    return await notification.save();
+  }
   //if(notificationList.length==0)
   //return ["No any notifications"];
-  return await notification.save();
 }
 
 module.exports = { createNotification, getNotification, markAsRead };

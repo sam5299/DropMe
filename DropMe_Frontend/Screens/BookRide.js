@@ -108,6 +108,7 @@ const BookRide = ({ navigation }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [gender, setGender] = useState("");
   const [token, setToken] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
   const { source, destination, date, time, pickupPoint } = state;
   const { validate, isFieldInError } = useValidation({
@@ -144,6 +145,7 @@ const BookRide = ({ navigation }) => {
       pickupPoint: { required: true },
     });
     if (isTrue) {
+      setLoading(true);
       try {
         const result = await axios.get(
           `${url}/map/api/reverseCoding/${state.s_lat}/${state.s_lon}`
@@ -159,11 +161,13 @@ const BookRide = ({ navigation }) => {
         //console.log("distance:" + parseFloat(newResult.data));
         dispatch({ type: "distance", payload: newResult.data });
         console.log(state);
+        setLoading(false);
       } catch (error) {
         console.log("exception Book Ride");
         console.log(error);
+        setLoading(false);
       }
-
+      setLoading(false);
       navigation.navigate("Available Rides", { ...state, gender, token });
     }
   };
@@ -247,7 +251,15 @@ const BookRide = ({ navigation }) => {
               <Slider.Thumb />
             </Slider>
           </Box>
-          <Button size="md" mt="5%" w="95%" mx={3} onPress={handleForm}>
+          <Button
+            isLoading={isLoading}
+            isLoadingText="Searching for rides.."
+            size="md"
+            mt={"5"}
+            w="95%"
+            ml={2}
+            onPress={handleForm}
+          >
             <Text fontSize={"lg"} color="white">
               Search Rides
             </Text>
