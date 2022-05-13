@@ -9,14 +9,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Forgot from "./Forgot";
 import axios from "axios";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator(); 
 
 const Main = () => {
-<<<<<<< HEAD
-  const url = "http://192.168.43.180:3100";
-=======
   const url = "http://192.168.43.87:3100";
->>>>>>> df72bfe831f55940d68ff2e3ac6ece6fb063e377
 
   const initialState = {
     userName: null,

@@ -4,6 +4,7 @@ const { User } = require("../models/user");
 const fs = require("fs");
 const req = require("express/lib/request");
 const { Vehicle } = require("../models/vehicle");
+const {trip_ride} = require('../models/trip_ride')
 
 // create ride function
 async function createRide(rideDetails) {
@@ -18,7 +19,7 @@ async function getRideDetails(rid, user) {
 }
 
 // get ride by source destination date and  time
-async function getRides(
+async function getCreatedRides(
   userId,
   Source,
   Destination,
@@ -50,6 +51,15 @@ async function getRides(
   // .find({ $not: [{ User: userId }] });
 }
 
+// get booked ride of raider
+// async function getBookedRides(raiderId){
+
+// return await trip_ride.find({
+//   raiderId:raiderId
+// })
+// }
+
+
 // Add trip request
 async function addTripRequest(passengerId, rideId, tripId) {
   let [rideObj] = await Ride.find({ _id: rideId });
@@ -75,7 +85,7 @@ async function deleteRide(rideId) {
 
 // to get list of all trip who has reuqested for perticular ride
 async function getTripRequestList(rid) {
-  return await Ride.findOne({ _id: rid }, { _id: 0, requestedTripList: 1 });
+  return await Ride.findOne({ _id: rid }, { _id: 1, requestedTripList: 1 });
 }
 
 // reduce availableSeat of ride after successfully accepting ride
@@ -110,7 +120,7 @@ function savePicture(fileName) {}
 
 module.exports = {
   createRide,
-  getRides,
+  getCreatedRides,
   getRideDetails,
   getUserRides,
   deleteRide,

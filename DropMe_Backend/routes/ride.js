@@ -4,7 +4,7 @@ const auth = require("../middleware/auth");
 const { Ride, validateRideDetails } = require("../models/ride");
 const {
   createRide,
-  getRides,
+  getCreatedRides,
   getUserRides,
   deleteRide,
   savePicture,
@@ -86,7 +86,7 @@ router.get(
     let seats = body.seats;
     let gender = body.gender;
     try {
-      let rides = await getRides(
+      let rides = await getCreatedRides(
         req.body.User,
         Source,
         Destination,
@@ -116,17 +116,18 @@ router.get("/getUserRides", auth, async (req, res) => {
   }
 });
 
-// route to get list of trip who has requsted for ride
+// route to get list of trip who has requested for ride
 router.get("/getTripRequestList/:rid", auth, async (req, res) => {
   let tripList = await getTripRequestList(req.params.rid);
   console.log("trip requested list:", tripList);
   if (!tripList)
     return res.status(404).send("No requested trip for given ride.");
-  let requestedTripList = {};
+  let requestedTripList = [];
   console.log(tripList);
   for (element of tripList.requestedTripList) {
     let result = await getTripDetails(element);
-    requestedTripList = { ...requestedTripList, result };
+   // requestedTripList = { ...requestedTripList, result };
+   requestedTripList.push(result)
   }
 
   return res.status(200).send(requestedTripList);
@@ -136,10 +137,14 @@ router.get("/getTripRequestList/:rid", auth, async (req, res) => {
 router.get("/getAllRequest", auth, async (req, res) => {
   let userId = req.body.User;
   let allRideList = await getUserRides(userId);
- // console.log("All Rides", allRideList);
+  // console.log("All Rides", allRideList);
   //let requestList = await getAllRequest(allRideList);
- 
- //console.log("### final OP", requestList);
+
+  //console.log("### final OP", requestList);
+  for(ride in allRideList)
+  {
+    console.log(ride);
+  }
   return res.status(200).send(await getAllRequest(allRideList));
 });
 
@@ -148,7 +153,7 @@ router.post("/acceptRejectTripRequest", auth, async (req, res) => {
   req.body.status = "Booked";
   req.body.token = generateTripToken();
   delete req.body.userId;
-  delete req.body.User;
+
   console.log(req.body.token);
 
   let vehicle = await Ride.findOne(
@@ -162,12 +167,12 @@ router.post("/acceptRejectTripRequest", auth, async (req, res) => {
   );
 
   console.log("trip:" + trip.User);
-
   amount = await calculateTripAmount(vehicle.Vehicle, trip.distance);
-
   req.body.amount = amount;
   console.log("amount:" + typeof req.body.amount);
-
+  req.body.raiderId = req.body.User;
+  req.body.passengerId = trip.User;
+  delete req.body.User;
   let { error } = validateTripRide(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -193,6 +198,53 @@ router.post("/acceptRejectTripRequest", auth, async (req, res) => {
   let rideObj = await removeTripId(req.body.rideId, req.body.tripId);
   return res.status(200).send("Ride accepted:" + rideObj);
 });
+
+//route to accept a trip request omkar
+// router.post("/acceptTripRequest", auth, async (req, res) => {
+//   let raiderId = req.body.User;
+//   let passengerId = req.body.Trip.User;
+//   // let vehicleId=req.body.Vehicle;
+//   let rideId = req.body.Ride._id;
+//   let tripId = req.body.Trip._id;
+//   // let distance=req.body.distance;
+//   let status = "Booked";
+//   let token = generateTripToken();
+
+//   let amount = await calculateTripAmount(vehicleId, distance);
+// let newObj={
+//   status: status,
+//   raiderId: raiderId,
+//   passengerId: passengerId,
+//   tripId: tripId,
+//   rideId: rideId,
+//   token:token,
+//   amount:amount
+// };
+//   let { error } = validateTripRide(newObj);
+//   if (error) return res.status(400).send(error.details[0].message);
+
+//   //return res.status(200).send(req.body);
+
+//   //accept trip and add tripid and rideid into trip_ride collection
+//   let result = addAcceptedTrip(newObj);
+//   if (!result)
+//     return res.status(400).send("something went wrong cannot accept trip");
+
+//   //add trip amount into usedCredit as  trip is booked
+//   let updatedWallet = await updateUsedCredit(passengerId, amount);
+//   if (!updatedWallet) return res.status("failed to updated balance");
+
+//   //update the availableSeats and reduce number of seats for accepted trip
+//   let updatedAvailableSeat = await reduceAvailableSeats(
+//     rideId,
+//     trip.seatRequest
+//   ); //write function to reduce availableSeat
+//   console.log("Updated availableSeat:" + updatedAvailableSeat);
+
+//   //remove trip id from requestedTripList in Ride collection
+//   let rideObj = await removeTripId(req.body.rideId, req.body.tripId);
+//   return res.status(200).send("Ride accepted:" + rideObj);
+// });
 
 // endpoint to cancel ride
 router.put("/cancelRide/:rid", auth, async (req, res) => {
