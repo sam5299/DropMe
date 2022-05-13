@@ -199,9 +199,9 @@ const Menu = ({ navigation }) => {
           />
         </Pressable>
         <Pressable
-          justifyContent={"space-between"}
+         justifyContent={"space-between"}
           w="100%"
-          h="13%"
+          h="15%"
           bg="white"
           rounded="md"
           shadow={3}
@@ -211,19 +211,15 @@ const Menu = ({ navigation }) => {
           borderWidth={1}
           onPress={() => signOut()}
         >
-          <Box flexDir={"row"} alignItems={"center"} p="5">
-            <MaterialIcons
-              name="logout"
-              size={40}
-              color="rgba(6,182,212,1.00)"
-            />
-
+           <Box flexDir={"row"} alignItems={"center"} p="5">
+            <FontAwesome5 name="bell" size={40} color="rgba(6,182,212,1.00)" />
             <Stack ml={"5"} space={1}>
               <Heading size="md">Logout</Heading>
-              <Text>Logout From Device</Text>
+              <Text>Logout From Device </Text>
             </Stack>
           </Box>
         </Pressable>
+
 
         {/* <Button mx={2} onPress={() => signOut()}  >
         Logout

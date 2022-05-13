@@ -264,7 +264,7 @@ const CreateRide = ({ navigation }) => {
           <RideForType type={{ dispatch: dispatch, rideFor: gender }} />
           <Button
             isLoading={isLoading}
-            isLoadingText="Submitting"
+            isLoadingText="Creating ride.."
             size="md"
             mt={"5"}
             w="95%"

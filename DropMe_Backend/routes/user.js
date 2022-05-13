@@ -36,7 +36,6 @@ router.post("/register", async (req, res) => {
   try {
     let userId = await getUniqueId();
     req.body.userId = userId;
-    req.body.profile = " ";
 
     let { error } = await isUserDataValidate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
