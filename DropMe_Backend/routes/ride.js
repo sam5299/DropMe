@@ -19,6 +19,7 @@ const {
   getTripDetails,
   generateTripToken,
   calculateTripAmount,
+  getAllRequest,
 } = require("../services/trip");
 const { validateTripRide } = require("../models/trip_ride");
 
@@ -42,6 +43,8 @@ router.post("/createRide", auth, async (req, res) => {
     amount = await calculateTripAmount(req.body.Vehicle, req.body.distance);
   }
   req.body.amount = parseInt(amount);
+  let distance = parseFloat(req.body.distance).toPrecision(3);
+  req.body.distance = distance;
   // console.log("body:", req.body);
   let { error } = validateRideDetails(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -115,6 +118,7 @@ router.get("/getUserRides", auth, async (req, res) => {
 // route to get list of trip who has requsted for ride
 router.get("/getTripRequestList/:rid", auth, async (req, res) => {
   let tripList = await getTripRequestList(req.params.rid);
+  console.log("trip requested list:", tripList);
   if (!tripList)
     return res.status(404).send("No requested trip for given ride.");
   let requestedTripList = {};
@@ -125,6 +129,17 @@ router.get("/getTripRequestList/:rid", auth, async (req, res) => {
   }
 
   return res.status(200).send(requestedTripList);
+});
+
+// get all trip request for the user
+router.get("/getAllRequest", auth, async (req, res) => {
+  let userId = req.body.User;
+  let allRideList = await getUserRides(userId);
+ // console.log("All Rides", allRideList);
+  //let requestList = await getAllRequest(allRideList);
+ 
+ //console.log("### final OP", requestList);
+  return res.status(200).send(await getAllRequest(allRideList));
 });
 
 //route to accept/reject trip request
