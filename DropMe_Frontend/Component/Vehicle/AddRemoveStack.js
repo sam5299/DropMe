@@ -13,17 +13,6 @@ const Stack = createNativeStackNavigator();
 const AddRemoveStack = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }} collapsable={false}>
-      <Button
-        variant={"outline"}
-        w={"50%"}
-        size={"md"}
-        leftIcon={
-          <Icon as={<MaterialCommunityIcons name="arrow-left" />} size={"md"} />
-        }
-        onPress={() => navigation.navigate("Menu")}
-      >
-        Vehicles
-      </Button>
       <Stack.Navigator>
         <Stack.Screen
           name="AddRemove"

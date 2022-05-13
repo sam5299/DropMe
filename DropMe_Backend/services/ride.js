@@ -63,7 +63,7 @@ async function addTripRequest(passengerId, rideId, tripId) {
 async function getUserRides(userId) {
   return await Ride.find({
     User: userId,
-  });
+  }).populate("Vehicle", "_id vehicleNumber vehicleImage ", Vehicle);
 }
 
 // delete a ride by its id

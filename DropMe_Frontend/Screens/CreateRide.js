@@ -211,15 +211,15 @@ const CreateRide = ({ navigation }) => {
     <Box flex={1} bg={"#f5f5f5"} flexDirection="column">
       <GoogleMap />
       <ScrollView>
-        <FormControl>
+        <FormControl p={2}>
           <SourceDestination dispatch={dispatch} />
-          <Box flexDirection={"row"} justifyContent="space-around">
+          <Box ml="5" flexDirection={"row"} justifyContent={"space-between"}>
             {isFieldInError("source") && (
               <FormControl.ErrorMessage
                 isInvalid={true}
                 leftIcon={<WarningOutlineIcon size="xs" />}
               >
-                Please enter source field
+                Please Enter Source
               </FormControl.ErrorMessage>
             )}
             {isFieldInError("destination") && (
@@ -227,18 +227,18 @@ const CreateRide = ({ navigation }) => {
                 isInvalid={true}
                 leftIcon={<WarningOutlineIcon size="xs" />}
               >
-                Please enter destination field
+                Please Enter Destination
               </FormControl.ErrorMessage>
             )}
           </Box>
           <DateTime dispatch={dispatch} />
-          <Box flexDirection={"row"} justifyContent="space-around">
+          <Box ml="5" flexDirection={"row"} justifyContent="space-between">
             {isFieldInError("date") && (
               <FormControl.ErrorMessage
                 isInvalid={true}
                 leftIcon={<WarningOutlineIcon size="xs" />}
               >
-                Please enter date
+                Please Enter Date
               </FormControl.ErrorMessage>
             )}
             {isFieldInError("time") && (
@@ -246,7 +246,7 @@ const CreateRide = ({ navigation }) => {
                 isInvalid={true}
                 leftIcon={<WarningOutlineIcon size="xs" />}
               >
-                Please enter time
+                Please Enter Time
               </FormControl.ErrorMessage>
             )}
           </Box>
@@ -257,7 +257,7 @@ const CreateRide = ({ navigation }) => {
                 isInvalid={true}
                 leftIcon={<WarningOutlineIcon size="xs" />}
               >
-                Please select vehicle
+                Please Select Vehicle
               </FormControl.ErrorMessage>
             )}
           </Box>
