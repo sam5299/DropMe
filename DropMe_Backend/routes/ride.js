@@ -123,11 +123,11 @@ router.get("/getTripRequestList/:rid", auth, async (req, res) => {
   if (!tripList)
     return res.status(404).send("No requested trip for given ride.");
   let requestedTripList = [];
-  console.log(tripList);
+  //console.log(tripList);
   for (element of tripList.requestedTripList) {
     let result = await getTripDetails(element);
-   // requestedTripList = { ...requestedTripList, result };
-   requestedTripList.push(result)
+    // requestedTripList = { ...requestedTripList, result };
+    requestedTripList.push(result);
   }
 
   return res.status(200).send(requestedTripList);
@@ -141,8 +141,7 @@ router.get("/getAllRequest", auth, async (req, res) => {
   //let requestList = await getAllRequest(allRideList);
 
   //console.log("### final OP", requestList);
-  for(ride in allRideList)
-  {
+  for (ride in allRideList) {
     console.log(ride);
   }
   return res.status(200).send(await getAllRequest(allRideList));

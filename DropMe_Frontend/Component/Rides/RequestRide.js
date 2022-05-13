@@ -43,11 +43,28 @@ const RequestRides = ({ navigation }) => {
     return (
       <ScrollView>
         {allRides.map((ride) => (
-          <Box key={ride._id} mb={5} mx={5}>
+          <Box
+            key={ride._id}
+            mb={5}
+            mx={5}
+            rounded="lg"
+            borderColor="coolGray.200"
+            borderWidth="1"
+            _dark={{
+              borderColor: "coolGray.600",
+              backgroundColor: "gray.700",
+            }}
+            _web={{
+              shadow: 2,
+              borderWidth: 0,
+            }}
+            _light={{
+              backgroundColor: "gray.50",
+            }}
+          >
             <Stack
               direction={"column"}
               alignItems="center"
-              bg={"#F0F8FF"}
               space={2}
               borderRadius={10}
               p={5}
@@ -110,7 +127,7 @@ const RequestRides = ({ navigation }) => {
     );
   } else {
     return (
-      <Box flex={1} alignItems={"center"} pb={"5"}>
+      <Box flex={1} alignItems={"center"} pb={"5"} bg={"#F0F8FF"}>
         <Box mt={2}>
           {allRides.length ? (
             allUserRides()
