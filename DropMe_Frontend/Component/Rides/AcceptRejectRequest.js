@@ -40,6 +40,26 @@ const AcceptRejectRequest = ({ route, navigation }) => {
     return () => (mounted = false);
   }, []);
 
+  const acceptRequest = async (
+    tripId,
+    rideId,
+    raiderName,
+    amount,
+    vehicleNumber
+  ) => {
+    try {
+      const result = await axios.post(
+        url + "ride/acceptTripRequest",
+        { headers: { "x-auth-token": token } },
+        { tripId, rideId, raiderName, amount, vehicleNumber }
+      );
+      console.log(result.data);
+      alert("Accepted");
+    } catch (error) {
+      console.log("Accept Reject Request: ", error.response);
+    }
+  };
+
   function viewRequest() {
     return (
       <ScrollView>
