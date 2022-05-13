@@ -124,7 +124,7 @@ router.get("/getTripRequestList/:rid", auth, async (req, res) => {
   if (!tripList)
     return res.status(404).send("No requested trip for given ride.");
   let requestedTripList = [];
-  console.log(tripList);
+  //console.log(tripList);
   for (element of tripList.requestedTripList) {
     let result = await getTripDetails(element);
     // requestedTripList = { ...requestedTripList, result };

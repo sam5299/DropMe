@@ -18,7 +18,7 @@ const SourceDestination = ({ dispatch }) => {
   const [showFlatList, setShowFlatList] = useState(false);
   const [startOrEnd, setStartOrEnd] = useState(0);
   const [data, setData] = useState();
-  const { signIn, getUrl } = useContext(AuthContext);
+  const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
   const onChangeText = async (text, locationName) => {
