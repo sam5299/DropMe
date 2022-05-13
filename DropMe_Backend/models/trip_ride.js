@@ -4,6 +4,7 @@ const Joi = require('joi');
 
 let tripRideSchema = new mongoose.Schema({
     status: {type:String, required:true, default:"Booked"},
+    vehicleNumber: {type:String, required:true},
     token: {type:Number, default:0},
     routeMatch: {type:Number, default:100},
     tripRating: {type:Number, default:null},
@@ -15,7 +16,7 @@ let tripRideSchema = new mongoose.Schema({
         ref: "user",
         required: true,
       },   
-      passengerId: {
+      PassengerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
         required: true,
@@ -26,13 +27,14 @@ let TripRide = mongoose.model("trip_ride",tripRideSchema);
 
 function validateTripRide(body) {
     const joiTripRideValidateSchema = Joi.object({
-        status: Joi.string().valid("Booked","Initiated","Success","Cancelled", "Rejected"),
+        status: Joi.string().valid("Booked","Initiated","Completed","Cancelled", "Rejected"),
+        vehicleNumber: Joi.string().required(),
         tripId: Joi.string().required(),
         rideId: Joi.string().required(),
         amount: Joi.number().required(),
         token: Joi.number().required(),
         RaiderId: Joi.string().required(),
-        passengerId: Joi.string().required(),
+        PassengerId: Joi.string().required(),
 
 
     });
