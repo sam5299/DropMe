@@ -130,6 +130,7 @@ const BookRide = ({ navigation }) => {
       }
     };
     bookRide();
+    return () => (mounted = false);
   });
 
   const { getUrl } = useContext(AuthContext);

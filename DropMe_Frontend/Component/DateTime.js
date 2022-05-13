@@ -1,17 +1,7 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Modal,
-  Icon,
-  Input,
-  Container,
-  IconButton,
-  Button,
-  Text,
-} from "native-base";
+import { Box, Icon, Button, Text } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import DateBirth from "./ReusableComponents/DateBirth";
 
 const DateTime = ({ dispatch }) => {
   const [selectedStartDate, setSelectedStartDate] = useState(new Date());

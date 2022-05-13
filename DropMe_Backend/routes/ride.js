@@ -108,6 +108,7 @@ router.get("/getUserRides", auth, async (req, res) => {
   let id = req.body.User;
   try {
     let rideData = await getUserRides(id);
+    console.log(rideData);
     if (rideData.length == 0) return res.status(400).send("No rides found");
     return res.status(200).send(rideData);
   } catch (ex) {
