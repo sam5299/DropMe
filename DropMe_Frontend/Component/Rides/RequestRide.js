@@ -6,7 +6,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { AuthContext } from "../Context";
 
-const RequestRide = () => {
+const RequestRides = ({ navigation }) => {
+  const [allRides, setUserRides] = useState([]);
+  const [showRides, setShowRides] = useState(true);
+  const [token, setToken] = useState(null);
+
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
@@ -16,8 +20,17 @@ const RequestRide = () => {
       try {
         const User = await AsyncStorage.getItem("User");
         const userDetails = JSON.parse(User);
+        setToken(userDetails.userToken);
+        const allRides = await axios.get(url + "/ride/getUserRides", {
+          headers: {
+            "x-auth-token": userDetails.userToken,
+          },
+        });
+        setUserRides(allRides.data);
+        setShowRides(false);
       } catch (error) {
         console.log("Rides Exception: ", error.response.data);
+        setShowRides(false);
       }
     };
 
@@ -26,34 +39,11 @@ const RequestRide = () => {
     return () => (mounted = false);
   }, []);
 
-  const [tripRequestList, setTripRequest] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      profileImage: "https://wallpaperaccess.com/full/317501.jpg",
-      source: "Pune",
-      destination: "Mumbai",
-      pickupPoint: "Shivajinagar",
-      tripPrice: 32423,
-      tripCapacity: 4,
-    },
-    {
-      id: 3,
-      name: "John Doe",
-      profileImage: "https://wallpaperaccess.com/full/317501.jpg",
-      source: "Pune",
-      destination: "Mumbai",
-      pickupPoint: "Shivajinagar",
-      tripPrice: 32423,
-      tripCapacity: 4,
-    },
-  ]);
-
-  function getRequest() {
+  function allUserRides() {
     return (
       <ScrollView>
-        {tripRequestList.map((details) => (
-          <Box key={details.id} my={5}>
+        {allRides.map((ride) => (
+          <Box key={ride._id} mb={5} mx={5}>
             <Stack
               direction={"column"}
               alignItems="center"
@@ -64,7 +54,7 @@ const RequestRide = () => {
             >
               <Image
                 source={{
-                  uri: details.profileImage,
+                  uri: "https://stimg.cardekho.com/images/carexteriorimages/630x420/Maruti/Swift-Dzire-Tour/8862/1646139841911/front-left-side-47.jpg?tr=h-140",
                 }}
                 alt="Alternate Text"
                 size={"xl"}
@@ -72,34 +62,39 @@ const RequestRide = () => {
                 bg="red.100"
               />
 
-              <Text fontSize={25} fontWeight="bold">
-                {details.name}
-              </Text>
+              <Text fontSize={25}>{ride.vehicleNumber}</Text>
               <Text fontSize={18} fontWeight="bold">
-                <FontAwesome name="rupee" size={18} color="black" />-
-                {details.tripPrice}
+                <FontAwesome name="rupee" size={18} color="black" />
+                {ride.amount}
               </Text>
-              <Text fontSize={18} fontWeight="bold">
-                From: {details.source}
-              </Text>
-              <Text fontSize={18} fontWeight="bold" p={1}>
-                To: {details.destination}
-              </Text>
-              <Text fontSize={18} fontWeight="bold" p={1}>
-                Pickup Point: {details.pickupPoint}
-              </Text>
-              <Text fontSize={18} fontWeight="bold">
-                Capacity: {details.tripCapacity}
-              </Text>
-
-              <Stack space={10} direction={"row"}>
-                <Button borderRadius={10} onPress={() => alert("Accepted")}>
-                  Accept
-                </Button>
-                <Button borderRadius={10} onPress={() => alert("Rejected")}>
-                  Reject
-                </Button>
-              </Stack>
+              <Box justifyContent={"flex-start"}>
+                <Box>
+                  <Text fontSize={18} fontWeight="bold">
+                    From:
+                  </Text>
+                  <Text fontSize={15}>{ride.source}</Text>
+                </Box>
+                <Box>
+                  <Text fontSize={18} fontWeight="bold" p={1}>
+                    To:
+                  </Text>
+                  <Text fontSize={15}>{ride.destination}</Text>
+                  <Text fontSize={18} fontWeight="bold" mt={2}>
+                    Seats: {ride.availableSeats}
+                  </Text>
+                </Box>
+              </Box>
+              <Button
+                onPress={() =>
+                  navigation.navigate("ViewRequest", {
+                    rideId: ride._id,
+                    token,
+                  })
+                }
+                px={5}
+              >
+                View Request
+              </Button>
             </Stack>
           </Box>
         ))}
@@ -107,35 +102,27 @@ const RequestRide = () => {
     );
   }
 
-  // useEffect(() => {
-  //   async function loadNotification() {
-  //     try {
-  //       console.log("Hey ");
-
-  //       let result = await axios.get(
-  //         "http://192.168.43.180:3100/notification/getNotification",
-  //         {
-  //           headers: {
-  //             "x-auth-token":
-  //               "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsIlVzZXIiOiI2MjZmOWZkZTRiNDRiZDQ2NGM5NzgzZjEiLCJpYXQiOjE2NTIwODI1MTl9.flvvWDWGaB78rh2HEvV9lhuiLX6d2Ap99M5naritNE4",
-  //           },
-  //         }
-  //       );
-  //       setTripRequest(result.data);
-  //       console.log("hii ");
-  //       console.log("result:", result.data);
-  //     } catch (ex) {
-  //       console.log("Exception", ex.response.data);
-  //     }
-  //   }
-  //   loadNotification();
-  // }, []);
-
-  return (
-    <Box mt={2}>
-      {tripRequestList.length ? getRequest() : <Text>No Request</Text>}
-    </Box>
-  );
+  if (showRides) {
+    return (
+      <Box flex={1} justifyContent="center" alignItems={"center"}>
+        <Text>Loading...!</Text>
+      </Box>
+    );
+  } else {
+    return (
+      <Box flex={1} alignItems={"center"} pb={"5"}>
+        <Box mt={2}>
+          {allRides.length ? (
+            allUserRides()
+          ) : (
+            <Box flex={1} justifyContent="center" alignItems={"center"}>
+              <Text>No Rides!!!</Text>
+            </Box>
+          )}
+        </Box>
+      </Box>
+    );
+  }
 };
 
-export default RequestRide;
+export default RequestRides;

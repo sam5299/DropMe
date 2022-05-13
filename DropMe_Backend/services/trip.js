@@ -39,7 +39,7 @@ async function requestRide(tripBody, rid) {
 async function getTripDetails(tripId) {
   return await Trip.find({ _id: tripId })
     //.populate('User', '-_id profile fname lname ')
-    .populate("User", "-_id profile name")
+    .populate("User", "_id profile name")
     .select("source destination distance seatRequest");
 }
 
