@@ -33,7 +33,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
   let [rcBookImage, setRcBookImage] = useState(null);
   let [pucImage, setPucImage] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
-  const [showSpinner, setShowSpinner] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState({ status: "", title: "" });
   const [userToken, setToken] = useState(null);
 
@@ -85,6 +85,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
   }, []);
 
   const uploadImage = async (docName) => {
+    console.log("document name:" + docName);
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -147,22 +148,20 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
     });
     if (isTrue) {
       try {
-        setShowSpinner(true);
+        setIsLoading(true);
         let result = await axios.post(url + "/vehicle/addVehicle", body, {
           headers: {
             "x-auth-token": userToken,
           },
         });
-        setShowSpinner(false);
-
+        setIsLoading(false);
         setStatus({
           status: "success",
           title: "Vehicle Added.",
         });
-        setShowAlert(true);
         console.log("Add vehicle done..");
       } catch (ex) {
-        setShowSpinner(false);
+        setIsLoading(false);
         setStatus({ status: "error", title: ex.response.data });
         setShowAlert(true);
         setTimeout(() => {
@@ -172,28 +171,6 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
       }
     }
   };
-
-  let buttonField = (
-    <Button
-      w={"200"}
-      h={50}
-      ml={2}
-      mb={2}
-      mt={5}
-      onPress={() => handleUploadDocument()}
-    >
-      Upload Documents
-    </Button>
-  );
-
-  let ShowSpinner = (
-    <HStack space={2} justifyContent="center" mt={"20%"} mr="30%">
-      <Spinner accessibilityLabel="Loading posts" />
-      <Heading color="primary.500" fontSize="xl">
-        Adding Vehicle Details
-      </Heading>
-    </HStack>
-  );
 
   let AlertField = (
     <Alert w="100%" status={status.status}>
@@ -403,7 +380,21 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
               )}
             </Box>
             {/* add button to handle click event */}
-            {showSpinner ? ShowSpinner : buttonField}
+            {/* {showSpinner ? ShowSpinner : buttonField} */}
+            <Box>
+              <Button
+                isLoading={isLoading}
+                isLoadingText="Adding vehicle.."
+                size="md"
+                onPress={handleUploadDocument}
+                mt="5%"
+                mb={"5%"}
+              >
+                <Text fontSize={"lg"} color="white">
+                  Upload Document
+                </Text>
+              </Button>
+            </Box>
           </FormControl>
         </Box>
       </Box>
