@@ -11,6 +11,11 @@ import {
   Stack,
   Text,
   WarningOutlineIcon,
+  Alert,
+  VStack,
+  HStack,
+  IconButton,
+  CloseIcon,
 } from "native-base";
 import * as ImagePicker from "expo-image-picker";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -22,6 +27,12 @@ const Registration = ({ navigation }) => {
   const [show, setShow] = useState(false);
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertField, setAlertField] = useState({
+    status: "success",
+    title: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
   const initialState = {
     name: "",
@@ -77,7 +88,11 @@ const Registration = ({ navigation }) => {
     state: { name, email, mobileNumber, password },
   });
 
-  // useEffect(() => alert(state), [state]);
+  useEffect(() => {
+    let mounted = true;
+
+    return () => (mounted = false);
+  });
 
   const uploadImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -113,14 +128,48 @@ const Registration = ({ navigation }) => {
     });
     if (isTrue) {
       // make a call to backend and store user details
+      setIsLoading(true);
       try {
         const result = await axios.post(url + "/user/register", state);
+        setAlertField({ status: "success", title: "Registration successful." });
+        setShowAlert(true);
+        setIsLoading(false);
+        setTimeout(() => {
+          setShowAlert(false);
+          navigation.navigate("DropMe");
+        }, 1000);
       } catch (error) {
-        console.log(error.response.data);
+        setAlertField({ status: "error", title: error.response.data });
+        setShowAlert(true);
+        setIsLoading(false);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 5000);
       }
-      navigation.navigate("DropMe");
     }
   };
+
+  let AlertField = (
+    <Alert w="100%" status={alertField.status}>
+      <VStack space={2} flexShrink={1} w="100%">
+        <HStack flexShrink={1} space={2} justifyContent="space-between">
+          <HStack space={2} flexShrink={1}>
+            <Alert.Icon mt="1" />
+            <Text fontSize="md" color="coolGray.800">
+              {alertField.title}
+            </Text>
+          </HStack>
+          <IconButton
+            variant="unstyled"
+            _focus={{
+              borderWidth: 0,
+            }}
+            icon={<CloseIcon size="3" color="coolGray.600" />}
+          />
+        </HStack>
+      </VStack>
+    </Alert>
+  );
 
   return (
     <Box
@@ -149,6 +198,7 @@ const Registration = ({ navigation }) => {
         }}
         alignItems={"center"}
       >
+        {showAlert ? AlertField : ""}
         <FormControl m={5} alignItems={"center"}>
           <Text
             color="rgba(6,182,212,1.00)"
@@ -331,7 +381,19 @@ const Registration = ({ navigation }) => {
                 </>
               )}
             </Box>
-            <Button onPress={handleRegistration}>Sign Up</Button>
+            {/* <Button onPress={handleRegistration}>Sign Up</Button> */}
+            <Box>
+              <Button
+                isLoading={isLoading}
+                isLoadingText="Signing up.."
+                size="md"
+                onPress={handleRegistration}
+              >
+                <Text fontSize={"lg"} color="white">
+                  Sign Up
+                </Text>
+              </Button>
+            </Box>
           </Stack>
         </FormControl>
       </Box>
