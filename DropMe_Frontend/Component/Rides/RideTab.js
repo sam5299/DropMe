@@ -9,9 +9,7 @@ const RideTab = ({ navigation }) => {
         <Button w={"70%"} onPress={() => navigation.navigate("Rides")}>
           Rides
         </Button>
-        <Button w={"70%"} onPress={() => navigation.navigate("RequestRide")}>
-          View Request
-        </Button>
+        <Button w={"70%"}>View Request</Button>
       </Stack>
     </Box>
   );
