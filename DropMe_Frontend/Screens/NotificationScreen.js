@@ -71,13 +71,14 @@ const NotificationScreen = () => {
               borderRadius={10}
               maxW="95%"
               minWidth={"95%"}
+            
             >
               <MaterialCommunityIcons
                 name="message-alert"
-                size={20}
+                size={25}
                 color="rgba(6,182,212,1.00)"
               />
-              <Text fontSize={15} >{msg.message}</Text>
+              <Text fontSize={20} >{msg.message}</Text>
 
               
             </Box>

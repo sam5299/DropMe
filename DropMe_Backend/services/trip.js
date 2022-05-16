@@ -37,10 +37,50 @@ async function requestRide(tripBody, rid) {
 
 //function to return details of Trip and User who crated that trip
 async function getTripDetails(tripId) {
-  return await Trip.find({ _id: tripId })
+  return await Trip.findOne({ _id: tripId })
     //.populate('User', '-_id profile fname lname ')
-    .populate("User", "-_id profile name")
-    .select("source destination distance seatRequest");
+    .populate("User", "_id profile name");
+  //.select("source destination distance seatRequest ");
+}
+// get all rides of the user not working
+async function getAllRequest(allRideList) {
+  //   let requestList = [];
+  //   let tmp=[]
+  //   await allRideList.map((rideObj) => {
+  //     tmp.push(rideObj)
+  //     if (rideObj.requestedTripList.length > 0) {
+  //       let tripList = rideObj.requestedTripList;
+  //       tripList.map(async (tripId) => {
+  //         let tripDetails = await getTripDetails(tripId);
+  //         // console.log(`Trip Details for ${tripId}`, ...tripDetails);
+  //         requestList.push(...tripDetails);
+  //         //console.log("@@@", requestList);
+  //       });
+  //     }
+  //     console.log(requestList);
+  //     if(tmp.length==allRideList.length){
+  //       console.log(tmp.length);
+  //       console.log(tmp.length);
+  //       console.log(requestList);
+  //       return requestList;
+  //     }
+  //   });
+  //   // console.log("@@", requestList);
+  //   // return requestList;
+  //   // allRideList.map((rideObj) => {
+  //   //   if (rideObj.requestedTripList.length > 0) {
+  //   //     let tripList = rideObj.requestedTripList;
+  //   //     tripList.map((tripId) => {
+  //   //       getTripDetails(tripId).then((tripDetails) =>
+  //   //         {
+  //   //           console.log(tripDetails)
+  //   //           requestList.push(...tripDetails)}
+  //   //       );
+  //   //       // console.log(`Trip Details for ${tripId}`, ...tripDetails);
+  //   //       //console.log("@@@", requestList);
+  //   //     });
+  //   //   }
+  //   // });
 }
 
 //function to generate 4 digit trip token for each accepted trip request
@@ -105,4 +145,5 @@ module.exports = {
   getTripDetails,
   generateTripToken,
   calculateTripAmount,
+  getAllRequest,
 };

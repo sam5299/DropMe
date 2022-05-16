@@ -6,6 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { Button, Icon } from "native-base";
 import Rides from "./Rides";
 import RequestRide from "./RequestRide";
+import AcceptRejectRequest from "./AcceptRejectRequest";
 
 const rideStack = createNativeStackNavigator();
 
@@ -26,6 +27,11 @@ const RideStack = ({ navigation }) => {
         <rideStack.Screen
           name="RequestRide"
           component={RequestRide}
+          options={{ headerShown: false }}
+        />
+        <rideStack.Screen
+          name="ViewRequest"
+          component={AcceptRejectRequest}
           options={{ headerShown: false }}
         />
       </rideStack.Navigator>

@@ -136,8 +136,6 @@ const CreateRide = ({ navigation }) => {
     state: { source, destination, date, time, Vehicle },
   });
 
-  const [isRerender, setIsRerender] = useState(false);
-
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
@@ -158,7 +156,7 @@ const CreateRide = ({ navigation }) => {
     };
     createRide();
     return () => (mounted = false);
-  }, [isRerender]);
+  }, []);
 
   const handleForm = async () => {
     setLoading(true);
