@@ -6,9 +6,9 @@ const RequestBookedHistory = ({ navigation }) => {
   return (
     <Box flex={1} justifyContent={"center"}>
       <Stack flexDirection="column" alignItems={"center"} space="5">
-        <Button w={"70%"} onPress={() => navigation.navigate("TripRequest")}>
+        {/* <Button w={"70%"} onPress={() => navigation.navigate("TripRequest")}>
           Requested Trips
-        </Button>
+        </Button> */}
         <Button w={"70%"} onPress={() => navigation.navigate("TripBooked")}>
           Booked Trips
         </Button>

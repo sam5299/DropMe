@@ -29,7 +29,7 @@ async function getAllBookedRides(raiderId) {
 async function getAllBookedTrips(passengerId) {
   return await TripRide.find({ PassengerId: passengerId, status: "Booked" })
     .populate("RaiderId", "_id profile name mobileNumber", User)
-    .populate("tripId", "_id source destination pickupPoint date", Trip);
+    .populate("tripId", "_id source destination pickupPoint date time", Trip);
 }
 
 // return all history of the passenger
@@ -68,7 +68,8 @@ async function deleteBookedTrip(tripRideId) {
     if (!result) console.log("error while adding deposit amount");
   }
   tripRideObj.status = "Rejected";
-  return await tripRideId.save();
+  let result= await tripRideId.save();
+  result.status(200).send("Trip is cancelled");
 }
 
 module.exports = {
