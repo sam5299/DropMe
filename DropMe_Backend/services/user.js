@@ -108,14 +108,12 @@ async function isLicenseNumberExists(licenceNum) {
 }
 
 //function to update user's licenseNumber and licenseDocument image path
-async function updateUserLicenseDetails(
-  userId,
-  licenseNumber,
-  licensePhotoPath
-) {
+async function updateUserLicenseDetails(userId, licenseNumber, licenseImage) {
+  console.log("uploading license image:" + licenseImage);
   let user = await User.findOne({ userId: userId });
+  console.log("User found:", user);
   user.licenseNumber = licenseNumber;
-  user.licensePhoto = licensePhotoPath;
+  user.licenseImage = licenseImage;
   return user.save();
 }
 

@@ -27,6 +27,7 @@ const RequestRides = ({ navigation }) => {
           },
         });
         setUserRides(allRides.data);
+        //console.log("Ride Details:", allRides.data);
         setShowRides(false);
       } catch (error) {
         console.log("Rides Exception: ", error.response.data);
@@ -106,6 +107,9 @@ const RequestRides = ({ navigation }) => {
                   navigation.navigate("ViewRequest", {
                     rideId: ride._id,
                     token,
+                    amount: ride.amount,
+                    name: ride.User.name,
+                    vehicleNumber: ride.vehicleNumber,
                   })
                 }
                 px={5}

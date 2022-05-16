@@ -42,11 +42,14 @@ const AddVehicle = ({ navigation }) => {
     "SportBike",
     "Scooter",
   ]);
-  const [showSpinner, setShowSpinner] = useState(false);
-
   let FuelTypeArray = ["Petrol", "Disel", "CNG", "Electric"];
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {}, [vehicleClass, slider, Picture]);
+  useEffect(() => {
+    let mounted = true;
+
+    return () => (mounted = false);
+  }, [vehicleClass, slider, Picture]);
 
   //validation
 
@@ -58,12 +61,15 @@ const AddVehicle = ({ navigation }) => {
     let isTrue = validate({
       vehicleName: { required: true },
       vehicleClass: { required: true },
-      vehicleNumber: { minlength: 13, required: true },
+      vehicleNumber: { minlength: 12, maxLength: 13, required: true },
       fuelType: { required: true },
     });
-    let pattern =
-      /^([A-Z|a-z]{2}\s{1}\d{2}\s{1}[A-Z|a-z]{1,2}\s{1}\d{1,4})?([A-Z|a-z]{3}\s{1}\d{1,4})?$/;
+    let pattern = /^[A-Z]{2}[ -][0-9]{1,2}(?: [A-Z])?(?: [A-Z]*)? [0-9]{4}$/;
+    // /^([A-Z]{2}\s{1}\d{2}\s{1}\[A-Z]{1,2}\s{1}\d{1,4})?([A-Z|a-z]{3}\s{1}\d{1,4})?$/;
+    console.log("matching vehicle number");
+
     if (!pattern.test(vehicleNumber)) {
+      console.log("not matched");
       isFieldInError.vehicleNumber = "Please enter valid vehicle number.";
     }
     if (isTrue) {
@@ -153,19 +159,25 @@ const AddVehicle = ({ navigation }) => {
 
   let buttonField = (
     <Stack direction={"row"} mb={2} space="20" justifyContent={"center"}>
-      <Button onPress={() => navigation.goBack()}>Go Back</Button>
-      <Button onPress={handleAddVehicle}>Add Vehicle</Button>
+      <Button size="md" onPress={() => navigation.goBack()}>
+        <Text fontSize={"lg"} color="white">
+          Go Back
+        </Text>
+      </Button>
+
+      <Button
+        isLoading={isLoading}
+        isLoadingText="Adding vehicle.."
+        size="md"
+        onPress={handleAddVehicle}
+      >
+        <Text fontSize={"lg"} color="white">
+          Add Vehicle
+        </Text>
+      </Button>
     </Stack>
   );
 
-  let ShowSpinner = (
-    <HStack space={2} justifyContent="center" mr="20%">
-      <Spinner accessibilityLabel="Loading posts" />
-      <Heading color="primary.500" fontSize="lg">
-        Sending Mail
-      </Heading>
-    </HStack>
-  );
   return (
     <ScrollView maxW="100%" h="80" bg={"#F0F8FF"}>
       <Box
@@ -255,7 +267,7 @@ const AddVehicle = ({ navigation }) => {
               {/* {vehicleType === "Bike" ? selectForBike : selectForCar} */}
               <Box>
                 <Input
-                  maxLength={13}
+                  maxLength={50}
                   size={"md"}
                   w="100%"
                   InputLeftElement={

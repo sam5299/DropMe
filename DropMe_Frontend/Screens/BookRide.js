@@ -122,7 +122,7 @@ const BookRide = ({ navigation }) => {
         const User = await AsyncStorage.getItem("User");
         const userDetails = JSON.parse(User);
         if (mounted) {
-          setGender(userDetails.data.gender);
+          setGender(userDetails.gender);
           setToken(userDetails.userToken);
         }
       } catch (error) {

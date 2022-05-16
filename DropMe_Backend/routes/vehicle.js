@@ -37,28 +37,32 @@ router.use(fileUpload({ useTempFiles: true, tempFileDir: "../image_files" }));
 // route to add new vehicle for logged in user
 router.post("/addVehicle", auth, async (req, res) => {
   delete req.body.User;
+  console.log("add Vehicle called:" + req.body);
   try {
     if ("licenseNumber" in req.body && "licenseImage" in req.body) {
+      console.log("licenseNumber and licenseImage is present");
       let { error } = await validateLicenseNumber({
         licenseNumber: req.body.licenseNumber,
       });
       if (error) return res.status(400).send(error.details[0].message);
+      console.log("licenseNumber validation done.");
       let isLicenseNumberPresent = await isLicenseNumberExists(
         req.body.licenseNumber
       );
       if (isLicenseNumberPresent)
         return res.status(400).send("Licence number already present");
+      console.log("License number is not present");
       let updatedUser = await updateUserLicenseDetails(
         req.body.userId,
         req.body.licenseNumber,
         req.body.licenseImage
       );
-
       if (!updatedUser)
         return res
           .status(400)
           .send("Something went wrong cannot add license detail's.");
     }
+    console.log("License document update done.!");
     let newBody = _.pick(req.body, [
       "vehicleName",
       "vehicleNumber",
@@ -95,6 +99,7 @@ router.post("/addVehicle", auth, async (req, res) => {
       return res
         .status(400)
         .send("Something went wrong.Cannot add vehicle try again latter.");
+    console.log("Backend vehicle add done.");
     return res.status(200).send(vehicle);
   } catch (ex) {
     return res.status(500).send("Something went wrong.");

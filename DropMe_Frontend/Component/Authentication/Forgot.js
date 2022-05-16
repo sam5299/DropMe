@@ -74,31 +74,6 @@ const Forgot = () => {
     }
   };
 
-  let buttonField = (
-    <Box>
-      <Button
-        isLoading={isLoading}
-        isLoadingText="Sending password.."
-        size="md"
-        w={"85%"}
-        onPress={handleForgotPassword}
-      >
-        <Text fontSize={"lg"} color="white">
-          Send password on mail
-        </Text>
-      </Button>
-    </Box>
-  );
-
-  let ShowSpinner = (
-    <HStack space={2} justifyContent="center" mr="20%">
-      <Spinner accessibilityLabel="Loading posts" />
-      <Heading color="primary.500" fontSize="lg">
-        Sending Mail
-      </Heading>
-    </HStack>
-  );
-
   let AlertField = (
     <Alert w="100%" status={status.status}>
       <VStack space={2} flexShrink={1} w="100%">
@@ -174,7 +149,19 @@ const Forgot = () => {
               placeholder="Registered mobile number"
               onChangeText={(value) => setMobileNumber(value)}
             />
-            {showSpinner ? ShowSpinner : buttonField}
+            <Box>
+              <Button
+                isLoading={isLoading}
+                isLoadingText="Sending password.."
+                size="md"
+                w={"85%"}
+                onPress={handleForgotPassword}
+              >
+                <Text fontSize={"lg"} color="white">
+                  Send password on mail
+                </Text>
+              </Button>
+            </Box>
           </Stack>
           <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
             {errorMessage}

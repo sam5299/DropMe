@@ -32,7 +32,7 @@ router.use(fileUpload({ useTempFiles: true, tempFileDir: "../image_files" }));
 
 //register user route
 router.post("/register", async (req, res) => {
-  console.log(req.body);
+  console.log("register:" + req.body);
   try {
     let userId = await getUniqueId();
     req.body.userId = userId;
@@ -77,7 +77,7 @@ router.post("/login", async (req, res) => {
   );
   if (!validPassword) return res.status(400).send("Invalid email or password");
 
-  //console.log("User details:"+user._id);
+  console.log("User details:" + user);
   const token = jwt.sign(
     { userId: user.userId, User: user._id },
     config.get("jwtPrivateKey")
@@ -85,7 +85,16 @@ router.post("/login", async (req, res) => {
   //console.log(token);
   //  let notifications=await getNotification(user._id)
   // if(notifications)console.log("@@@"+notifications);
-  return res.header("x-auth-token", token).status(200).send(true);
+  user = _.pick(user, [
+    "name",
+    "email",
+    "profile",
+    "gender",
+    "mobileNumber",
+    "sumOfRating",
+    "totalNumberOfRatedRides",
+  ]);
+  return res.header("x-auth-token", token).status(200).send(user);
 });
 
 //endpoint for forgot password

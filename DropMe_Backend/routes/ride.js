@@ -120,7 +120,7 @@ router.get("/getUserRides", auth, async (req, res) => {
 // route to get list of trip who has requested for ride
 router.get("/getTripRequestList/:rid", auth, async (req, res) => {
   let tripList = await getTripRequestList(req.params.rid);
-  console.log("trip requested list:", tripList);
+  //console.log("trip requested list:", tripList);
   if (!tripList)
     return res.status(404).send("No requested trip for given ride.");
   let requestedTripList = [];
@@ -142,20 +142,21 @@ router.get("/getAllRequest", auth, async (req, res) => {
   //let requestList = await getAllRequest(allRideList);
 
   //console.log("### final OP", requestList);
-  for (ride in allRideList) {
-    console.log(ride);
-  }
+  // for (ride in allRideList) {
+  //   console.log(ride);
+  // }
   return res.status(200).send(await getAllRequest(allRideList));
 });
 
 //route to accept trip request
 router.post("/acceptTripRequest", auth, async (req, res) => {
+  console.log("@@@", req.body);
+
   req.body.status = "Booked";
   req.body.token = generateTripToken();
   delete req.body.userId;
   let raiderName = req.body.raiderName;
   delete req.body.raiderName;
-
   //get vehicle details of ride
   let vehicle = await Ride.findOne(
     { _id: req.body.rideId },
@@ -178,7 +179,7 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   //accept trip and add tripid,rideid,RaiderId,PassengerId into trip_ride collection
-  let result = addAcceptedTrip(req.body);
+  let result = await addAcceptedTrip(req.body);
   if (!result)
     return res.status(400).send("something went wrong cannot accept trip");
 
@@ -229,9 +230,8 @@ router.put("/rejectTripRequest", auth, async (req, res) => {
 router.get("/getBookedRides", auth, async (req, res) => {
   let raiderId= req.body.User;
   let bookedRide = await getAllBookedRides(raiderId);
-  if(!bookedRide)
-  return res.status(400).send("No rides found");
-   
+  if (!bookedRide) return res.status(400).send("No rides found");
+
   return res.status(200).send("Booked rides" + bookedRide);
 });
 

@@ -6,11 +6,8 @@ const RideTab = ({ navigation }) => {
   return (
     <Box flex={1} justifyContent={"center"}>
       <Stack flexDirection="column" alignItems={"center"} space="5">
-        <Button w={"70%"} onPress={() => navigation.navigate("Rides")}>
-          Rides
-        </Button>
         <Button w={"70%"} onPress={() => navigation.navigate("RequestRide")}>
-          View Request
+          Rides
         </Button>
       </Stack>
     </Box>
