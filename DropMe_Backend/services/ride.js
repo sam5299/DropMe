@@ -4,7 +4,7 @@ const { User } = require("../models/user");
 const fs = require("fs");
 const req = require("express/lib/request");
 const { Vehicle } = require("../models/vehicle");
-const {trip_ride} = require('../models/trip_ride')
+const { trip_ride } = require("../models/trip_ride");
 
 // create ride function
 async function createRide(rideDetails) {
@@ -58,7 +58,6 @@ async function getCreatedRides(
 //   raiderId:raiderId
 // })
 // }
-
 
 // Add trip request
 async function addTripRequest(passengerId, rideId, tripId) {

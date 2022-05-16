@@ -11,6 +11,8 @@ let tripRideSchema = new mongoose.Schema({
     amount: {type:Number, required:true},
     tripId: {type:mongoose.Schema.Types.ObjectId,ref:"Trip", required:true},
     rideId: {type:mongoose.Schema.Types.ObjectId,ref:"Ride", required:true},
+    startTime: { type: String, default:null },
+    endTime: { type: String, default:null },
     RaiderId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",

@@ -3,6 +3,7 @@ const { Ride } = require("../models/ride");
 const req = require("express/lib/request");
 const { addTripRequest } = require("./ride");
 const { Vehicle } = require("../models/vehicle");
+const { TripRide } = require("../models/trip_ride");
 //function to get available trip with id
 async function getTrip(tripBody) {
   return await Trip.findOne({
@@ -140,10 +141,12 @@ async function calculateTripAmount(vehicleId, distance) {
   return amount;
 }
 
+
 module.exports = {
   requestRide,
   getTripDetails,
   generateTripToken,
   calculateTripAmount,
   getAllRequest,
+  
 };

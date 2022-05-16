@@ -28,6 +28,7 @@ const {
   addAcceptedTrip,
   getTripDetailsByRideIdAndStatus,
   getAllBookedRides,
+  getRiderHistory,
 } = require("../services/trip_ride");
 const { Trip } = require("../models/trip");
 const { updateUsedCredit, addPenalty } = require("../services/wallet");
@@ -62,8 +63,7 @@ router.post("/createRide", auth, async (req, res) => {
 });
 
 // get Rides details by Source Destination Date and Time
-router.get(
-  "/getRides/:source/:destination/:date/:time/:seats/:gender",
+router.get("/getRides/:source/:destination/:date/:time/:seats/:gender",
   auth,
   async (req, res) => {
     let body = req.params;
@@ -225,15 +225,17 @@ router.put("/rejectTripRequest", auth, async (req, res) => {
   return res.status(200).send("Ride accepted:" + rideObj);
 });
 
-//route to get all accepted trip request
+//route to get all accepted ride request
 router.get("/getBookedRides", auth, async (req, res) => {
-  let raiderId= req.body.rideId;
+  let raiderId= req.body.User;
   let bookedRide = await getAllBookedRides(raiderId);
   if(!bookedRide)
   return res.status(400).send("No rides found");
    
   return res.status(200).send("Booked rides" + bookedRide);
 });
+
+
 
 // endpoint to cancel ride
 router.put("/cancelRide/:rid", auth, async (req, res) => {
@@ -251,7 +253,7 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
       let notificationResult = await createNotification({
         fromUser: req.body.User.toString(),
         toUser: userId.User.toString(),
-        message: "Trip requrested rejected!",
+        message: "Trip request rejected!",
       });
       if (!notificationResult) console.log("error while sending notification");
     });
@@ -280,9 +282,9 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
 
       trip.status = "Cancelled";
       let result = await trip.save();
-      if (!result) return console.log("error while changing staus of trip");
+      if (!result) return console.log("error while changing status of trip");
 
-      //check if cancellation time is below 10hrs if yes apply safty point penalty
+      //check if cancellation time is below 10hrs if yes apply safety point penalty
       if (timeDifference <= 10) {
         let penalty = trip.amount * 0.1;
         console.log("penalty");
@@ -302,6 +304,20 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
     return res.status(500).send("Something failed");
   }
 });
+
+//route to get all history of raider
+router.get("/getRaiderHistory", auth, async (req, res) => {
+  let raiderId= req.body.User;
+  let riderHistory = await getRiderHistory(raiderId);
+  if(!riderHistory)
+  return res.status(400).send("No history found");
+   
+  return res.status(200).send("Rider history" + riderHistory);
+});
+
+
+// 
+
 
 // get Ride details by its id
 
