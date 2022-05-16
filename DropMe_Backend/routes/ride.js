@@ -63,7 +63,8 @@ router.post("/createRide", auth, async (req, res) => {
 });
 
 // get Rides details by Source Destination Date and Time
-router.get("/getRides/:source/:destination/:date/:time/:seats/:gender",
+router.get(
+  "/getRides/:source/:destination/:date/:time/:seats/:gender",
   auth,
   async (req, res) => {
     let body = req.params;
@@ -228,14 +229,12 @@ router.put("/rejectTripRequest", auth, async (req, res) => {
 
 //route to get all accepted ride request
 router.get("/getBookedRides", auth, async (req, res) => {
-  let raiderId= req.body.User;
+  let raiderId = req.body.User;
   let bookedRide = await getAllBookedRides(raiderId);
   if (!bookedRide) return res.status(400).send("No rides found");
 
   return res.status(200).send("Booked rides" + bookedRide);
 });
-
-
 
 // endpoint to cancel ride
 router.put("/cancelRide/:rid", auth, async (req, res) => {
@@ -307,17 +306,14 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
 
 //route to get all history of raider
 router.get("/getRaiderHistory", auth, async (req, res) => {
-  let raiderId= req.body.User;
+  let raiderId = req.body.User;
   let riderHistory = await getRiderHistory(raiderId);
-  if(!riderHistory)
-  return res.status(400).send("No history found");
-   
+  if (!riderHistory) return res.status(400).send("No history found");
+
   return res.status(200).send("Rider history" + riderHistory);
 });
 
-
-// 
-
+//
 
 // get Ride details by its id
 

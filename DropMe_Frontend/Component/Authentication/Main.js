@@ -12,7 +12,7 @@ import axios from "axios";
 const Stack = createNativeStackNavigator();
 
 const Main = () => {
-  const url = "http://192.168.43.180:3100";
+  const url = "http://192.168.43.17:3100";
 
   const initialState = {
     userName: null,
@@ -62,7 +62,6 @@ const Main = () => {
           //   headers: { "x-auth-token": userToken },
           // });
           result["userToken"] = userToken;
-          console.log("result:", result);
           const data = JSON.stringify(result);
           await AsyncStorage.setItem("User", data);
         } catch (e) {

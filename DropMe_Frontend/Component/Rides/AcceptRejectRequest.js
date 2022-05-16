@@ -25,6 +25,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
           }
         );
         if (mounted) {
+          console.log(requestList.data);
           setTripRequestList(requestList.data);
           setLoading(false);
         }
@@ -54,7 +55,35 @@ const AcceptRejectRequest = ({ route, navigation }) => {
       );
       alert("Accepted");
     } catch (error) {
-      console.log("Accept Reject Request: ", error.response.data);
+      console.log("Accept Request: ", error.response.data);
+    }
+  };
+
+  const rejectRequest = async (
+    tripId,
+    rideId,
+    raiderName,
+    source,
+    destination,
+    passengerId
+  ) => {
+    try {
+      const result = await axios.put(
+        url + "/ride/rejectTripRequest",
+        {
+          tripId,
+          rideId,
+          passengerId,
+          raiderName,
+          source,
+          destination,
+          passengerId,
+        },
+        { headers: { "x-auth-token": token } }
+      );
+      alert("Request Rejected..!");
+    } catch (error) {
+      console.log("Reject Request: ", error.response.data);
     }
   };
 
@@ -133,7 +162,16 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                 </Button>
                 <Button
                   colorScheme="secondary"
-                  onPress={() => alert("Rejected..!")}
+                  onPress={() =>
+                    rejectRequest(
+                      list._id,
+                      rideId,
+                      name,
+                      list.source,
+                      list.destination,
+                      list.User._id
+                    )
+                  }
                   px={5}
                 >
                   Reject
