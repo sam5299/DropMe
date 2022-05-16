@@ -19,13 +19,13 @@ function TripBooked() {
       const User = await AsyncStorage.getItem("User");
       const parseUser = JSON.parse(User);
       console.log("deleting booked ride");
-      // let result = await axios.get(url + `/trip/deleteBookedTrip/${tripRideId}`, {
-      //   headers: {
-      //     "x-auth-token": parseUser.userToken,
-      //   },
-      // });
-      //alert(result.data)
-      alert(tripRideId)
+      let result = await axios.delete(url + `/trip/deleteBookedTrip/${tripRideId}`, {
+        headers: {
+          "x-auth-token": parseUser.userToken,
+        },
+      });
+      alert(result.data)
+      //alert(tripRideId)
     } catch (ex) {
       console.log("Exception in delete", ex.response.data);
       setIsVehicleFetchDone(false);
