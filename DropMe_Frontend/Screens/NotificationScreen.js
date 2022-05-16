@@ -1,24 +1,21 @@
 import { View } from "react-native";
-import React, { useState, useEffect ,useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Box, Text, Stack, ScrollView } from "native-base";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { AuthContext } from "../Component/Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
 const NotificationScreen = () => {
-  const [notificationList, setNotification] = useState([
-    { message: "Credit added1", _id:1 }
-  ]);
+  const [notificationList, setNotification] = useState([]);
+  const [isLoading, setLoading] = useState(true);
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
-
   useEffect(() => {
     let mounted = true;
-    async function getNotification() {
+    async function loadNotifications() {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
@@ -30,23 +27,20 @@ const NotificationScreen = () => {
         });
         console.log(result.data);
         if (mounted) {
-        setNotification(result.data);
+          setNotification(result.data);
+          setLoading(false);
           //setToken(parseUser.userToken);
         }
       } catch (ex) {
         console.log("Exception", ex.response.data);
+        setLoading(false);
       }
-      return ()=> (mounted=false)
+      return () => (mounted = false);
     }
 
-    getNotification();
+    loadNotifications();
     return () => (mounted = false);
   }, []);
-
-
-
-
-
 
   function getNotification() {
     return (
@@ -71,16 +65,13 @@ const NotificationScreen = () => {
               borderRadius={10}
               maxW="95%"
               minWidth={"95%"}
-            
             >
               <MaterialCommunityIcons
                 name="message-alert"
                 size={25}
                 color="rgba(6,182,212,1.00)"
               />
-              <Text fontSize={20} >{msg.message}</Text>
-
-              
+              <Text fontSize={20}>{msg.message}</Text>
             </Box>
           </Stack>
         ))}
@@ -88,27 +79,30 @@ const NotificationScreen = () => {
     );
   }
 
- 
- 
-  return (
-    <Box
-      //mt={"10%"}
-    //   w={"95%"}
-    //   h={'90%'}
-      borderRadius={10}
-      display="flex"
-      flex={1}
-      flexDirection={"column"}
-      alignItems={"center"}
-      bg={"white"}
-    >
-      {notificationList.length!=0 ? (
-        getNotification()
-      ) : (
-        <Text>No new notification</Text>
-      )}
-    </Box>
-  );
+  if (isLoading) {
+    return (
+      <Box flex={1} justifyContent="center" alignItems={"center"}>
+        <Text>Loading...!</Text>
+      </Box>
+    );
+  } else {
+    return (
+      <Box
+        borderRadius={10}
+        display="flex"
+        flex={1}
+        flexDirection={"column"}
+        alignItems={"center"}
+        bg={"white"}
+      >
+        {notificationList.length != 0 ? (
+          getNotification()
+        ) : (
+          <Text>No new notification</Text>
+        )}
+      </Box>
+    );
+  }
 };
 
 export default NotificationScreen;

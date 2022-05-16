@@ -1,11 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Text, Stack, Image, Button, ScrollView } from "native-base";
+import {
+  Box,
+  Text,
+  Stack,
+  Image,
+  Button,
+  ScrollView,
+  Divider,
+} from "native-base";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { AuthContext } from "../Context";
 
-const RequestRides = ({ navigation }) => {
+const BookedRides = ({ navigation }) => {
   const [allRides, setUserRides] = useState([]);
   const [showRides, setShowRides] = useState(true);
   const [token, setToken] = useState(null);
@@ -79,42 +87,38 @@ const RequestRides = ({ navigation }) => {
                 bg="red.100"
               />
 
-              <Text fontSize={25}>{ride.vehicleNumber}</Text>
-              <Text fontSize={18} fontWeight="bold">
-                <FontAwesome name="rupee" size={18} color="black" />
-                {ride.amount}
-              </Text>
               <Box justifyContent={"flex-start"}>
-                <Box>
-                  <Text fontSize={18} fontWeight="bold">
-                    From:
-                  </Text>
-                  <Text fontSize={15}>{ride.source}</Text>
-                </Box>
-                <Box>
-                  <Text fontSize={18} fontWeight="bold" p={1}>
-                    To:
-                  </Text>
-                  <Text fontSize={15}>{ride.destination}</Text>
-                  <Text fontSize={18} fontWeight="bold" mt={2}>
-                    Seats: {ride.availableSeats}
-                  </Text>
-                </Box>
+                <Text fontSize={18} fontWeight="bold">
+                  From:
+                </Text>
+                <Text fontSize={15}>{ride.source}</Text>
+                <Text fontSize={18} fontWeight="bold" p={1}>
+                  To:
+                </Text>
+                <Text fontSize={15}>{ride.destination}</Text>
+
+                <Text fontSize={18} fontWeight="bold" p={1}>
+                  Date:
+                </Text>
+                <Text fontSize={15}>Mon May 16 2022</Text>
+                <Text fontSize={18} fontWeight="bold" p={1}>
+                  Time:
+                </Text>
+                <Text fontSize={15}>12:24</Text>
               </Box>
-              <Button
-                onPress={() =>
-                  navigation.navigate("ViewRequest", {
-                    rideId: ride._id,
-                    token,
-                    amount: ride.amount,
-                    name: ride.User.name,
-                    vehicleNumber: ride.vehicleNumber,
-                  })
-                }
-                px={5}
-              >
-                View Request
-              </Button>
+              <Divider mb={2} />
+              <Stack direction={"row"} space={5} mt={2}>
+                <Button onPress={() => alert("Start Ride")} px={5}>
+                  Start Ride
+                </Button>
+                <Button
+                  colorScheme="secondary"
+                  onPress={() => alert("Cancel Ride")}
+                  px={5}
+                >
+                  Cancel Ride
+                </Button>
+              </Stack>
             </Stack>
           </Box>
         ))}
@@ -145,4 +149,4 @@ const RequestRides = ({ navigation }) => {
   }
 };
 
-export default RequestRides;
+export default BookedRides;
