@@ -50,13 +50,6 @@ async function getCreatedRides(
   // .find({ $not: [{ User: userId }] });
 }
 
-// get booked ride of raider
-// async function getBookedRides(raiderId){
-
-// return await trip_ride.find({
-//   raiderId:raiderId
-// })
-// }
 
 // Add trip request
 async function addTripRequest(passengerId, rideId, tripId) {
@@ -99,13 +92,14 @@ async function reduceAvailableSeats(rid, seatCount) {
 //remove trip id from requestList array of Ride
 async function removeTripId(rideId, tripId) {
   let rideObj = await Ride.findOne({ _id: rideId });
-  console.log(rideObj.requestedTripList);
+  //console.log(rideObj.requestedTripList);
   let index = rideObj.requestedTripList.indexOf(tripId);
   rideObj.requestedTripList.splice(index, 1);
+  rideObj.requestedUserList.splice(index, 1);
   return rideObj.save();
 }
 
-//function to return timedifference between ride time and current time
+//function to return time difference between ride time and current time
 function getTimeDifference(rideDate) {
   let d1 = new Date(Date.parse(rideDate));
   let d2 = new Date(Date.parse(Date())); //"Mon May 02 2022;06:30");

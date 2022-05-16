@@ -9,7 +9,11 @@ const { getUser } = require("../services/user");
 router.use(express.json());
 const { Ride } = require("../models/ride");
 const { createNotification } = require("../services/notification");
-const { getAllBookedTrips, getPassengerHistory } = require("../services/trip_ride");
+const {
+  getAllBookedTrips,
+  getPassengerHistory,
+  deleteBookedTrip,
+} = require("../services/trip_ride");
 
 //endpoint to search riders who are travelling on route passenger searching for
 router.get("/searchForRide", auth, async (req, res) => {
@@ -80,23 +84,29 @@ router.put("/cancelTrip/:tid", auth, async (req, res) => {});
 
 //route to get all accepted trip request
 router.get("/getBookedTrips", auth, async (req, res) => {
-  let raiderId= req.body.User;
+  let raiderId = req.body.User;
   let bookedRide = await getAllBookedTrips(raiderId);
-  if(!bookedRide)
-  return res.status(400).send("No rides found");
-   
+  if (!bookedRide) return res.status(400).send("No rides found");
+
   return res.status(200).send("Booked rides" + bookedRide);
 });
 
 //route to get all history of passenger
 router.get("/getPassengerHistory", auth, async (req, res) => {
-  let passengerId= req.body.User;
+  let passengerId = req.body.User;
   let passengerHistory = await getPassengerHistory(passengerId);
-  if(!passengerHistory)
-  return res.status(400).send("No history found");
-   
+  if (!passengerHistory) return res.status(400).send("No history found");
+
   return res.status(200).send("passenger History" + passengerHistory);
 });
 
+// route to reject booked trip
+router.delete("/deleteBookedTrip/:tripRideId", auth, async (req, res) => {
+  let tripRideId = req.params.tripRideId;
+  let deleteResult = await deleteBookedTrip(tripRideId);
+  if (!deleteResult) return res.status(400).send("Error in deleting");
+
+  return res.status(200).send("Ride deleted" + deleteResult);
+});
 
 module.exports = router;
