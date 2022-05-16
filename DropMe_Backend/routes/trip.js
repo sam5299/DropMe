@@ -32,7 +32,7 @@ router.get("/searchForRide", auth, async (req, res) => {
     req.body.seatRequest,
     gender
   );
-  return res.status(200).send("/searchForRide called and result:" + rides);
+  return res.status(200).send("searchForRide called and result:" + rides);
 });
 
 router.post("/requestRide", auth, async (req, res) => {
@@ -50,7 +50,7 @@ router.post("/requestRide", auth, async (req, res) => {
     return res
       .status(400)
       .send(
-        "You don't have sufficent credit points to request for this trip. Please add credit point and try again."
+        "You  have insufficient credit points to request for this trip. Please add credit point and try again."
       );
 
   let requestedRide = await requestRide(req.body, rideId);
@@ -74,9 +74,9 @@ router.post("/requestRide", auth, async (req, res) => {
   };
 
   let notificationResult = createNotification(notificationObj);
-  console.log("notificationresult:", notificationResult);
+  console.log("notification result:", notificationResult);
 
-  return res.status(200).send("request sent:" + requestedRide);
+  return res.status(200).send("request sent:", requestedRide);
 });
 
 //endpoint to cancel trip request
@@ -88,7 +88,9 @@ router.get("/getBookedTrips", auth, async (req, res) => {
   let bookedRide = await getAllBookedTrips(raiderId);
   if (!bookedRide) return res.status(400).send("No rides found");
 
-  return res.status(200).send("Booked rides" + bookedRide);
+  //return res.status(200).send("searchForRide called and result:" + rides);
+
+  return res.status(200).send(bookedRide);
 });
 
 //route to get all history of passenger
@@ -97,7 +99,7 @@ router.get("/getPassengerHistory", auth, async (req, res) => {
   let passengerHistory = await getPassengerHistory(passengerId);
   if (!passengerHistory) return res.status(400).send("No history found");
 
-  return res.status(200).send("passenger History" + passengerHistory);
+  return res.status(200).send(passengerHistory);
 });
 
 // route to reject booked trip

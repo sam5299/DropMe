@@ -218,7 +218,7 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
   //remove trip id from requestedTripList in Ride collection
   let rideObj = await removeTripId(req.body.rideId, req.body.tripId);
 
-  return res.status(200).send("Ride accepted:" + rideObj);
+  return res.status(200).send("Ride accepted:",rideObj);
 });
 
 //route to accept/reject trip request
@@ -235,7 +235,7 @@ router.put("/rejectTripRequest", auth, async (req, res) => {
     console.log("failed to send notification.");
     return res.status(400).send("something failed.");
   }
-  return res.status(200).send("Trip rejected:" + rideObj);
+  return res.status(200).send("Trip rejected:", rideObj);
 });
 
 //route to get all accepted ride request
@@ -244,7 +244,7 @@ router.get("/getBookedRides", auth, async (req, res) => {
   let bookedRide = await getAllBookedRides(raiderId);
   if (!bookedRide) return res.status(400).send("No rides found");
 
-  return res.status(200).send("Booked rides" + bookedRide);
+  return res.status(200).send("Booked rides",bookedRide);
 });
 
 // endpoint to cancel ride
@@ -323,7 +323,7 @@ router.get("/getRaiderHistory", auth, async (req, res) => {
   let riderHistory = await getRiderHistory(raiderId);
   if (!riderHistory) return res.status(400).send("No history found");
 
-  return res.status(200).send("Rider history" + riderHistory);
+  return res.status(200).send("Rider history", riderHistory);
 });
 
 //
