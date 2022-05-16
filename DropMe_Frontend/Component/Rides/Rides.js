@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Text, Stack, Image, Button, ScrollView } from "native-base";
+import { Box, Text, Stack, Image, ScrollView } from "native-base";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -24,8 +24,10 @@ const Rides = () => {
             "x-auth-token": userDetails.userToken,
           },
         });
-        setUserRides(allRides.data);
-        setShowRides(false);
+        if (mounted) {
+          setUserRides(allRides.data);
+          setShowRides(false);
+        }
       } catch (error) {
         console.log("Rides Exception: ", error.response.data);
         setShowRides(false);

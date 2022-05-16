@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -34,6 +34,11 @@ const Login = ({ navigation }) => {
 
   const { signIn, getUrl } = useContext(AuthContext);
   const url = getUrl();
+
+  useEffect(() => {
+    let mounted = true;
+    return () => (mounted = false);
+  }, []);
 
   let AlertField = (
     <Alert w="100%" status={alertField.status}>
@@ -71,10 +76,11 @@ const Login = ({ navigation }) => {
 
       if (result.data) {
         setIsLoading(false);
-        signIn(userName, result.headers["x-auth-token"]);
+        signIn(userName, result.data, result.headers["x-auth-token"]);
       }
     } catch (error) {
       setIsLoading(false);
+      console.log(error);
       setAlertField({ status: "error", title: error.response.data });
       setShowAlert(true);
       setTimeout(() => {

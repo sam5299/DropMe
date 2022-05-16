@@ -146,12 +146,16 @@ const CreateRide = ({ navigation }) => {
       try {
         const User = await AsyncStorage.getItem("User");
         const userDetails = JSON.parse(User);
+        // console.log("UserDetails:", userDetails);
+        // console.log(userDetails);
         if (mounted) {
           setToken(userDetails.userToken);
-          setGender(userDetails.data.gender);
+          setGender(userDetails.gender);
         }
       } catch (error) {
-        console.log(error.response.data);
+        console.log("in catch of createRide");
+        console.log(error);
+        // console.log(error.response.data);
       }
     };
     createRide();

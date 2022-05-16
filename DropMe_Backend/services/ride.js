@@ -38,7 +38,6 @@ async function getCreatedRides(
     availableSeats: { $gte: seats },
     User: { $ne: userId },
     requestedUserList: { $nin: userId },
-    //  rideFor:{$or:{gender,"Both"}}
     status: "Created",
   })
     .populate(
