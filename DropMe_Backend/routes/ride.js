@@ -63,7 +63,8 @@ router.post("/createRide", auth, async (req, res) => {
 });
 
 // get Rides details by Source Destination Date and Time
-router.get("/getRides/:source/:destination/:date/:time/:seats/:gender",
+router.get(
+  "/getRides/:source/:destination/:date/:time/:seats/:gender",
   auth,
   async (req, res) => {
     let body = req.params;
@@ -150,7 +151,7 @@ router.get("/getAllRequest", auth, async (req, res) => {
 
 //route to accept trip request
 router.post("/acceptTripRequest", auth, async (req, res) => {
-  console.log("@@@", req.body);
+  //console.log("@@@", req.body);
 
   req.body.status = "Booked";
   req.body.token = generateTripToken();
@@ -178,7 +179,7 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
   let { error } = validateTripRide(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  //accept trip and add tripid,rideid,RaiderId,PassengerId into trip_ride collection
+  //accept trip and add tripId,rideId,RaiderId,PassengerId into trip_ride collection
   let result = await addAcceptedTrip(req.body);
   if (!result)
     return res.status(400).send("something went wrong cannot accept trip");
@@ -223,19 +224,28 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
 //route to accept/reject trip request
 router.put("/rejectTripRequest", auth, async (req, res) => {
   let rideObj = await removeTripId(req.body.rideId, req.body.tripId);
-  return res.status(200).send("Ride accepted:" + rideObj);
+  let notificationDetails = {
+    fromUser: req.body.User,
+    toUser: req.body.passengerId,
+    message: `Your trip request form ${req.body.source} to ${req.body.destination} is rejected by ${req.body.raiderName}`,
+  };
+
+  let newNotification = await createNotification(notificationDetails);
+  if (!newNotification) {
+    console.log("failed to send notification.");
+    return res.status(400).send("something failed.");
+  }
+  return res.status(200).send("Trip rejected:" + rideObj);
 });
 
 //route to get all accepted ride request
 router.get("/getBookedRides", auth, async (req, res) => {
-  let raiderId= req.body.User;
+  let raiderId = req.body.User;
   let bookedRide = await getAllBookedRides(raiderId);
   if (!bookedRide) return res.status(400).send("No rides found");
 
   return res.status(200).send("Booked rides" + bookedRide);
 });
-
-
 
 // endpoint to cancel ride
 router.put("/cancelRide/:rid", auth, async (req, res) => {
@@ -287,12 +297,14 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
       //check if cancellation time is below 10hrs if yes apply safety point penalty
       if (timeDifference <= 10) {
         let penalty = trip.amount * 0.1;
-        console.log("penalty");
+        //console.log("penalty");
         let result = await addPenalty(req.body.User, penalty);
         if (!result) console.log("error while applying penalty");
       }
     });
     ride.status = "Cancelled";
+    // ride.requestedTripList=[];
+    // ride.requestedUserList=[];
     let result = await ride.save();
     if (!result)
       return res
@@ -307,17 +319,14 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
 
 //route to get all history of raider
 router.get("/getRaiderHistory", auth, async (req, res) => {
-  let raiderId= req.body.User;
+  let raiderId = req.body.User;
   let riderHistory = await getRiderHistory(raiderId);
-  if(!riderHistory)
-  return res.status(400).send("No history found");
-   
+  if (!riderHistory) return res.status(400).send("No history found");
+
   return res.status(200).send("Rider history" + riderHistory);
 });
 
-
-// 
-
+//
 
 // get Ride details by its id
 

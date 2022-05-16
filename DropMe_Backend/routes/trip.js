@@ -99,4 +99,15 @@ router.get("/getPassengerHistory", auth, async (req, res) => {
 });
 
 
+// route to reject booked trip
+router.delete("/deleteBookedTrip/:tripRideId",auth,async(req,res)=>{
+let tripRideId=req.params.tripRideId;
+let deleteResult = await deleteBookedTrip(tripRideId);
+  if(!deleteResult)
+  return res.status(400).send("Error in deleting");
+   
+  return res.status(200).send("Ride deleted" + deleteResult);
+
+});
+
 module.exports = router;
