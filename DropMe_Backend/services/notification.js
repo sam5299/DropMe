@@ -10,7 +10,7 @@ async function getNotification(userId) {
   let notificationList = await Notification.find({
     toUser: userId,
     isRead: false,
-  });
+  }).sort({ _id: -1 });
   //if (notificationList.length == 0) return ["No any notifications"];
   return notificationList;
 }
