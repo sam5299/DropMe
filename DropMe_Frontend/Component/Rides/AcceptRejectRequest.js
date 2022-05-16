@@ -25,7 +25,6 @@ const AcceptRejectRequest = ({ route, navigation }) => {
           }
         );
         if (mounted) {
-          console.log(requestList.data);
           setTripRequestList(requestList.data);
           setLoading(false);
         }
@@ -49,14 +48,13 @@ const AcceptRejectRequest = ({ route, navigation }) => {
   ) => {
     try {
       const result = await axios.post(
-        url + "ride/acceptTripRequest",
-        { headers: { "x-auth-token": token } },
-        { tripId, rideId, raiderName, amount, vehicleNumber }
+        url + "/ride/acceptTripRequest",
+        { tripId, rideId, raiderName, amount, vehicleNumber },
+        { headers: { "x-auth-token": token } }
       );
-      console.log(result.data);
       alert("Accepted");
     } catch (error) {
-      console.log("Accept Reject Request: ", error.response);
+      console.log("Accept Reject Request: ", error.response.data);
     }
   };
 
