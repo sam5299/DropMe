@@ -25,7 +25,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
           }
         );
         if (mounted) {
-          console.log(requestList.data);
+          // console.log(requestList.data);
           setTripRequestList(requestList.data);
           setLoading(false);
         }
@@ -81,6 +81,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
         },
         { headers: { "x-auth-token": token } }
       );
+      console.log(result.data);
       alert("Request Rejected..!");
     } catch (error) {
       console.log("Reject Request: ", error.response.data);

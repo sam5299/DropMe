@@ -195,7 +195,7 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
   let notificationDetails = {
     fromUser: req.body.RaiderId,
     toUser: req.body.PassengerId,
-    message: `Your trip request form ${trip.source} to ${trip.destination} is accepted by ${raiderName} `,
+    message: `Your trip request from ${trip.source} to ${trip.destination} is accepted by ${raiderName} `,
   };
 
   let newNotification = await createNotification(notificationDetails);
@@ -227,7 +227,7 @@ router.put("/rejectTripRequest", auth, async (req, res) => {
   let notificationDetails = {
     fromUser: req.body.User,
     toUser: req.body.passengerId,
-    message: `Your trip request form ${req.body.source} to ${req.body.destination} is rejected by ${req.body.raiderName}`,
+    message: `Your trip request from ${req.body.source} to ${req.body.destination} is rejected by ${req.body.raiderName}`,
   };
 
   let newNotification = await createNotification(notificationDetails);
