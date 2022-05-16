@@ -244,7 +244,7 @@ router.get("/getBookedRides", auth, async (req, res) => {
   let bookedRide = await getAllBookedRides(raiderId);
   if (!bookedRide) return res.status(400).send("No rides found");
 
-  return res.status(200).send("Booked rides",bookedRide);
+  return res.status(200).send(bookedRide);
 });
 
 // endpoint to cancel ride
@@ -323,7 +323,7 @@ router.get("/getRaiderHistory", auth, async (req, res) => {
   let riderHistory = await getRiderHistory(raiderId);
   if (!riderHistory) return res.status(400).send("No history found");
 
-  return res.status(200).send("Rider history", riderHistory);
+  return res.status(200).send(riderHistory);
 });
 
 //

@@ -14,7 +14,9 @@ function TripBooked() {
   const url = getUrl();
   const [isLoading, setIsLoading] = useState(false);
   const [isBookedTripFetchingDone, setIsBookedTripFetchDone] = useState(true);
+  async function CancelTrip(tripRideId){
 
+  }
   useEffect(() => {
     let mounted = true;
     async function loadBookedList() {
@@ -86,7 +88,7 @@ function TripBooked() {
       <ScrollView w={"85%"} bg={"#F0F8FF"}>
         {bookedTripList.map((trip) => (
           <Box
-            key={trip.id}
+            key={trip._id}
             display={"flex"}
             flexDirection={"column"}
             borderRadius={10}
@@ -133,7 +135,7 @@ function TripBooked() {
                 Vehicle Number: {trip.vehicleNumber}
               </Text>
               <Text style={styles.details}>OTP: {trip.token}</Text>
-              <Button size={"lg"} px={10}>
+              <Button size={"lg"} px={10} onPress={()=>CancelTrip(trip._id)}>
                 Cancel trip
               </Button>
             </Stack>

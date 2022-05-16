@@ -66,7 +66,7 @@ const TripRequest = () => {
         {tripDetails.map((Trip) => (
           <Box
             flex={1}
-            key={Trip.id}
+            key={Trip._id}
             display={"flex"}
             flexDirection={"column"}
             borderRadius={10}
