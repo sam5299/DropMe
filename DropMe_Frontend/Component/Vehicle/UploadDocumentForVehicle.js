@@ -90,7 +90,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 4],
-      quality: 1,
+      quality: 0.5,
       base64: true,
     });
 
@@ -159,6 +159,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
           status: "success",
           title: "Vehicle Added.",
         });
+        setShowAlert(true);
         console.log("Add vehicle done..");
       } catch (ex) {
         setIsLoading(false);

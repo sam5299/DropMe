@@ -12,7 +12,7 @@ import axios from "axios";
 const Stack = createNativeStackNavigator();
 
 const Main = () => {
-  const url = "http://192.168.96.181:3100";
+  const url = "http://192.168.43.195:3100";
 
   const initialState = {
     userName: null,
@@ -55,12 +55,14 @@ const Main = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const authContext = useMemo(
     () => ({
-      signIn: async (userName, userToken) => {
+      signIn: async (userName, result, userToken) => {
         try {
-          const result = await axios.get(url + "/user/getUser", {
-            headers: { "x-auth-token": userToken },
-          });
+          // await AsyncStorage.clear();
+          // const result = await axios.get(url + "/user/getUser", {
+          //   headers: { "x-auth-token": userToken },
+          // });
           result["userToken"] = userToken;
+          console.log("result:", result);
           const data = JSON.stringify(result);
           await AsyncStorage.setItem("User", data);
         } catch (e) {
@@ -94,7 +96,7 @@ const Main = () => {
           userToken = parseUser.userToken;
         }
       } catch (e) {
-        console.log(e.response.data);
+        console.log("main", e.response.data);
       }
       if (mounted) {
         dispatch({ type: "RETRIVE_TOKEN", token: userToken });

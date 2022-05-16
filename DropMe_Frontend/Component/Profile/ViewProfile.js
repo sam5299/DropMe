@@ -17,10 +17,10 @@ const ViewProfile = () => {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-        //console.log(parseUser.data);
+        // console.log("In viewprofile data:", parseUser);
 
         if (mounted) {
-          setUserDetails(parseUser.data);
+          setUserDetails(parseUser);
           setPageLoading(false);
           // setToken(parseUser.userToken);
         }

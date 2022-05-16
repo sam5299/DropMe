@@ -3,6 +3,7 @@ import { React, useState, useEffect, useContext } from "react";
 import { Box, Stack, Image, Text, Button, ScrollView } from "native-base";
 import axios from "axios";
 import { AuthContext } from "../Context";
+import Spinner from "../ReusableComponents/Spinner";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ViewVehicles = () => {
@@ -11,6 +12,8 @@ const ViewVehicles = () => {
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isVehicleFetchingDone, setIsVehicleFetchDone] = useState(true);
 
   useEffect(() => {
     let mounted = true;
@@ -18,7 +21,7 @@ const ViewVehicles = () => {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-
+        console.log("getting vehicle information.");
         let result = await axios.get(url + "/vehicle/getVehicleList", {
           headers: {
             "x-auth-token": parseUser.userToken,
@@ -27,10 +30,14 @@ const ViewVehicles = () => {
         if (mounted) {
           setVehicle(result.data);
           setToken(parseUser.userToken);
+          console.log("Setting vehicle done.");
+          setIsVehicleFetchDone(false);
         }
       } catch (ex) {
         console.log("Exception", ex.response.data);
+        setIsVehicleFetchDone(false);
       }
+      // return () => (mounted = false);
     }
 
     getVehicleDetails();
@@ -98,9 +105,19 @@ const ViewVehicles = () => {
             <Text fontSize={20} fontWeight="bold" p={1}>
               {vehicle.vehicleNumber}
             </Text>
-            <Button borderRadius={10} onPress={() => removeVehicle(vehicle)}>
-              Remove Vehicle
-            </Button>
+            <Box>
+              <Button
+                isLoading={isLoading}
+                isLoadingText="Removing vehicle.."
+                size="md"
+                mt={5}
+                onPress={removeVehicle(vehicle)}
+              >
+                <Text fontSize={"lg"} color="white">
+                  Remove vehicle
+                </Text>
+              </Button>
+            </Box>
           </Stack>
         ))}
       </ScrollView>
@@ -109,7 +126,13 @@ const ViewVehicles = () => {
 
   return (
     <Box alignItems={"center"} bg={"#F0F8FF"}>
-      {vehicleDetails.length ? getVehicle() : <Text>Please add vehicle</Text>}
+      {isVehicleFetchingDone ? (
+        Spinner
+      ) : vehicleDetails.length ? (
+        getVehicle()
+      ) : (
+        <Text>Please add vehicle</Text>
+      )}
     </Box>
   );
 };
