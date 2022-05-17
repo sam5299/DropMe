@@ -49,8 +49,6 @@ async function getCreatedRides(
     .find({ $or: [{ rideFor: gender }, { rideFor: "Both" }] });
   // .find({ $not: [{ User: userId }] });
 }
-
-
 // Add trip request
 async function addTripRequest(passengerId, rideId, tripId) {
   let [rideObj] = await Ride.find({ _id: rideId });
@@ -67,7 +65,8 @@ async function getUserRides(userId) {
     status: "Created",
   })
     .populate("Vehicle", "_id  vehicleImage ", Vehicle)
-    .populate("User", "_id name", User);
+    .populate("User", "_id name", User)
+    .sort({ _id: -1 });
 }
 
 // delete a ride by its id
