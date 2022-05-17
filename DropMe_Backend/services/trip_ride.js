@@ -29,7 +29,7 @@ async function getAllBookedRides(raiderId) {
 
 // return all booked rides of the passenger
 async function getAllBookedTrips(passengerId) {
-  return await TripRide.find({ PassengerId: passengerId, status: "Booked" })
+  return await TripRide.find({ PassengerId: passengerId, $or:[{ status:"Booked" },{status:"Initiated"}]})
     .populate("RaiderId", "_id profile name mobileNumber", User)
     .populate("tripId", "_id source destination pickupPoint date time", Trip)
     .sort({ _id: -1 });
