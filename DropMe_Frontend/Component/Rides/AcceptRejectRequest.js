@@ -25,7 +25,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
           }
         );
         if (mounted) {
-          console.log(requestList.data);
+          // console.log(requestList.data);
           setTripRequestList(requestList.data);
           setLoading(false);
         }
@@ -49,14 +49,42 @@ const AcceptRejectRequest = ({ route, navigation }) => {
   ) => {
     try {
       const result = await axios.post(
-        url + "ride/acceptTripRequest",
-        { headers: { "x-auth-token": token } },
-        { tripId, rideId, raiderName, amount, vehicleNumber }
+        url + "/ride/acceptTripRequest",
+        { tripId, rideId, raiderName, amount, vehicleNumber },
+        { headers: { "x-auth-token": token } }
+      );
+      alert(result.data);
+    } catch (error) {
+      console.log("Accept Request: ", error.response.data);
+    }
+  };
+
+  const rejectRequest = async (
+    tripId,
+    rideId,
+    raiderName,
+    source,
+    destination,
+    passengerId
+  ) => {
+    try {
+      const result = await axios.put(
+        url + "/ride/rejectTripRequest",
+        {
+          tripId,
+          rideId,
+          passengerId,
+          raiderName,
+          source,
+          destination,
+          passengerId,
+        },
+        { headers: { "x-auth-token": token } }
       );
       console.log(result.data);
-      alert("Accepted");
+      alert("Request Rejected..!");
     } catch (error) {
-      console.log("Accept Reject Request: ", error.response);
+      console.log("Reject Request: ", error.response.data);
     }
   };
 
@@ -135,7 +163,16 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                 </Button>
                 <Button
                   colorScheme="secondary"
-                  onPress={() => alert("Rejected..!")}
+                  onPress={() =>
+                    rejectRequest(
+                      list._id,
+                      rideId,
+                      name,
+                      list.source,
+                      list.destination,
+                      list.User._id
+                    )
+                  }
                   px={5}
                 >
                   Reject

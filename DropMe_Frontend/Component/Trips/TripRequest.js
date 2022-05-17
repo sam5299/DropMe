@@ -1,29 +1,64 @@
 // import { View, Text } from 'react-native'
 import { Box, Button, ScrollView, Text } from "native-base";
-import React, { useState } from "react";
+import React, { useState ,useContext,useEffect} from "react";
+import axios from "axios";
+import { AuthContext } from "../Context";
+import Spinner from "../ReusableComponents/Spinner";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TripRequest = () => {
   const [tripDetails, setTripDetails] = useState([
-    {
-      id: 1,
-      source: "Pune",
-      destination: "Mumbai",
-      pickUpPoint: "Pimpri",
-      time: "4:15 PM",
-      date: "22 May 2020",
-      requestCount: 3,
-    },
+    // {
+    //   id: 1,
+    //   source: "Pune",
+    //   destination: "Mumbai",
+    //   pickUpPoint: "Pimpri",
+    //   time: "4:15 PM",
+    //   date: "22 May 2020",
+    //   requestCount: 3,
+    // },
 
-    {
-      id: 4,
-      source: "Pune",
-      destination: "Mumbai",
-      pickUpPoint: "Pimpri",
-      time: "4:15 PM",
-      date: "22 May 2020",
-      requestCount: 3,
-    },
+    // {
+    //   id: 4,
+    //   source: "Pune",
+    //   destination: "Mumbai",
+    //   pickUpPoint: "Pimpri",
+    //   time: "4:15 PM",
+    //   date: "22 May 2020",
+    //   requestCount: 3,
+    // },
   ]);
+  const { getUrl } = useContext(AuthContext);
+  const url = getUrl();
+
+ useEffect(() => {
+      let mounted = true;
+      async function loadRequestedTrips() {
+        try {
+          const User = await AsyncStorage.getItem("User");
+          const parseUser = JSON.parse(User);
+          console.log("getting booked trips information.");
+          let result = await axios.get(url + "/trip/getBookedTrips", {
+            headers: {
+              "x-auth-token": parseUser.userToken,
+            },
+          });
+          if (mounted) {
+            //setVehicle(result.data);
+            setToken(parseUser.userToken);
+            //console.log("Setting vehicle done.");
+            setTripDetails()
+            setIsVehicleFetchDone(false);
+          }
+        } catch (ex) {
+          console.log("Exception", ex.response.data);
+          setIsVehicleFetchDone(false);
+        }
+    }
+    loadRequestedTrips();
+  }, []);
+
+
 
   function getTripRequest() {
     return (
@@ -31,7 +66,7 @@ const TripRequest = () => {
         {tripDetails.map((Trip) => (
           <Box
             flex={1}
-            key={Trip.id}
+            key={Trip._id}
             display={"flex"}
             flexDirection={"column"}
             borderRadius={10}
@@ -69,30 +104,7 @@ const TripRequest = () => {
     );
   }
 
-  // useEffect(() => {
-  //   async function loadNotification() {
-  //     try {
-  //       console.log("Hey ");
-
-  //       let result = await axios.get(
-  //         "http://192.168.43.180:3100/notification/getNotification",
-  //         {
-  //           headers: {
-  //             "x-auth-token":
-  //               "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsIlVzZXIiOiI2MjZmOWZkZTRiNDRiZDQ2NGM5NzgzZjEiLCJpYXQiOjE2NTIwODI1MTl9.flvvWDWGaB78rh2HEvV9lhuiLX6d2Ap99M5naritNE4",
-  //           },
-  //         }
-  //       );
-  //       setTripDetails(result.data);
-  //       console.log("hii ");
-  //       console.log("result:", result.data);
-  //     } catch (ex) {
-  //       console.log("Exception", ex.response.data);
-  //     }
-  //   }
-  //   loadNotification();
-  // }, []);
-
+ 
   return (
     <Box w={"100%"} alignItems={"center"} bg={"#F0F8FF"}>
       {tripDetails.length ? getTripRequest() : <Text>No request found</Text>}

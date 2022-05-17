@@ -9,6 +9,11 @@ const { getUser } = require("../services/user");
 router.use(express.json());
 const { Ride } = require("../models/ride");
 const { createNotification } = require("../services/notification");
+const {
+  getAllBookedTrips,
+  getPassengerHistory,
+  deleteBookedTrip,
+} = require("../services/trip_ride");
 
 //endpoint to search riders who are travelling on route passenger searching for
 router.get("/searchForRide", auth, async (req, res) => {
@@ -27,7 +32,7 @@ router.get("/searchForRide", auth, async (req, res) => {
     req.body.seatRequest,
     gender
   );
-  return res.status(200).send("/searchForRide called and result:" + rides);
+  return res.status(200).send("searchForRide called and result:" + rides);
 });
 
 router.post("/requestRide", auth, async (req, res) => {
@@ -45,7 +50,7 @@ router.post("/requestRide", auth, async (req, res) => {
     return res
       .status(400)
       .send(
-        "You don't have sufficent credit points to request for this trip. Please add credit point and try again."
+        "You  have insufficient credit points to request for this trip. Please add credit point and try again."
       );
 
   let requestedRide = await requestRide(req.body, rideId);
@@ -69,12 +74,41 @@ router.post("/requestRide", auth, async (req, res) => {
   };
 
   let notificationResult = createNotification(notificationObj);
-  console.log("notificationresult:", notificationResult);
+  console.log("notification result:", notificationResult);
 
-  return res.status(200).send("request sent:" + requestedRide);
+  return res.status(200).send(requestedRide);
 });
 
 //endpoint to cancel trip request
 router.put("/cancelTrip/:tid", auth, async (req, res) => {});
+
+//route to get all accepted trip request
+router.get("/getBookedTrips", auth, async (req, res) => {
+  let raiderId = req.body.User;
+  let bookedRide = await getAllBookedTrips(raiderId);
+  if (!bookedRide) return res.status(400).send("No rides found");
+
+  //return res.status(200).send("searchForRide called and result:" + rides);
+
+  return res.status(200).send(bookedRide);
+});
+
+//route to get all history of passenger
+router.get("/getPassengerHistory", auth, async (req, res) => {
+  let passengerId = req.body.User;
+  let passengerHistory = await getPassengerHistory(passengerId);
+  if (!passengerHistory) return res.status(400).send("No history found");
+
+  return res.status(200).send(passengerHistory);
+});
+
+// route to reject booked trip
+router.delete("/deleteBookedTrip/:tripRideId", auth, async (req, res) => {
+  let tripRideId = req.params.tripRideId;
+  let deleteResult = await deleteBookedTrip(tripRideId);
+  if (!deleteResult) return res.status(400).send("Error in deleting");
+
+  return res.status(200).send("Trip deleted");
+});
 
 module.exports = router;

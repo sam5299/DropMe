@@ -185,7 +185,7 @@ const AvailableRides = ({ route, navigation }) => {
   //   loadRides();
   // }, []);
 
-  return <>{RideDetails.length ? getRides() : <Text>No Request found</Text>}</>;
+  return <>{RideDetails.length ? getRides() : <Text>No Rides found</Text>}</>;
 };
 
 export default AvailableRides;

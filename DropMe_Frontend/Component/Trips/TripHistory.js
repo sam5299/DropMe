@@ -1,46 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Box, Text, Stack, Image, Button, ScrollView } from "native-base";
+import React, { useState, useEffect,useContext } from "react";
+import { Box, Text, Stack, Image, ScrollView } from "native-base";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { Rating, AirbnbRating } from "react-native-ratings";
+import axios from "axios";
+import { AuthContext } from "../Context";
+import Spinner from "../ReusableComponents/Spinner";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TripHistory = () => {
-  const [tripDetails, setTripDetails] = useState([
-    // {
-    //   id:1,
-    //   name: "John Doe",
-    //   profileImage: "https://wallpaperaccess.com/full/317501.jpg",
-    //   source: "Pune",
-    //   destination: "Mumbai",
-    //   pickupPoint: "Shivajinagar",
-    //   tripPrice: 32423,
-    //   tripCapacity: 4,
-    //   date: "22 May 2022",
-    //   starCount: 3,
-    // },
-    {
-      id: 2,
-      name: "John Doe",
-      profileImage: "https://wallpaperaccess.com/full/317501.jpg",
-      source: "Pune",
-      destination: "Mumbai",
-      pickupPoint: "Shivajinagar",
-      tripPrice: 32423,
-      tripCapacity: 4,
-      date: "22 May 2022",
-      starCount: 3,
-    },
-    {
-      id: 3,
-      name: "John Doe",
-      profileImage: "https://wallpaperaccess.com/full/317501.jpg",
-      source: "Pune",
-      destination: "Mumbai",
-      pickupPoint: "Shivajinagar",
-      tripPrice: 32423,
-      tripCapacity: 4,
-      date: "22 May 2022",
-      starCount: 3,
-    },
+  const [passengerHistory, setPassengerHistory] = useState([
     {
       id: 4,
       name: "John Doe",
@@ -54,10 +22,47 @@ const TripHistory = () => {
       starCount: 3,
     },
   ]);
+  const [vehicleDetails, setVehicle] = useState([]);
+  const [userToken, setToken] = useState(null);
+
+  const { getUrl } = useContext(AuthContext);
+  const url = getUrl();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isHistoryFetchingDone, setIsHistoryFetchDone] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    async function getHistory() {
+      try {
+        const User = await AsyncStorage.getItem("User");
+        const parseUser = JSON.parse(User);
+        console.log("getting history information.");
+        let result = await axios.get(url + "/trip/getPassengerHistory", {
+          headers: {
+            "x-auth-token": parseUser.userToken,
+          },
+        });
+        if (mounted) {
+          setPassengerHistory(result.data);
+          setToken(parseUser.userToken);
+          console.log("Set done",result.data);
+          setIsHistoryFetchDone(false);
+        }
+      } catch (ex) {
+        console.log("Exception", ex.response.data);
+        setIsHistoryFetchDone(false);
+      }
+       return () => (mounted = false);
+    }
+
+    getHistory();
+    return () => (mounted = false);
+  }, []);
+
   function getHistory() {
     return (
       <ScrollView w="95%" bg={"#F0F8FF"} m="2">
-        {tripDetails.map((trip) => (
+        {passengerHistory.map((trip) => (
           <Box
             key={trip.id}
             borderRadius={10}
@@ -83,14 +88,14 @@ const TripHistory = () => {
           >
             <Image
               source={{
-                uri: trip.profileImage,
+                uri: trip.RaiderId.profile,
               }}
               size={"xl"}
-              alt="Image not found"
+              alt="Image not available"
               borderRadius={100}
             />
             <AirbnbRating
-              count={trip.ratingCount}
+              count={trip.tripRating}
               reviews={["OK", "Good", "Very Good", "Wow", "Amazing"]}
               readonly={true}
               size={15}
@@ -100,20 +105,20 @@ const TripHistory = () => {
             />
             <Stack direction={"column"} alignItems="center" space={5} m={2}>
               <Text fontSize={18} fontWeight="bold" color="black">
-                Source: {trip.source}
+                Source: {trip.tripId.source}
               </Text>
               <Text fontSize={18} fontWeight="bold" color="black">
-                Destination: {trip.destination}
+                Destination: {trip.tripId.destination}
               </Text>
               <Text fontSize={18} fontWeight="bold" color="black">
-                Pickup Point: {trip.pickupPoint}
+                Pickup Point: {trip.tripId.pickupPoint}
               </Text>
               <Text fontSize={18} fontWeight="bold" color="black" p={1}>
-                Date: {trip.date}
+                Date: {trip.tripId.date}
               </Text>
               <Text fontSize={18} fontWeight="bold" color="black">
                 <FontAwesome name="rupee" size={18} color="black" />-
-                {trip.tripPrice}
+                {trip.amount}
               </Text>
             </Stack>
           </Box>
@@ -122,34 +127,16 @@ const TripHistory = () => {
     );
   }
 
-  // useEffect(() => {
-  //   async function loadHistory(){
-  //     try {
-  //             console.log("Hey ");
-
-  //             let result = await axios.get(
-  //               "http://192.168.43.180:3100/notification/getNotification",
-  //               {
-  //                 headers: {
-  //                   "x-auth-token":
-  //                     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsIlVzZXIiOiI2MjZmOWZkZTRiNDRiZDQ2NGM5NzgzZjEiLCJpYXQiOjE2NTIwODI1MTl9.flvvWDWGaB78rh2HEvV9lhuiLX6d2Ap99M5naritNE4",
-  //                 },
-  //               }
-  //             );
-  //             setTripDetails(result.data);
-  //             // console.log("hii ");
-  //             console.log("result:", result.data);
-  //           } catch (ex) {
-  //             console.log("Exception", ex.response.data);
-  //           }
-
-  //   }
-
-  // }, [])
 
   return (
     <Box>
-      {tripDetails.length ? getHistory() : <Text>No details found</Text>}
+      {isHistoryFetchingDone ? (
+        Spinner
+      ) : passengerHistory.length ? (
+        getHistory()
+      ) : (
+        <Text>No details found</Text>
+      )}
     </Box>
   );
 };

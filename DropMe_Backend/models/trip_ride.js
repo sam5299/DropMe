@@ -11,6 +11,9 @@ let tripRideSchema = new mongoose.Schema({
     amount: {type:Number, required:true},
     tripId: {type:mongoose.Schema.Types.ObjectId,ref:"Trip", required:true},
     rideId: {type:mongoose.Schema.Types.ObjectId,ref:"Ride", required:true},
+    startTime: { type: String, default:null },
+    endTime: { type: String, default:null },
+    date: { type: String, required: true },
     RaiderId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
@@ -35,6 +38,8 @@ function validateTripRide(body) {
         token: Joi.number().required(),
         RaiderId: Joi.string().required(),
         PassengerId: Joi.string().required(),
+        date: Joi.string().required(),
+
 
 
     });

@@ -1,12 +1,11 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RideTab from "./RideTab";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { Button, Icon } from "native-base";
 import Rides from "./Rides";
 import RequestRide from "./RequestRide";
 import AcceptRejectRequest from "./AcceptRejectRequest";
+import BookedRides from "./BookedRides";
 
 const rideStack = createNativeStackNavigator();
 
@@ -22,6 +21,11 @@ const RideStack = ({ navigation }) => {
         <rideStack.Screen
           name="Rides"
           component={Rides}
+          options={{ headerShown: false }}
+        />
+        <rideStack.Screen
+          name="BookedRides"
+          component={BookedRides}
           options={{ headerShown: false }}
         />
         <rideStack.Screen
