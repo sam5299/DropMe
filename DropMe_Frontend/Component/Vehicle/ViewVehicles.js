@@ -1,11 +1,25 @@
 import { View } from "react-native";
 import { React, useState, useEffect, useContext } from "react";
-import { Box, Stack, Image, Text, Button, ScrollView } from "native-base";
+import {
+  Box,
+  Stack,
+  Image,
+  Text,
+  Icon,
+  Button,
+  ScrollView,
+  Alert,
+  VStack,
+  HStack,
+  IconButton,
+  CloseIcon,
+  Fab,
+} from "native-base";
 import axios from "axios";
 import { AuthContext } from "../Context";
-import Spinner from "../ReusableComponents/Spinner";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+// import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Ionicons } from "@expo/vector-icons";
 const ViewVehicles = () => {
   const [vehicleDetails, setVehicle] = useState([]);
   const [userToken, setToken] = useState(null);
@@ -13,7 +27,31 @@ const ViewVehicles = () => {
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
   const [isLoading, setIsLoading] = useState(false);
-  const [isVehicleFetchingDone, setIsVehicleFetchDone] = useState(true);
+  const [showAlert, setShowAlert] = useState(false);
+  const [status, setStatus] = useState({ status: "", title: "" });
+  const [fetching, setFetching] = useState(true);
+
+  let AlertField = (
+    <Alert w="100%" status={status.status}>
+      <VStack space={2} flexShrink={1} w="100%">
+        <HStack flexShrink={1} space={2} justifyContent="space-between">
+          <HStack space={2} flexShrink={1}>
+            <Alert.Icon mt="1" />
+            <Text fontSize="md" color="coolGray.800">
+              {status.title}
+            </Text>
+          </HStack>
+          <IconButton
+            variant="unstyled"
+            _focus={{
+              borderWidth: 0,
+            }}
+            icon={<CloseIcon size="3" color="coolGray.600" />}
+          />
+        </HStack>
+      </VStack>
+    </Alert>
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -31,13 +69,11 @@ const ViewVehicles = () => {
           setVehicle(result.data);
           setToken(parseUser.userToken);
           console.log("Setting vehicle done.");
-          setIsVehicleFetchDone(false);
         }
       } catch (ex) {
         console.log("Exception", ex.response.data);
-        setIsVehicleFetchDone(false);
       }
-      // return () => (mounted = false);
+      setFetching(false);
     }
 
     getVehicleDetails();
@@ -54,13 +90,26 @@ const ViewVehicles = () => {
           },
         }
       );
+      // setVehicle(newVehicle);
+      setStatus({ status: "success", title: result.data });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+        let newVehicle = vehicleDetails.filter(
+          (vehicleObj) => vehicleObj._id != vehicle._id
+        );
+        setVehicle(newVehicle);
+      }, 2000);
 
-      let newVehicle = vehicleDetails.filter(
-        (vehicleObj) => vehicleObj._id != vehicle._id
-      );
-      setVehicle(newVehicle);
+      setIsLoading(false);
     } catch (ex) {
+      setStatus({ status: "error", title: ex.response.data });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 2000);
       console.log(ex.response.data);
+      setIsLoading(false);
     }
   }
 
@@ -107,11 +156,14 @@ const ViewVehicles = () => {
             </Text>
             <Box>
               <Button
-                isLoading={isLoading}
                 isLoadingText="Removing vehicle.."
                 size="md"
                 mt={5}
-                onPress={removeVehicle(vehicle)}
+                onPress={() => {
+                  // setStatus({ status: "error", title: "Remvoing vehicle.." });
+                  // setShowAlert(true);
+                  removeVehicle(vehicle);
+                }}
               >
                 <Text fontSize={"lg"} color="white">
                   Remove vehicle
@@ -124,17 +176,27 @@ const ViewVehicles = () => {
     );
   }
 
-  return (
-    <Box alignItems={"center"} bg={"#F0F8FF"}>
-      {isVehicleFetchingDone ? (
-        Spinner
-      ) : vehicleDetails.length ? (
-        getVehicle()
-      ) : (
-        <Text>Please add vehicle</Text>
-      )}
-    </Box>
-  );
+  if (fetching) {
+    return (
+      <Box flex={1} justifyContent={"center"} alignItems={"center"}>
+        <Text>Loading..</Text>
+      </Box>
+    );
+  } else {
+    return (
+      <Box flex={1} bg={"#F0F8FF"}>
+        <Box>{showAlert ? AlertField : ""}</Box>
+        <Box flex={1} alignItems={"center"} justifyContent={"center"}>
+          {vehicleDetails.length ? (
+            getVehicle()
+          ) : (
+            <Text>Please add vehicle</Text>
+          )}
+          <Box></Box>
+        </Box>
+      </Box>
+    );
+  }
 };
 
 export default ViewVehicles;
