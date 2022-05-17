@@ -68,6 +68,7 @@ async function getUserRides(userId) {
   })
     .populate("Vehicle", "_id  vehicleImage ", Vehicle)
     .populate("User", "_id name", User);
+    //.sort({_id:-1});
 }
 
 // delete a ride by its id
