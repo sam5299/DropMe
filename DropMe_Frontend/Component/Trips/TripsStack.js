@@ -19,11 +19,11 @@ const TripsStack = ({ navigation }) => {
           component={RequestBookedHistory}
           options={{ headerShown: false }}
         />
-        {/* <SliderStack.Screen
+        <SliderStack.Screen
           name="TripRequest"
           component={TripRequest}
           options={{ headerShown: false }}
-        /> */}
+        />
         <SliderStack.Screen
           name="TripBooked"
           component={TripBooked}

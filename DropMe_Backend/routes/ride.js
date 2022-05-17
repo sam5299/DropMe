@@ -170,7 +170,7 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
   //calculate trip cost
   amount = await calculateTripAmount(vehicle.Vehicle, trip.distance);
   req.body.amount = amount;
-
+  req.body.date = trip.date;
   //adding RaiderId and PassengerId to req.body
   req.body.RaiderId = req.body.User;
   req.body.PassengerId = trip.User._id.toString();

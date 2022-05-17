@@ -14,7 +14,7 @@ import axios from "axios";
 import { AuthContext } from "../Context";
 
 const BookedRides = ({ navigation }) => {
-  const [allRides, setUserRides] = useState([]);
+  const [rideHistory, setRideHistory] = useState([]);
   const [showRides, setShowRides] = useState(true);
   const [token, setToken] = useState(null);
 
@@ -28,13 +28,13 @@ const BookedRides = ({ navigation }) => {
         const User = await AsyncStorage.getItem("User");
         const userDetails = JSON.parse(User);
         setToken(userDetails.userToken);
-        const allRides = await axios.get(url + "/ride/getUserRides", {
+        const allRides = await axios.get(url + "/ride/getBookedRides", {
           headers: {
             "x-auth-token": userDetails.userToken,
           },
         });
-        setUserRides(allRides.data);
-        //console.log("Ride Details:", allRides.data);
+        setRideHistory(allRides.data);
+      console.log("@@@", allRides.data);
         setShowRides(false);
       } catch (error) {
         console.log("Rides Exception: ", error.response.data);
@@ -50,7 +50,7 @@ const BookedRides = ({ navigation }) => {
   function allUserRides() {
     return (
       <ScrollView>
-        {allRides.map((ride) => (
+        {rideHistory.map((ride) => (
           <Box
             key={ride._id}
             mb={5}
@@ -91,11 +91,11 @@ const BookedRides = ({ navigation }) => {
                 <Text fontSize={18} fontWeight="bold">
                   From:
                 </Text>
-                <Text fontSize={15}>{ride.source}</Text>
+                <Text fontSize={15}>{ride.tripId.source}</Text>
                 <Text fontSize={18} fontWeight="bold" p={1}>
                   To:
                 </Text>
-                <Text fontSize={15}>{ride.destination}</Text>
+                <Text fontSize={15}>{ride.tripId.destination}</Text>
 
                 <Text fontSize={18} fontWeight="bold" p={1}>
                   Date:
@@ -136,7 +136,7 @@ const BookedRides = ({ navigation }) => {
     return (
       <Box flex={1} alignItems={"center"} pb={"5"} bg={"#F0F8FF"}>
         <Box mt={2}>
-          {allRides.length ? (
+          {rideHistory.length ? (
             allUserRides()
           ) : (
             <Box flex={1} justifyContent="center" alignItems={"center"}>
