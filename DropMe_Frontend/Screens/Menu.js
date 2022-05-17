@@ -150,7 +150,7 @@ const Menu = ({ navigation }) => {
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
-        onPress={() => navigation.navigate("Balance")}
+        onPress={() => navigation.navigate("WalletStack")}
       >
         <Box flexDir={"row"} alignItems={"center"} p="5">
           <MaterialCommunityIcons
