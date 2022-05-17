@@ -7,8 +7,11 @@ import {
   Button,
   ScrollView,
   Divider,
+  Modal,
+  FormControl,
+  Input,
+  Center,
 } from "native-base";
-import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { AuthContext } from "../Context";
@@ -16,7 +19,10 @@ import { AuthContext } from "../Context";
 const BookedRides = ({ navigation }) => {
   const [bookedRides, setbookedRides] = useState([]);
   const [showRides, setShowRides] = useState(true);
-  const [token, setToken] = useState(null);
+  const [userToken, setToken] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [passengerToken, setPassengerToken] = useState(null);
+  const [validate, setValidate] = useState(false);
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
@@ -34,7 +40,7 @@ const BookedRides = ({ navigation }) => {
           },
         });
         setbookedRides(allRides.data);
-        //console.log("@@@", allRides.data);
+        // console.log("@@@", allRides.data);
         setShowRides(false);
       } catch (error) {
         console.log("Booked Rides Exception: ", error.response.data);
@@ -46,6 +52,23 @@ const BookedRides = ({ navigation }) => {
 
     return () => (mounted = false);
   }, []);
+
+  const startTrip = async (tripRideId, tripId, status, token) => {
+    // console.log(tripRideId, tripId, status, token);
+    //  setShowModal(true);
+
+    try {
+      const result = await axios.put(
+        url + "/trip/updateTripStatus",
+        { tripRideId, tripId, status, token },
+        { headers: { "x-auth-token": userToken } }
+      );
+
+      alert(result.data);
+    } catch (error) {
+      console.log("Booked Rides: ", error.response.data);
+    }
+  };
 
   function allUserRides() {
     return (
@@ -111,12 +134,66 @@ const BookedRides = ({ navigation }) => {
               </Box>
               <Divider mb={2} />
               <Stack direction={"row"} space={5} mt={2}>
-                <Button onPress={() => alert("Start Trip")} px={5}>
+                <Button
+                  onPress={() =>
+                    startTrip(
+                      ride._id,
+                      ride.tripId._id,
+                      "Initiated",
+                      ride.token
+                    )
+                  }
+                  px={5}
+                >
                   Start Trip
                 </Button>
+                <Center>
+                  <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+                    <Modal.Content maxWidth="400px">
+                      <Modal.CloseButton />
+                      <Modal.Header>Enter the token</Modal.Header>
+                      <Modal.Body>
+                        <FormControl mt="3">
+                          <Input
+                            keyboardType="numeric"
+                            onChangeText={(value) => setPassengerToken(value)}
+                          />
+                        </FormControl>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button.Group space={2}>
+                          <Button
+                            variant="ghost"
+                            colorScheme="blueGray"
+                            onPress={() => {
+                              setShowModal(false);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            onPress={() => {
+                              setShowModal(false);
+                              setValidate(true);
+                            }}
+                          >
+                            Save
+                          </Button>
+                        </Button.Group>
+                      </Modal.Footer>
+                    </Modal.Content>
+                  </Modal>
+                </Center>
                 <Button
                   colorScheme="secondary"
-                  onPress={() => alert("Cancel Ride")}
+                  onPress={() =>
+                    startTrip(
+                      ride._id,
+                      ride.tripId._id,
+                      "Completed",
+                      ride.token
+                    )
+                  }
                   px={5}
                 >
                   Cancel Trip
