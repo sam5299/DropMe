@@ -235,7 +235,7 @@ router.put("/rejectTripRequest", auth, async (req, res) => {
     console.log("failed to send notification.");
     return res.status(400).send("something failed.");
   }
-  return res.status(200).send("Trip rejected:", rideObj);
+  return res.status(200).send(rideObj);
 });
 
 //route to get all accepted ride request
