@@ -6,6 +6,7 @@ import Rides from "./Rides";
 import RequestRide from "./RequestRide";
 import AcceptRejectRequest from "./AcceptRejectRequest";
 import BookedRides from "./BookedRides";
+import RideHistory from "./RideHistory";
 
 const rideStack = createNativeStackNavigator();
 
@@ -36,6 +37,11 @@ const RideStack = ({ navigation }) => {
         <rideStack.Screen
           name="ViewRequest"
           component={AcceptRejectRequest}
+          options={{ headerShown: false }}
+        />
+        <rideStack.Screen
+          name="RideHistory"
+          component={RideHistory}
           options={{ headerShown: false }}
         />
       </rideStack.Navigator>

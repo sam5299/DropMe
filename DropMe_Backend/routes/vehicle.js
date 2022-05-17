@@ -106,11 +106,11 @@ router.post("/addVehicle", auth, async (req, res) => {
   }
 });
 
-//endpoint to get vehicle list of perticular user
+//endpoint to get vehicle list of particular user
 router.get("/getVehicleList", auth, async (req, res) => {
   console.log("Get vehicle list:" + JSON.stringify(req.body));
   let vehicleList = await getVehicleList(req.body.userId);
-  console.log("vehicle backend:", vehicleList);
+  //console.log("vehicle backend:", vehicleList);
   if (vehicleList.length == 0) return res.status(404).send("No vehicles found");
   return res.status(200).send(vehicleList);
 });

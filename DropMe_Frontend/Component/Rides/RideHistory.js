@@ -4,32 +4,15 @@ import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { Rating, AirbnbRating } from "react-native-ratings";
 import axios from "axios";
 import { AuthContext } from "../Context";
-import Spinner from "../ReusableComponents/Spinner";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const TripHistory = () => {
-  const [passengerHistory, setPassengerHistory] = useState([
-    {
-      id: 4,
-      name: "John Doe",
-      profileImage: "https://wallpaperaccess.com/full/317501.jpg",
-      source: "Pune",
-      destination: "Mumbai",
-      pickupPoint: "Shivajinagar",
-      tripPrice: 32423,
-      tripCapacity: 4,
-      date: "22 May 2022",
-      starCount: 3,
-    },
-  ]);
-  const [vehicleDetails, setVehicle] = useState([]);
+const RideHistory = () => {
+  const [rideHistoryList, setRideHistory] = useState([]);
   const [userToken, setToken] = useState(null);
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isHistoryFetchingDone, setIsHistoryFetchDone] = useState(true);
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     let mounted = true;
     async function getHistory() {
@@ -37,20 +20,21 @@ const TripHistory = () => {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
         console.log("getting history information.");
-        let result = await axios.get(url + "/trip/getPassengerHistory", {
+        let result = await axios.get(url + "/ride/getRaiderHistory", {
           headers: {
             "x-auth-token": parseUser.userToken,
           },
         });
+        //console.log("@@2", result.data.);
         if (mounted) {
-          setPassengerHistory(result.data);
+          setIsLoading(false);
+          setRideHistory(result.data);
           setToken(parseUser.userToken);
           console.log("Set done", result.data);
-          setIsHistoryFetchDone(false);
         }
       } catch (ex) {
         console.log("Exception", ex.response.data);
-        setIsHistoryFetchDone(false);
+        setIsLoading(false);
       }
       return () => (mounted = false);
     }
@@ -62,7 +46,7 @@ const TripHistory = () => {
   function getHistory() {
     return (
       <ScrollView w="95%" bg={"#F0F8FF"} m="2">
-        {passengerHistory.map((trip) => (
+        {rideHistoryList.map((trip) => (
           <Box
             key={trip.id}
             borderRadius={10}
@@ -88,7 +72,7 @@ const TripHistory = () => {
           >
             <Image
               source={{
-                uri: trip.RaiderId.profile,
+                uri: "", //trip.PassengerId.profile,
               }}
               size={"xl"}
               alt="Image not available"
@@ -116,16 +100,15 @@ const TripHistory = () => {
               <Text fontSize={18} fontWeight="bold" color="black" p={1}>
                 Date: {trip.tripId.date}
               </Text>
-              {trip.status == "Completed" ? (
-                <Text fontSize={18} fontWeight="bold" color="black">
-                  <FontAwesome name="rupee" size={18} color="black" />-
-                  {trip.amount}
-                </Text>
-              ) : (
-                <Text fontSize={18} fontWeight="bold" color="black">
-                  {trip.status}
-                </Text>
-              )}
+
+              <Text fontSize={18} fontWeight="bold" color="black">
+                <FontAwesome name="rupee" size={18} color="black" />-
+                {trip.amount}
+              </Text>
+
+              <Text fontSize={18} fontWeight="bold" color="black">
+                {trip.status}
+              </Text>
             </Stack>
           </Box>
         ))}
@@ -133,17 +116,15 @@ const TripHistory = () => {
     );
   }
 
-  return (
-    <Box>
-      {isHistoryFetchingDone ? (
-        Spinner
-      ) : passengerHistory.length ? (
-        getHistory()
-      ) : (
-        <Text>No details found</Text>
-      )}
-    </Box>
-  );
+  if (isLoading) {
+    return <Box>Loading...!</Box>;
+  } else {
+    return (
+      <Box>
+        {rideHistoryList.length ? getHistory() : <Text>No details found</Text>}
+      </Box>
+    );
+  }
 };
 
-export default TripHistory;
+export default RideHistory;
