@@ -14,7 +14,7 @@ import axios from "axios";
 import { AuthContext } from "../Context";
 
 const BookedRides = ({ navigation }) => {
-  const [rideHistory, setRideHistory] = useState([]);
+  const [bookedRides, setbookedRides] = useState([]);
   const [showRides, setShowRides] = useState(true);
   const [token, setToken] = useState(null);
 
@@ -33,11 +33,11 @@ const BookedRides = ({ navigation }) => {
             "x-auth-token": userDetails.userToken,
           },
         });
-        setRideHistory(allRides.data);
-      console.log("@@@", allRides.data);
+        setbookedRides(allRides.data);
+        //console.log("@@@", allRides.data);
         setShowRides(false);
       } catch (error) {
-        console.log("Rides Exception: ", error.response.data);
+        console.log("Booked Rides Exception: ", error.response.data);
         setShowRides(false);
       }
     };
@@ -50,7 +50,7 @@ const BookedRides = ({ navigation }) => {
   function allUserRides() {
     return (
       <ScrollView>
-        {rideHistory.map((ride) => (
+        {bookedRides.map((ride) => (
           <Box
             key={ride._id}
             mb={5}
@@ -79,14 +79,17 @@ const BookedRides = ({ navigation }) => {
             >
               <Image
                 source={{
-                  uri: "https://stimg.cardekho.com/images/carexteriorimages/630x420/Maruti/Swift-Dzire-Tour/8862/1646139841911/front-left-side-47.jpg?tr=h-140",
+                  uri: ride.PassengerId.profile,
+                  //uri: "https://stimg.cardekho.com/images/carexteriorimages/630x420/Maruti/Swift-Dzire-Tour/8862/1646139841911/front-left-side-47.jpg?tr=h-140",
                 }}
                 alt="Alternate Text"
                 size={"xl"}
                 borderRadius={100}
                 bg="red.100"
               />
-
+              <Text fontSize={18} fontWeight="bold">
+                {ride.PassengerId.name}
+              </Text>
               <Box justifyContent={"flex-start"}>
                 <Text fontSize={18} fontWeight="bold">
                   From:
@@ -98,9 +101,9 @@ const BookedRides = ({ navigation }) => {
                 <Text fontSize={15}>{ride.tripId.destination}</Text>
 
                 <Text fontSize={18} fontWeight="bold" p={1}>
-                  Date:
+                  Mobile No:
                 </Text>
-                <Text fontSize={15}>Mon May 16 2022</Text>
+                <Text fontSize={15}>{ride.PassengerId.mobileNumber}</Text>
                 <Text fontSize={18} fontWeight="bold" p={1}>
                   Time:
                 </Text>
@@ -108,15 +111,15 @@ const BookedRides = ({ navigation }) => {
               </Box>
               <Divider mb={2} />
               <Stack direction={"row"} space={5} mt={2}>
-                <Button onPress={() => alert("Start Ride")} px={5}>
-                  Start Ride
+                <Button onPress={() => alert("Start Trip")} px={5}>
+                  Start Trip
                 </Button>
                 <Button
                   colorScheme="secondary"
                   onPress={() => alert("Cancel Ride")}
                   px={5}
                 >
-                  Cancel Ride
+                  Cancel Trip
                 </Button>
               </Stack>
             </Stack>
@@ -136,7 +139,7 @@ const BookedRides = ({ navigation }) => {
     return (
       <Box flex={1} alignItems={"center"} pb={"5"} bg={"#F0F8FF"}>
         <Box mt={2}>
-          {rideHistory.length ? (
+          {bookedRides.length ? (
             allUserRides()
           ) : (
             <Box flex={1} justifyContent="center" alignItems={"center"}>

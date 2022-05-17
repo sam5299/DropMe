@@ -2,6 +2,7 @@ const { Ride } = require("../models/ride");
 const { Trip } = require("../models/trip");
 const { TripRide } = require("../models/trip_ride");
 const { User } = require("../models/user");
+const { createNotification } = require("./notification");
 const { getTimeDifference } = require("./ride");
 const { updateWallet, updateUsedCredit } = require("./wallet");
 
@@ -48,28 +49,48 @@ async function getRiderHistory(raiderId) {
 
 // if the trip is canceled by passenger
 async function deleteBookedTrip(tripRideId) {
-  let tripRideObj = await TripRide.findOne({ _id: tripRideId }).populate(
-    "rideId",
-    "source destination pickupPoint date",
-    Ride
-  );
+  let tripRideObj = await TripRide.findOne({ _id: tripRideId })
+    .populate("rideId", "source destination pickupPoint date", Ride)
+    .populate("PassengerId", "name", User);
 
+  tripRideObj.date = tripRideObj.rideId.date;
+  let today = new Date();
+  let currentTime =
+    today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
   //get the time difference
-  let timeDifference = getTimeDifference(
-    tripRideObj.Ride.date + ";" + tripRideObj.Ride.time
-  );
-  //console.log("time difference:" + timeDifference);
+  let timeDifference = getTimeDifference(tripRideObj.date + ";" + currentTime);
+  console.log("time difference:" + timeDifference);
   //check if cancellation time is above 10 hrs then trip deposit will be refunded
   if (timeDifference >= 10) {
-    let depositAmount = tripRideObj.Ride.amount * 0.1;
-    //console.log("penalty");
-    let result = await updateUsedCredit(req.body.User, tripRideObj.Ride.amount*-1);
-    let updatateWallet= await updateWallet(req.body.User,tripRideObj.Ride.amount-depositAmount)
+    let depositAmount = tripRideObj.amount * 0.1;
+    console.log("penalty");
+    let result = await updateUsedCredit(
+      tripRideObj.PassengerId._id,
+      tripRideObj.amount * -1
+    );
+    let updatateWallet = await updateWallet(
+      tripRideObj.PassengerId._id,
+      tripRideObj.amount - depositAmount
+    );
     if (!result) console.log("error while adding deposit amount");
   }
+
+  let notificationDetails = {
+    fromUser: tripRideObj.PassengerId._id,
+    toUser: tripRideObj.RaiderId,
+    message: `Your booked trip from ${tripRideObj.rideId.source} to ${tripRideObj.rideId.destination} is canceled by ${tripRideObj.PassengerId.name}. `,
+  };
+
+  let newNotification = await createNotification(notificationDetails);
+  if (!newNotification) {
+    console.log("failed to send notification.");
+    return res.status(400).send("something failed.");
+  }
+
   tripRideObj.status = "Rejected";
-  let result= await tripRideId.save();
-  result.status(200).send("Trip is cancelled");
+  //console.log("@@@ Rejected", tripRideObj);
+
+  return await tripRideObj.save();
 }
 
 module.exports = {

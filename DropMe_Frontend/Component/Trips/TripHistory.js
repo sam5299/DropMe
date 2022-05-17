@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Box, Text, Stack, Image, ScrollView } from "native-base";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { Rating, AirbnbRating } from "react-native-ratings";
@@ -45,14 +45,14 @@ const TripHistory = () => {
         if (mounted) {
           setPassengerHistory(result.data);
           setToken(parseUser.userToken);
-          console.log("Set done",result.data);
+          console.log("Set done", result.data);
           setIsHistoryFetchDone(false);
         }
       } catch (ex) {
         console.log("Exception", ex.response.data);
         setIsHistoryFetchDone(false);
       }
-       return () => (mounted = false);
+      return () => (mounted = false);
     }
 
     getHistory();
@@ -116,17 +116,22 @@ const TripHistory = () => {
               <Text fontSize={18} fontWeight="bold" color="black" p={1}>
                 Date: {trip.tripId.date}
               </Text>
-              <Text fontSize={18} fontWeight="bold" color="black">
-                <FontAwesome name="rupee" size={18} color="black" />-
-                {trip.amount}
-              </Text>
+              {trip.status == "Completed" ? (
+                <Text fontSize={18} fontWeight="bold" color="black">
+                  <FontAwesome name="rupee" size={18} color="black" />-
+                  {trip.amount}
+                </Text>
+              ) : (
+                <Text fontSize={18} fontWeight="bold" color="black">
+                  {trip.status}
+                </Text>
+              )}
             </Stack>
           </Box>
         ))}
       </ScrollView>
     );
   }
-
 
   return (
     <Box>
