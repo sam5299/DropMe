@@ -21,7 +21,10 @@ async function getTripDetailsByRideIdAndStatus(rid, status) {
 
 // return all booked rides of the raider
 async function getAllBookedRides(raiderId) {
-  return await TripRide.find({ RaiderId: raiderId, $or:[{ status:"Booked" },{status:"Initiated"}] })
+  return await TripRide.find({
+    RaiderId: raiderId,
+    $or: [{ status: "Booked" }, { status: "Initiated" }],
+  })
     .populate("PassengerId", "_id profile name mobileNumber", User)
     .populate("tripId", "_id source destination pickupPoint date", Trip)
     .sort({ _id: -1 });
@@ -29,7 +32,7 @@ async function getAllBookedRides(raiderId) {
 
 // return all booked rides of the passenger
 async function getAllBookedTrips(passengerId) {
-  return await TripRide.find({ PassengerId: passengerId, status: "Booked"})
+  return await TripRide.find({ PassengerId: passengerId, status: "Booked" })
     .populate("RaiderId", "_id profile name mobileNumber", User)
     .populate("tripId", "_id source destination pickupPoint date time", Trip)
     .sort({ _id: -1 });
@@ -109,9 +112,28 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
     currentDate.getSeconds();
   //console.log(time);
   if (status == "Initiated") TripRideObj.startTime = currentTime;
-  else TripRideObj.endTime = currentTime;
+  else {
+    TripRideObj.endTime = currentTime;
 
-  console.log("Here", TripRideObj);
+    // add 90% amount to riders wallet and 10% commision will be given to DropMe.
+    let updateRiderWallet = await updateWallet(
+      TripRideObj.RiderId,
+      TripRideObj.amount - parseInt(TripRideObj.amount / 10)
+    );
+
+    // deduct trip amount from passenger's wallet
+    let updatePassengerWallet = await updateWallet(
+      TripRideObj.PassengerId,
+      TripRideObj.amount - TripRideObj.amount
+    );
+
+    // deduct amount from passenger's Used credit
+    let updateUsedCredit = await updateUsedCredit(
+      TripRideObj.PassengerId,
+      TripRideObj.amount - TripRideObj.amount
+    );
+  }
+
   return await TripRideObj.save();
 }
 
