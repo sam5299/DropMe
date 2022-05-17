@@ -68,7 +68,7 @@ router.get(
   auth,
   async (req, res) => {
     let body = req.params;
-    console.log(body);
+    console.log("in search ride backend", body);
     if (
       !(
         "source" in body &&
@@ -97,7 +97,9 @@ router.get(
         seats,
         gender
       );
+      console.log(rides);
       if (rides.length == 0) return res.status(400).send("No rides found");
+
       return res.status(200).send(rides);
     } catch (ex) {
       return res.status(500).send("something failed!! try again latter:" + ex);

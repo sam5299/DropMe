@@ -72,7 +72,7 @@ const RideHistory = () => {
           >
             <Image
               source={{
-                uri: "", //trip.PassengerId.profile,
+                uri: trip.PassengerId.profile,
               }}
               size={"xl"}
               alt="Image not available"
@@ -117,11 +117,21 @@ const RideHistory = () => {
   }
 
   if (isLoading) {
-    return <Box>Loading...!</Box>;
+    return (
+      <Box flex={1} justifyContent={"center"} alignItems={"center"}>
+        Loading...!
+      </Box>
+    );
   } else {
     return (
-      <Box>
-        {rideHistoryList.length ? getHistory() : <Text>No details found</Text>}
+      <Box flex={1}>
+        {rideHistoryList.length ? (
+          getHistory()
+        ) : (
+          <Box flex={1} justifyContent="center" alignItems={"center"}>
+            No details found
+          </Box>
+        )}
       </Box>
     );
   }

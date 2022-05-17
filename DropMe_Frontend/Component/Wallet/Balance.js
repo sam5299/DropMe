@@ -12,7 +12,6 @@ import {
   AlertDialog,
   Center,
 } from "native-base";
-import Dialog from "react-native-dialog";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
 import axios from "axios";
@@ -102,23 +101,23 @@ const Balance = ({ navigation }) => {
     setVisible(false);
   };
 
-  let confirmAlert = (
-    <View style={styles.container}>
-      <Dialog.Container visible={visible}>
-        <Dialog.Title>Account delete</Dialog.Title>
-        <Dialog.Description>
-          Do you want to delete this account? You cannot undo this action.
-        </Dialog.Description>
-        <Dialog.Button label="Cancel" onPress={handleCancel} />
-        <Dialog.Button label="Delete" onPress={handleDelete} />
-      </Dialog.Container>
-    </View>
-  );
+  // let confirmAlert = (
+  //   <View style={styles.container}>
+  //     <Dialog.Container visible={visible}>
+  //       <Dialog.Title>Account delete</Dialog.Title>
+  //       <Dialog.Description>
+  //         Do you want to delete this account? You cannot undo this action.
+  //       </Dialog.Description>
+  //       <Dialog.Button label="Cancel" onPress={handleCancel} />
+  //       <Dialog.Button label="Delete" onPress={handleDelete} />
+  //     </Dialog.Container>
+  //   </View>
+  // );
 
   let reedeemSafetyPoints = async () => {
     console.log("method called");
     try {
-      setShowConfirmAlert(true);
+      //setShowConfirmAlert(true);
       setIsLoading(true);
       let result = await axios.put(
         url + "/wallet/reedeemSafetyPoints",
@@ -160,9 +159,8 @@ const Balance = ({ navigation }) => {
     );
   } else {
     return (
-      <Box alignItems={"center"} display={"flex"} bg={"#F0F8FF"}>
+      <Box flex={1} alignItems={"center"} display={"flex"} bg={"#F0F8FF"}>
         {showAlert ? AlertField : ""}
-        {showConfirmAlert ? confirmAlert : ""}
         <Box
           bg={"#aaa"}
           justifyContent={"center"}
@@ -244,7 +242,7 @@ const Balance = ({ navigation }) => {
             </Button>
           </Stack>
         </Box>
-        <Box width={"90%"}>
+        <Box width={"70%"}>
           <Button small primary>
             <Text fontSize={"sm"} fontWeight={"bold"} color="white">
               View History

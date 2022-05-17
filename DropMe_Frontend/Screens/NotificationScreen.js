@@ -9,15 +9,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const NotificationScreen = () => {
   const [notificationList, setNotification] = useState([]);
   const [isLoading, setLoading] = useState(true);
-  const [isUpdated, setUpdated] = useState(false)
+  const [isUpdated, setUpdated] = useState(false);
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
-  async function markAllRead(){
+  async function markAllRead() {
     try {
       const User = await AsyncStorage.getItem("User");
       const parseUser = JSON.parse(User);
-     alert("markAllRead")
+      // alert("markAllRead");
       let result = await axios.put(
         url + "/notification/markAllRead",
         {},
@@ -28,24 +28,21 @@ const NotificationScreen = () => {
         }
       );
       console.log(result.data);
-        alert("Done")
-        setUpdated(true)
-      
+      //alert("Done");
+      setUpdated(true);
     } catch (ex) {
       console.log("Exception in mark all read notifications", ex.response);
-      setUpdated(false)
+      setUpdated(false);
     }
-
   }
   async function markReadNotification(notificationId) {
     try {
       const User = await AsyncStorage.getItem("User");
       const parseUser = JSON.parse(User);
-      alert(notificationId)
       let result = await axios.put(
         url + "/notification/markAsRead",
         {
-          notificationId
+          notificationId,
         },
         {
           headers: {
@@ -54,13 +51,10 @@ const NotificationScreen = () => {
         }
       );
       console.log(result.data);
-      setUpdated(true)
-
-      
+      setUpdated(true);
     } catch (ex) {
       console.log("Exception in mark notification", ex.response);
-      setUpdated(false)
-
+      setUpdated(false);
     }
   }
 
@@ -80,7 +74,7 @@ const NotificationScreen = () => {
         if (mounted) {
           setNotification(result.data);
           setLoading(false);
-      setUpdated(false)
+          setUpdated(false);
 
           //setToken(parseUser.userToken);
         }
@@ -126,7 +120,6 @@ const NotificationScreen = () => {
             />
           </Stack>
         ))}
-        <Button onPress={markAllRead} isDisabled={notificationList.length?false:true} >Mark all read</Button>
       </ScrollView>
     );
   }
@@ -152,6 +145,14 @@ const NotificationScreen = () => {
         ) : (
           <Text>No new notification</Text>
         )}
+
+        <Button
+          w={"100%"}
+          onPress={markAllRead}
+          isDisabled={notificationList.length ? false : true}
+        >
+          Mark all read
+        </Button>
       </Box>
     );
   }

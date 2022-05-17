@@ -12,7 +12,7 @@ const AvailableRides = ({ route, navigation }) => {
   const { source, destination, date, time, gender, seats, token, pickupPoint } =
     route.params;
   const { getUrl } = useContext(AuthContext);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const url = getUrl();
 
   useEffect(() => {
@@ -27,8 +27,10 @@ const AvailableRides = ({ route, navigation }) => {
         );
         //console.log(rides.data);
         setRideDetails(rides.data);
+        setLoading(false);
       } catch (error) {
         console.log("AvailableRides: ", error.response.data);
+        setLoading(false);
       }
     };
     availableRides();
@@ -44,7 +46,6 @@ const AvailableRides = ({ route, navigation }) => {
     tripDetails["rideId"] = ride._id;
 
     console.log("Trip: ", tripDetails);
-    setLoading(true);
     try {
       const result = await axios.post(url + "/trip/requestRide", tripDetails, {
         headers: {
@@ -55,11 +56,9 @@ const AvailableRides = ({ route, navigation }) => {
       alert(
         `Request has been sent to rider.\nYou will receive notification once rider accept/reject your request.`
       );
-      setLoading(false);
     } catch (error) {
       console.log("Request to ride: ", error.response.data);
       alert(" Please Add credits point to wallet");
-      setLoading(false);
     }
   };
 
@@ -148,9 +147,6 @@ const AvailableRides = ({ route, navigation }) => {
                 Send Request
               </Button> */}
               <Button
-                isLoading={isLoading}
-                isLoadingText="Sending request.."
-                //size="md"
                 px="10"
                 mt={"5"}
                 //w="90%"
@@ -185,7 +181,25 @@ const AvailableRides = ({ route, navigation }) => {
   //   loadRides();
   // }, []);
 
-  return <>{RideDetails.length ? getRides() : <Text>No Rides found</Text>}</>;
+  if (isLoading) {
+    return (
+      <Box flex={1} justifyContent="center" alignItems={"center"}>
+        <Text>Loading...!</Text>
+      </Box>
+    );
+  } else {
+    return (
+      <>
+        {RideDetails.length ? (
+          getRides()
+        ) : (
+          <Box flex={1} justifyContent="center" alignItems={"center"}>
+            <Text>No Rides found</Text>
+          </Box>
+        )}
+      </>
+    );
+  }
 };
 
 export default AvailableRides;
