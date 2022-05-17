@@ -76,7 +76,7 @@ router.post("/requestRide", auth, async (req, res) => {
   let notificationResult = createNotification(notificationObj);
   console.log("notification result:", notificationResult);
 
-  return res.status(200).send("request sent:", requestedRide);
+  return res.status(200).send(requestedRide);
 });
 
 //endpoint to cancel trip request
