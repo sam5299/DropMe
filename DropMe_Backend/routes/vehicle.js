@@ -37,7 +37,7 @@ router.use(fileUpload({ useTempFiles: true, tempFileDir: "../image_files" }));
 // route to add new vehicle for logged in user
 router.post("/addVehicle", auth, async (req, res) => {
   delete req.body.User;
-  console.log("add Vehicle called:" + req.body);
+  console.log("add Vehicle called:", req.body);
   try {
     if ("licenseNumber" in req.body && "licenseImage" in req.body) {
       console.log("licenseNumber and licenseImage is present");
@@ -110,6 +110,7 @@ router.post("/addVehicle", auth, async (req, res) => {
 router.get("/getVehicleList", auth, async (req, res) => {
   console.log("Get vehicle list:" + JSON.stringify(req.body));
   let vehicleList = await getVehicleList(req.body.userId);
+  console.log("vehicle backend:", vehicleList);
   if (vehicleList.length == 0) return res.status(404).send("No vehicles found");
   return res.status(200).send(vehicleList);
 });
@@ -135,7 +136,7 @@ router.delete("/deleteVehicle/:vehicleNumber", auth, async (req, res) => {
 
   let deleteResult = await deleteVehicle(vehicleDetails);
 
-  return res.status(200).send("delete vehicle called:" + deleteResult);
+  return res.status(200).send("Vehicle Deleted Successfully!");
 });
 
 module.exports = router;

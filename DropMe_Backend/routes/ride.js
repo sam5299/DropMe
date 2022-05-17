@@ -274,12 +274,14 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
       "Booked"
     );
 
-    //loop over the bookTrip find tripId.User and update the usedCreditPoint by amount and change status of trip
+    //loop over the bookTrip find tripId.User and update the usedCreditPoint by amount and
+    //change status of trip
     bookedTrip.forEach(async (trip) => {
       let notificationResult = await createNotification({
         fromUser: req.body.User.toString(),
         toUser: trip.tripId.User.toString(),
-        message: "Your booked trip has been cancelled by rider!",
+        message:
+          "Your booked trip has been cancelled by rider! \nYour credit points will be added to your wallet shortly.",
       });
       if (!notificationResult) console.log("error while sending notification");
 
@@ -289,6 +291,8 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
       );
       if (!usedCreditUpdate)
         console.log("error while updating the credit balance of User.");
+
+      //update wallet notification for passenger and update wallet history
 
       trip.status = "Cancelled";
       let result = await trip.save();
