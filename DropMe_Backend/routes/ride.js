@@ -327,6 +327,7 @@ router.get("/getRaiderHistory", auth, async (req, res) => {
   let riderHistory = await getRiderHistory(raiderId);
   if (!riderHistory) return res.status(400).send("No history found");
 
+  console.log("@@@", riderHistory);
   return res.status(200).send(riderHistory);
 });
 

@@ -20,10 +20,9 @@ const BookedRides = ({ navigation }) => {
   const [bookedRides, setbookedRides] = useState([]);
   const [showRides, setShowRides] = useState(true);
   const [userToken, setToken] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [passengerToken, setPassengerToken] = useState(null);
-  const [validate, setValidate] = useState(false);
-
+  const [passengerToken, setPassengerToken] = useState("");
+  const [isError, setError] = useState(false);
+  const [isTripStarted, setStarted] = useState("No");
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
@@ -51,20 +50,24 @@ const BookedRides = ({ navigation }) => {
     getUserRides();
 
     return () => (mounted = false);
-  }, []);
+  }, [isTripStarted]);
 
   const startTrip = async (tripRideId, tripId, status, token) => {
-    // console.log(tripRideId, tripId, status, token);
-    //  setShowModal(true);
-
+    if (passengerToken === "" || passengerToken != token) {
+      console.log(passengerToken);
+      // setError(true);
+      // setTimeout(() => setError(false), 3000);
+      alert("Inalid token");
+      return;
+    }
     try {
       const result = await axios.put(
         url + "/trip/updateTripStatus",
         { tripRideId, tripId, status, token },
         { headers: { "x-auth-token": userToken } }
       );
-
       alert(result.data);
+      setStarted("Yes");
     } catch (error) {
       console.log("Booked Rides: ", error.response.data);
     }
@@ -93,6 +96,7 @@ const BookedRides = ({ navigation }) => {
               backgroundColor: "gray.50",
             }}
           >
+            {console.log(ride.status, ride.token)}
             <Stack
               direction={"column"}
               alignItems="center"
@@ -132,73 +136,46 @@ const BookedRides = ({ navigation }) => {
                 </Text>
                 <Text fontSize={15}>12:24</Text>
               </Box>
-              <Divider mb={2} />
-              <Stack direction={"row"} space={5} mt={2}>
-                <Button
-                  onPress={() =>
-                    startTrip(
-                      ride._id,
-                      ride.tripId._id,
-                      "Initiated",
-                      ride.token
-                    )
-                  }
-                  px={5}
-                >
-                  Start Trip
+              <FormControl key={ride._id} isInvalid={isError}>
+                <Input
+                  isDisabled={ride.status === "Booked" ? false : true}
+                  variant={"outline"}
+                  keyboardType="numeric"
+                  placeholder="Enter the token"
+                  onChangeText={(value) => setPassengerToken(value)}
+                />
+                <FormControl.ErrorMessage>
+                  Please enter valid token
+                </FormControl.ErrorMessage>
+              </FormControl>
+              <Divider color={"black"} mb={2} />
+              {ride.status === "Booked" ? (
+                <Stack direction={"row"} space={5} mt={2}>
+                  <Button
+                    onPress={() =>
+                      startTrip(
+                        ride._id,
+                        ride.tripId._id,
+                        "Initiated",
+                        ride.token
+                      )
+                    }
+                    px={5}
+                  >
+                    Start Trip
+                  </Button>
+                  <Button
+                    colorScheme="secondary"
+                    onPress={() => alert("End Trip")}
+                  >
+                    Cancel Trip
+                  </Button>
+                </Stack>
+              ) : (
+                <Button w={"100%"} onPress={() => alert("EndTrip")}>
+                  End Trip
                 </Button>
-                <Center>
-                  <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-                    <Modal.Content maxWidth="400px">
-                      <Modal.CloseButton />
-                      <Modal.Header>Enter the token</Modal.Header>
-                      <Modal.Body>
-                        <FormControl mt="3">
-                          <Input
-                            keyboardType="numeric"
-                            onChangeText={(value) => setPassengerToken(value)}
-                          />
-                        </FormControl>
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <Button.Group space={2}>
-                          <Button
-                            variant="ghost"
-                            colorScheme="blueGray"
-                            onPress={() => {
-                              setShowModal(false);
-                            }}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            onPress={() => {
-                              setShowModal(false);
-                              setValidate(true);
-                            }}
-                          >
-                            Save
-                          </Button>
-                        </Button.Group>
-                      </Modal.Footer>
-                    </Modal.Content>
-                  </Modal>
-                </Center>
-                <Button
-                  colorScheme="secondary"
-                  onPress={() =>
-                    startTrip(
-                      ride._id,
-                      ride.tripId._id,
-                      "Completed",
-                      ride.token
-                    )
-                  }
-                  px={5}
-                >
-                  Cancel Trip
-                </Button>
-              </Stack>
+              )}
             </Stack>
           </Box>
         ))}
