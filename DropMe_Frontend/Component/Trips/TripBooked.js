@@ -28,7 +28,6 @@ function TripBooked() {
       //alert(tripRideId)
     } catch (ex) {
       console.log("Exception in delete", ex.response.data);
-      setIsVehicleFetchDone(false);
     }
 
 

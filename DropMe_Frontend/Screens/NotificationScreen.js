@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Text, Stack, ScrollView } from "native-base";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Box, Text, Stack, ScrollView,Button } from "native-base";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { AuthContext } from "../Component/Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -49,29 +49,37 @@ const NotificationScreen = () => {
           <Stack
             key={msg._id}
             display={"flex"}
-            flexDirection={"row"}
-            alignItems={"center"}
+            //flexDirection={"column"}
+            direction="column"
             p={2}
             m={2}
-            borderRadius={10}
+            borderRadius={20}
             w="100%"
             bg={"#F0F8FF"}
           >
+            {/* <Box display={"flex"} justifyContent="flex-end" >
+            <Button w="15%" onPress={alert("hii")}>
+            <MaterialIcons
+                name="cancel"
+                size={15}
+                color="rgba(6,182,212,1.00)"
+              />
+            </Button>
+            </Box> */}
             <Box
               display={"flex"}
-              flexDirection={"row"}
               alignItems={"center"}
               justifyContent="flex-start"
-              borderRadius={10}
               maxW="95%"
               minWidth={"95%"}
             >
-              <MaterialCommunityIcons
+              {/* <MaterialCommunityIcons
                 name="message-alert"
                 size={25}
                 color="rgba(6,182,212,1.00)"
-              />
-              <Text fontSize={20}>{msg.message}</Text>
+              /> */}
+
+              <Text fontSize={15}>{msg.message}</Text>
             </Box>
           </Stack>
         ))}
