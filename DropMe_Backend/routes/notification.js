@@ -1,4 +1,5 @@
 const express = require("express");
+const req = require("express/lib/request");
 const router = express.Router();
 const auth = require("../middleware/auth");
 router.use(express.json());
@@ -10,6 +11,7 @@ const {
   createNotification,
   getNotification,
   markAsRead,
+  markAllRead,
 } = require("../services/notification");
 
 // Create new  notification
@@ -57,4 +59,22 @@ router.get("/getNotifications/", auth, async (req, res) => {
     return res.status(400).send("Error to fetch request" + ex);
   }
 });
+
+router.put("/markAsRead",auth,async (req,res)=>{
+  let notificationId=req.body.notificationId;
+  console.log(notificationId);
+  let result = await markAsRead(notificationId);
+  if(!result)
+  return res.status(400).send("Error in mark as read notification")
+  return res.status(200).send("Marked as read done")
+})
+
+router.put("/markAllRead",auth,async function(req,res){
+  let userId=req.body.User;
+  console.log(userId);
+  let result = await markAllRead(userId);
+  if(!result)
+  return res.status(400).send("Error in mark all as read notification")
+  return res.status(200).send("All marked as read done")
+})
 module.exports = router;
