@@ -12,9 +12,7 @@ import {
   ScrollView,
   Text,
   WarningOutlineIcon,
-  Spinner,
   HStack,
-  Heading,
   Alert,
   VStack,
   IconButton,
@@ -36,6 +34,10 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState({ status: "", title: "" });
   const [userToken, setToken] = useState(null);
+  const [rcError, setRcError] = useState(false);
+  const [pucError, setPucError] = useState(false);
+  const [licenseNumberError, setLicenseNumberError] = useState(false);
+  const [licenseImageError, setLicenseImageError] = useState(false);
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
@@ -56,6 +58,8 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
+        //console.log("parseUser@@@:", parseUser.userToken.trim());
+        setToken(parseUser.userToken);
 
         let result = await axios.get(url + "/user/getUser", {
           headers: {
@@ -87,7 +91,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
   const uploadImage = async (docName) => {
     console.log("document name:" + docName);
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 4],
       quality: 0.5,
@@ -122,23 +126,45 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
       pucImage: pucImage,
     };
     console.log(body);
+    let rcError = false;
+    let pucError = false;
+
     if (userData.licenseNumber === null && userData.licenseImage === null) {
       let pattern =
         /^(([A-Z]{2}[0-9]{2})( )|([A-Z]{2}-[0-9]{2}))((19|20)[0-9][0-9])[0-9]{7}$/;
       if (!pattern.test(licenseNumber)) {
-        isFieldInError.licenseNumber = "Please enter valid license number!";
+        setLicenseNumberError(true);
+        return;
+      } else {
+        setLicenseNumberError(false);
       }
-      if (licenseImage.trim().length === 0) {
-        isFieldInError.licenseImage = "License Image is required!";
+      if (licenseImage === null) {
+        setLicenseImageError(true);
+        return;
+      } else {
+        setLicenseImageError(false);
       }
       //add license properties
       body.licenseNumber = licenseNumber;
       body.licenseImage = licenseImage;
     }
 
+    if (rcBookImage === null) {
+      setRcError(true);
+      return;
+    } else {
+      setRcError(false);
+    }
+    if (pucImage === null) {
+      setPucError(true);
+      return;
+    } else {
+      setPucError(false);
+    }
+
     let isTrue = validate({
-      rcBookImage: { required: true, minlength: 4 },
-      pucImage: { required: true, minlength: 4 },
+      rcBookImage: { required: true, hasLowerCase: true },
+      pucImage: { required: true, hasLowerCase: true },
       licenseImage: {
         required: userData.licenseNumber === null ? true : false,
       },
@@ -146,7 +172,10 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
         required: userData.licenseNumber === null ? true : false,
       },
     });
-    if (isTrue) {
+    console.log("pucError:" + pucError);
+    console.log("rcError:" + rcError);
+    if (pucError === false && rcError === false && isTrue) {
+      console.log("Validation done");
       try {
         setIsLoading(true);
         let result = await axios.post(url + "/vehicle/addVehicle", body, {
@@ -161,38 +190,43 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
         });
         setShowAlert(true);
         console.log("Add vehicle done..");
+        setTimeout(() => {
+          navigation.navigate("AddRemove");
+        }, 3000);
       } catch (ex) {
         setIsLoading(false);
         setStatus({ status: "error", title: ex.response.data });
         setShowAlert(true);
         setTimeout(() => {
           setShowAlert(false);
-        }, 2000);
+        }, 4000);
         console.log("exception:" + ex.response.data);
       }
     }
   };
 
   let AlertField = (
-    <Alert w="100%" status={status.status}>
-      <VStack space={2} flexShrink={1} w="100%">
-        <HStack flexShrink={1} space={2} justifyContent="space-between">
-          <HStack space={2} flexShrink={1}>
-            <Alert.Icon mt="1" />
-            <Text fontSize="md" color="coolGray.800">
-              {status.title}
-            </Text>
+    <Box>
+      <Alert w="100%" status={status.status}>
+        <VStack space={2} flexShrink={1} w="100%">
+          <HStack flexShrink={1} space={2} justifyContent="space-between">
+            <HStack space={2} flexShrink={1}>
+              <Alert.Icon mt="1" />
+              <Text fontSize="md" color="coolGray.800">
+                {status.title}
+              </Text>
+            </HStack>
+            <IconButton
+              variant="unstyled"
+              _focus={{
+                borderWidth: 0,
+              }}
+              icon={<CloseIcon size="3" color="coolGray.600" />}
+            />
           </HStack>
-          <IconButton
-            variant="unstyled"
-            _focus={{
-              borderWidth: 0,
-            }}
-            icon={<CloseIcon size="3" color="coolGray.600" />}
-          />
-        </HStack>
-      </VStack>
-    </Alert>
+        </VStack>
+      </Alert>
+    </Box>
   );
 
   let licenseNumberInput = (
@@ -214,7 +248,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
         placeholder="License Number"
         onChangeText={(value) => setLicenseNumber(value.toLocaleUpperCase())}
       />
-      {isFieldInError("licenseNumber") && (
+      {licenseNumberError && (
         <FormControl.ErrorMessage
           isInvalid={true}
           leftIcon={<WarningOutlineIcon size="xs" />}
@@ -251,7 +285,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
           </Button>
         </Box>
       </Box>
-      {isFieldInError("licenseImage") && (
+      {licenseImageError && (
         <FormControl.ErrorMessage
           isInvalid={true}
           leftIcon={<WarningOutlineIcon size="xs" />}
@@ -331,7 +365,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
                   </Button>
                 </Box>
               </Box>
-              {isFieldInError("rcBookImage") && (
+              {rcError && (
                 <FormControl.ErrorMessage
                   isInvalid={true}
                   leftIcon={<WarningOutlineIcon size="xs" />}
@@ -371,7 +405,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
                   </Button>
                 </Box>
               </Box>
-              {isFieldInError("pucImage") && (
+              {pucError && (
                 <FormControl.ErrorMessage
                   isInvalid={true}
                   leftIcon={<WarningOutlineIcon size="xs" />}

@@ -42,7 +42,7 @@ const AddVehicle = ({ navigation }) => {
     "SportBike",
     "Scooter",
   ]);
-  let FuelTypeArray = ["Petrol", "Disel", "CNG", "Electric"];
+  let FuelTypeArray = ["Petrol", "Diesel", "CNG", "Electric"];
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -73,6 +73,9 @@ const AddVehicle = ({ navigation }) => {
       isFieldInError.vehicleNumber = "Please enter valid vehicle number.";
     }
     if (isTrue) {
+      // navigation.setOptions = {
+      //   clearFields: (props) => clearFields,
+      // };
       navigation.navigate("UploadDocumentForVehicle", {
         Picture,
         vehicleType,
@@ -87,16 +90,29 @@ const AddVehicle = ({ navigation }) => {
 
   const uploadImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 4],
       quality: 1,
       base64: true,
     });
-
+    setPic(null);
     if (!result.cancelled) {
       setPic("data:image/png;base64," + result.base64);
     }
+  };
+
+  const clearFields = () => {
+    setVehicleType("Bike");
+    setVehicleClass("");
+    setVehicleNumber("");
+    setVehicleName("");
+    setFuelType("");
+    setSeatingCapacity(1);
+    setFuelTypeArray(["Petrol", "Electric"]);
+    setVehicleClassArray(["NormalBike", "SportBike", "Scooter"]);
+    FuelTypeArray = ["Petrol", "Diesel", "CNG", "Electric"];
+    setIsLoading(false);
   };
 
   let selectForVehicleClass = (
@@ -240,8 +256,8 @@ const AddVehicle = ({ navigation }) => {
                       "Scooter",
                     ]);
                   } else {
-                    setFuelTypeArray(["Petrol", "Disel", "CNG", "Electric"]);
-                    setVehicleClassArray(["HatchBack", "Seden", "SUV"]);
+                    setFuelTypeArray(["Petrol", "Diesel", "CNG", "Electric"]);
+                    setVehicleClassArray(["HatchBack", "Sedan", "SUV"]);
                   }
                 }}
               >
