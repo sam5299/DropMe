@@ -12,6 +12,7 @@ const vehicle = require("./routes/vehicle");
 const ride = require("./routes/ride");
 const trip = require("./routes/trip");
 const wallet = require("./routes/wallet");
+const walletHistory = require("./routes/walletHistory");
 const notification = require("./routes/notification");
 const map = require("./routes/map");
 
@@ -24,6 +25,7 @@ app.use("/user", user);
 app.use("/vehicle", vehicle);
 app.use("/ride", ride);
 app.use("/wallet", wallet);
+app.use("/walletHistory", walletHistory);
 app.use("/trip", trip);
 app.use("/notification", notification);
 app.use("/map", map);
