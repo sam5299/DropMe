@@ -108,7 +108,7 @@ router.delete("/deleteBookedTrip/:tripRideId", auth, async (req, res) => {
   let deleteResult = await deleteBookedTrip(tripRideId);
   if (!deleteResult) return res.status(400).send("Error in deleting");
 
-  return res.status(200).send("Ride deleted" + deleteResult);
+  return res.status(200).send("Trip deleted");
 });
 
 module.exports = router;

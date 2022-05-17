@@ -15,6 +15,22 @@ function TripBooked() {
   const [isLoading, setIsLoading] = useState(false);
   const [isBookedTripFetchingDone, setIsBookedTripFetchDone] = useState(true);
   async function CancelTrip(tripRideId){
+    try {
+      const User = await AsyncStorage.getItem("User");
+      const parseUser = JSON.parse(User);
+      console.log("deleting booked ride");
+      let result = await axios.delete(url + `/trip/deleteBookedTrip/${tripRideId}`, {
+        headers: {
+          "x-auth-token": parseUser.userToken,
+        },
+      });
+      alert(result.data)
+      //alert(tripRideId)
+    } catch (ex) {
+      console.log("Exception in delete", ex.response.data);
+      setIsVehicleFetchDone(false);
+    }
+
 
   }
   useEffect(() => {
@@ -23,7 +39,7 @@ function TripBooked() {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-        console.log("getting vehicle information.");
+        console.log("getting booked ride information.");
         let result = await axios.get(url + "/trip/getBookedTrips", {
           headers: {
             "x-auth-token": parseUser.userToken,
