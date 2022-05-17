@@ -1,3 +1,4 @@
+const res = require("express/lib/response");
 const { Notification } = require("../models/notification");
 
 async function createNotification(details) {
@@ -17,7 +18,7 @@ async function getNotification(userId) {
 
 async function markAsRead(notificationId) {
   let notification = await Notification.findOne({ _id: notificationId });
-  if (!notification) {
+  if (notification) {
     notification.isRead = true;
     return await notification.save();
   }
@@ -25,4 +26,17 @@ async function markAsRead(notificationId) {
   //return ["No any notifications"];
 }
 
-module.exports = { createNotification, getNotification, markAsRead };
+async function markAllRead(userId) {
+  return await Notification.updateMany({toUser:userId},{ $set: { isRead: true } })
+  // if(!result) return "something failed!";
+  // return "Done";
+}
+//if(notificationList.length==0)
+//return ["No any notifications"];
+
+module.exports = {
+  createNotification,
+  getNotification,
+  markAsRead,
+  markAllRead,
+};
