@@ -53,7 +53,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
         { tripId, rideId, raiderName, amount, vehicleNumber },
         { headers: { "x-auth-token": token } }
       );
-      alert("Accepted");
+      alert(result.data);
     } catch (error) {
       console.log("Accept Request: ", error.response.data);
     }

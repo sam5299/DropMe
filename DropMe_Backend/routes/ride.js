@@ -218,7 +218,7 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
   //remove trip id from requestedTripList in Ride collection
   let rideObj = await removeTripId(req.body.rideId, req.body.tripId);
 
-  return res.status(200).send("Ride accepted:",rideObj);
+  return res.status(200).send("Ride accepted:");
 });
 
 //route to accept/reject trip request
