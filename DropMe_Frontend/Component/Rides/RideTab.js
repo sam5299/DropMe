@@ -12,6 +12,9 @@ const RideTab = ({ navigation }) => {
         <Button w={"70%"} onPress={() => navigation.navigate("BookedRides")}>
           Booked Rides
         </Button>
+        <Button w={"70%"} onPress={() => alert("History")}>
+          Ride History
+        </Button>
       </Stack>
     </Box>
   );
