@@ -4,32 +4,15 @@ import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { Rating, AirbnbRating } from "react-native-ratings";
 import axios from "axios";
 import { AuthContext } from "../Context";
-import Spinner from "../ReusableComponents/Spinner";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const RideHistory = () => {
-  const [rideHistoryList, setRideHistory] = useState([
-    {
-      id: 4,
-      name: "John Doe",
-      profileImage: "https://wallpaperaccess.com/full/317501.jpg",
-      source: "Pune",
-      destination: "Mumbai",
-      pickupPoint: "Shivajinagar",
-      tripPrice: 32423,
-      tripCapacity: 4,
-      date: "22 May 2022",
-      starCount: 3,
-    },
-  ]);
-  const [vehicleDetails, setVehicle] = useState([]);
+  const [rideHistoryList, setRideHistory] = useState([]);
   const [userToken, setToken] = useState(null);
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isHistoryFetchingDone, setIsHistoryFetchDone] = useState(true);
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     let mounted = true;
     async function getHistory() {
@@ -42,15 +25,16 @@ const RideHistory = () => {
             "x-auth-token": parseUser.userToken,
           },
         });
+        //console.log("@@2", result.data.);
         if (mounted) {
-        setRideHistory(result.data);
+          setIsLoading(false);
+          setRideHistory(result.data);
           setToken(parseUser.userToken);
           console.log("Set done", result.data);
-          setIsHistoryFetchDone(false);
         }
       } catch (ex) {
         console.log("Exception", ex.response.data);
-        setIsHistoryFetchDone(false);
+        setIsLoading(false);
       }
       return () => (mounted = false);
     }
@@ -88,7 +72,7 @@ const RideHistory = () => {
           >
             <Image
               source={{
-                uri: trip.RaiderId.profile,
+                uri: "", //trip.PassengerId.profile,
               }}
               size={"xl"}
               alt="Image not available"
@@ -116,16 +100,15 @@ const RideHistory = () => {
               <Text fontSize={18} fontWeight="bold" color="black" p={1}>
                 Date: {trip.tripId.date}
               </Text>
-              {trip.status == "Completed" ? (
-                <Text fontSize={18} fontWeight="bold" color="black">
-                  <FontAwesome name="rupee" size={18} color="black" />-
-                  {trip.amount}
-                </Text>
-              ) : (
-                <Text fontSize={18} fontWeight="bold" color="black">
-                  {trip.status}
-                </Text>
-              )}
+
+              <Text fontSize={18} fontWeight="bold" color="black">
+                <FontAwesome name="rupee" size={18} color="black" />-
+                {trip.amount}
+              </Text>
+
+              <Text fontSize={18} fontWeight="bold" color="black">
+                {trip.status}
+              </Text>
             </Stack>
           </Box>
         ))}
@@ -133,17 +116,15 @@ const RideHistory = () => {
     );
   }
 
-  return (
-    <Box>
-      {isHistoryFetchingDone ? (
-        Spinner
-      ) : rideHistoryList.length ? (
-        getHistory()
-      ) : (
-        <Text>No details found</Text>
-      )}
-    </Box>
-  );
+  if (isLoading) {
+    return <Box>Loading...!</Box>;
+  } else {
+    return (
+      <Box>
+        {rideHistoryList.length ? getHistory() : <Text>No details found</Text>}
+      </Box>
+    );
+  }
 };
 
 export default RideHistory;
