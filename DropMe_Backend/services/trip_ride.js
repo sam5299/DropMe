@@ -22,28 +22,32 @@ async function getTripDetailsByRideIdAndStatus(rid, status) {
 async function getAllBookedRides(raiderId) {
   return await TripRide.find({ RaiderId: raiderId, status: "Booked" })
     .populate("PassengerId", "_id profile name mobileNumber", User)
-    .populate("tripId", "_id source destination pickupPoint date", Trip);
+    .populate("tripId", "_id source destination pickupPoint date", Trip)
+    .sort({ _id: -1 });
 }
 
 // return all booked rides of the passenger
 async function getAllBookedTrips(passengerId) {
   return await TripRide.find({ PassengerId: passengerId, status: "Booked" })
     .populate("RaiderId", "_id profile name mobileNumber", User)
-    .populate("tripId", "_id source destination pickupPoint date time", Trip);
+    .populate("tripId", "_id source destination pickupPoint date time", Trip)
+    .sort({ _id: -1 });
 }
 
 // return all history of the passenger
 async function getPassengerHistory(passengerId) {
   return await TripRide.find({ PassengerId: passengerId })
     .populate("RaiderId", "_id profile name mobileNumber", User)
-    .populate("tripId", "source destination pickupPoint date", Trip);
+    .populate("tripId", "source destination pickupPoint date", Trip)
+    .sort({ _id: -1 });
 }
 
 // return all history of the passenger
 async function getRiderHistory(raiderId) {
   return await TripRide.find({ RiderId: raiderId })
     .populate("PassengerId", "_id profile name mobileNumber", User)
-    .populate("tripId", "source destination pickupPoint date", Trip);
+    .populate("tripId", "source destination pickupPoint date", Trip)
+    .sort({ _id: -1 });
 }
 
 // if the trip is canceled by passenger
@@ -63,13 +67,38 @@ async function deleteBookedTrip(tripRideId) {
   if (timeDifference >= 10) {
     let depositAmount = tripRideObj.Ride.amount * 0.1;
     //console.log("penalty");
-    let result = await updateUsedCredit(req.body.User, tripRideObj.Ride.amount*-1);
-    let updatateWallet= await updateWallet(req.body.User,tripRideObj.Ride.amount-depositAmount)
+    let result = await updateUsedCredit(
+      req.body.User,
+      tripRideObj.Ride.amount * -1
+    );
+    let updatateWallet = await updateWallet(
+      req.body.User,
+      tripRideObj.Ride.amount - depositAmount
+    );
     if (!result) console.log("error while adding deposit amount");
   }
   tripRideObj.status = "Rejected";
-  let result= await tripRideId.save();
+  let result = await tripRideId.save();
   result.status(200).send("Trip is cancelled");
+}
+
+// get trip ride details by TripRideId and tripId
+async function getTripRideByTripId(tripRideId, tripId, status) {
+  let TripRideObj = await TripRide.findOne({ _id: tripRideId, tripId: tripId });
+  TripRideObj.status = status;
+  let currentDate = new Date();
+  let currentTime =
+    currentDate.getHours() +
+    ":" +
+    currentDate.getMinutes() +
+    ":" +
+    currentDate.getSeconds();
+  //console.log(time);
+  if (status == "Initiated") TripRideObj.startTime = currentTime;
+  else TripRideObj.endTime = currentTime;
+
+  console.log("Here", TripRideObj);
+  return await TripRideObj.save();
 }
 
 module.exports = {
@@ -80,4 +109,5 @@ module.exports = {
   getRiderHistory,
   getPassengerHistory,
   deleteBookedTrip,
+  getTripRideByTripId,
 };

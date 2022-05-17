@@ -13,6 +13,7 @@ const {
   getAllBookedTrips,
   getPassengerHistory,
   deleteBookedTrip,
+  getTripRideByTripId,
 } = require("../services/trip_ride");
 
 //endpoint to search riders who are travelling on route passenger searching for
@@ -80,7 +81,7 @@ router.post("/requestRide", auth, async (req, res) => {
 });
 
 //endpoint to cancel trip request
-router.put("/cancelTrip/:tid", auth, async (req, res) => {});
+// router.put("/cancelTrip/:tid", auth, async (req, res) => {});
 
 //route to get all accepted trip request
 router.get("/getBookedTrips", auth, async (req, res) => {
@@ -110,5 +111,22 @@ router.delete("/deleteBookedTrip/:tripRideId", auth, async (req, res) => {
 
   return res.status(200).send("Trip deleted");
 });
+
+//endpoint to update the status of particular trip
+router.put("/updateTripStatus", auth, async (req, res) => {
+  let tripRideId = req.body.tripRideId;
+  let tripId = req.body.tripId;
+  let status = req.body.status;
+  let TripRideObj = await getTripRideByTripId(tripRideId, tripId,status);
+  
+ // let saveResult = await TripRideObj.save();
+
+  if (!TripRideObj) return res.status(400).send("Something failed try after some time");
+
+  return res.status(200).send(`Trip ${status}`);
+});
+
+//endpoint to complete trip set start time and set status
+router.put("/endTrip/:tripRideId/:tid", auth, async (req, res) => {});
 
 module.exports = router;
