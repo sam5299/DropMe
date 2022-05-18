@@ -21,7 +21,10 @@ async function getTripDetailsByRideIdAndStatus(rid, status) {
 
 // return all booked rides of the raider
 async function getAllBookedRides(raiderId) {
-  return await TripRide.find({ RaiderId: raiderId, $or:[{ status:"Booked" },{status:"Initiated"}] })
+  return await TripRide.find({
+    RaiderId: raiderId,
+    $or: [{ status: "Booked" }, { status: "Initiated" }],
+  })
     .populate("PassengerId", "_id profile name mobileNumber", User)
     .populate("tripId", "_id source destination pickupPoint date", Trip)
     .sort({ _id: -1 });
@@ -29,7 +32,7 @@ async function getAllBookedRides(raiderId) {
 
 // return all booked rides of the passenger
 async function getAllBookedTrips(passengerId) {
-  return await TripRide.find({ PassengerId: passengerId, status: "Booked"})
+  return await TripRide.find({ PassengerId: passengerId, status: "Booked" })
     .populate("RaiderId", "_id profile name mobileNumber", User)
     .populate("tripId", "_id source destination pickupPoint date time", Trip)
     .sort({ _id: -1 });
@@ -58,6 +61,8 @@ async function deleteBookedTrip(tripRideId) {
     .populate("PassengerId", "name", User);
 
   tripRideObj.date = tripRideObj.rideId.date;
+  console.log("tripRideObj:", tripRideObj);
+
   let today = new Date();
   let currentTime =
     today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -66,15 +71,19 @@ async function deleteBookedTrip(tripRideId) {
   console.log("time difference:" + timeDifference);
   //check if cancellation time is above 10 hrs then trip deposit will be refunded
   if (timeDifference >= 10) {
-    let depositAmount = tripRideObj.Ride.amount * 0.1;
-    //console.log("penalty");
+    let depositAmount = parseInt(tripRideObj.amount * 0.1);
+    console.log("penalty", depositAmount);
+
+    // update passengers used credits
     let result = await updateUsedCredit(
-      req.body.User,
-      tripRideObj.Ride.amount * -1
+      tripRideObj.PassengerId._id,
+      tripRideObj.amount * -1
     );
-    let updatateWallet = await updateWallet(
-      req.body.User,
-      tripRideObj.Ride.amount - depositAmount
+
+    // update passenger wallet by applying panelty
+    let updateWalletResult = await updateWallet(
+      tripRideObj.PassengerId._id,
+      depositAmount * -1
     );
     if (!result) console.log("error while adding deposit amount");
   }
@@ -88,12 +97,11 @@ async function deleteBookedTrip(tripRideId) {
   let newNotification = await createNotification(notificationDetails);
   if (!newNotification) {
     console.log("failed to send notification.");
-    return res.status(400).send("something failed.");
+    return newNotification;
   }
 
   tripRideObj.status = "Rejected";
-  let result = await tripRideId.save();
-  result.status(200).send("Trip is cancelled");
+  return await tripRideObj.save();
 }
 
 // get trip ride details by TripRideId and tripId
@@ -109,9 +117,30 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
     currentDate.getSeconds();
   //console.log(time);
   if (status == "Initiated") TripRideObj.startTime = currentTime;
-  else TripRideObj.endTime = currentTime;
+  else {
+    TripRideObj.endTime = currentTime;
 
-  console.log("Here", TripRideObj);
+    // add 90% amount to riders wallet and 10% commision will be given to DropMe.
+    let updateRiderWallet = await updateWallet(
+      TripRideObj.RaiderId._id,
+      TripRideObj.amount - parseInt(TripRideObj.amount / 10)
+    );
+
+    // deduct trip amount from passenger's wallet
+    let updatePassengerWallet = await updateWallet(
+      TripRideObj.PassengerId._id,
+      TripRideObj.amount * -1
+    );
+
+    //call to updateWallet history
+
+    // deduct amount from passenger's Used credit
+    let updateUsedCreditResult = await updateUsedCredit(
+      TripRideObj.PassengerId._id,
+      TripRideObj.amount - TripRideObj.amount
+    );
+  }
+
   return await TripRideObj.save();
 }
 

@@ -57,7 +57,7 @@ const BookedRides = ({ navigation }) => {
       console.log(passengerToken);
       // setError(true);
       // setTimeout(() => setError(false), 3000);
-      alert("Inalid token");
+      alert("Invalid token");
       return;
     }
     try {
@@ -67,7 +67,21 @@ const BookedRides = ({ navigation }) => {
         { headers: { "x-auth-token": userToken } }
       );
       alert(result.data);
-      setStarted("Yes");
+      setStarted("Accepted");
+    } catch (error) {
+      console.log("Booked Rides: ", error.response.data);
+    }
+  };
+
+  const endTrip = async (tripRideId, tripId, status, token) => {
+    try {
+      const result = await axios.put(
+        url + "/trip/updateTripStatus",
+        { tripRideId, tripId, status, token },
+        { headers: { "x-auth-token": userToken } }
+      );
+      alert(result.data);
+      setStarted("Ended");
     } catch (error) {
       console.log("Booked Rides: ", error.response.data);
     }
@@ -172,7 +186,12 @@ const BookedRides = ({ navigation }) => {
                   </Button>
                 </Stack>
               ) : (
-                <Button w={"100%"} onPress={() => alert("EndTrip")}>
+                <Button
+                  w={"100%"}
+                  onPress={() =>
+                    endTrip(ride._id, ride.tripId._id, "Completed", ride.token)
+                  }
+                >
                   End Trip
                 </Button>
               )}

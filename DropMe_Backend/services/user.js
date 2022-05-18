@@ -28,6 +28,10 @@ async function getUniqueId() {
       .select("_id userId")
       .sort({ userId: -1 })
       .limit(1);
+
+    if (!lastUserId) {
+      return 1;
+    }
     console.log("temp result:" + typeof lastUserId.userId);
     return lastUserId.userId + 1;
   } catch (ex) {

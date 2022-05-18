@@ -1,10 +1,9 @@
 import { View, StyleSheet } from "react-native";
-import React, { useState,useContext,useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Box, Button, Image, ScrollView, Stack, Text } from "native-base";
 
 import axios from "axios";
 import { AuthContext } from "../Context";
-import Spinner from "../ReusableComponents/Spinner";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 function TripBooked() {
   const [bookedTripList, setBookedTripList] = useState([]);
@@ -14,23 +13,24 @@ function TripBooked() {
   const url = getUrl();
   const [isLoading, setIsLoading] = useState(false);
   const [isBookedTripFetchingDone, setIsBookedTripFetchDone] = useState(true);
-  async function CancelTrip(tripRideId){
+  async function CancelTrip(tripRideId) {
     try {
       const User = await AsyncStorage.getItem("User");
       const parseUser = JSON.parse(User);
       console.log("deleting booked ride");
-      let result = await axios.delete(url + `/trip/deleteBookedTrip/${tripRideId}`, {
-        headers: {
-          "x-auth-token": parseUser.userToken,
-        },
-      });
-      alert(result.data)
+      let result = await axios.delete(
+        url + `/trip/deleteBookedTrip/${tripRideId}`,
+        {
+          headers: {
+            "x-auth-token": parseUser.userToken,
+          },
+        }
+      );
+      alert(result.data);
       //alert(tripRideId)
     } catch (ex) {
       console.log("Exception in delete", ex.response.data);
     }
-
-
   }
   useEffect(() => {
     let mounted = true;
@@ -47,14 +47,14 @@ function TripBooked() {
         if (mounted) {
           setBookedTripList(result.data);
           setToken(parseUser.userToken);
-          console.log("Setting history.",result.data);
+          console.log("Setting history.", result.data);
           setIsBookedTripFetchDone(false);
         }
       } catch (ex) {
         console.log("Exception", ex.response.data);
         setIsVehicleFetchDone(false);
       }
-       return () => (mounted = false);
+      return () => (mounted = false);
     }
 
     loadBookedList();
@@ -136,13 +136,15 @@ function TripBooked() {
               <Text style={styles.details}>Amount: {trip.amount}</Text>
               <Image
                 source={{
-                  uri:trip.RaiderId.profile ,
+                  uri: trip.RaiderId.profile,
                 }}
                 alt="image not available"
                 size="xl"
                 borderRadius={100}
               />
-              <Text style={styles.details}>Raider Name: {trip.RaiderId.name}</Text>
+              <Text style={styles.details}>
+                Raider Name: {trip.RaiderId.name}
+              </Text>
               <Text style={styles.details}>
                 Mobile No.: {trip.RaiderId.mobileNumber}
               </Text>
@@ -150,7 +152,7 @@ function TripBooked() {
                 Vehicle Number: {trip.vehicleNumber}
               </Text>
               <Text style={styles.details}>OTP: {trip.token}</Text>
-              <Button size={"lg"} px={10} onPress={()=>CancelTrip(trip._id)}>
+              <Button size={"lg"} px={10} onPress={() => CancelTrip(trip._id)}>
                 Cancel trip
               </Button>
             </Stack>
@@ -161,13 +163,17 @@ function TripBooked() {
   }
 
   return (
-    <Box w={"100%"} alignItems={"center"} bg={"#F0F8FF"}>
+    <Box flex={1} alignItems={"center"} bg={"#F0F8FF"}>
       {isBookedTripFetchingDone ? (
-        Spinner
-      ) :bookedTripList.length ? (
+        <Box flex={1} justifyContent="center" alignItems={"center"}>
+          <Text>Loading...</Text>
+        </Box>
+      ) : bookedTripList.length ? (
         getBookedTrips()
       ) : (
-        <Text>No booked trips found</Text>
+        <Box flex={1} justifyContent="center" alignItems={"center"}>
+          No trips found
+        </Box>
       )}
       {/* {getBookedTrips()}{" "} */}
     </Box>

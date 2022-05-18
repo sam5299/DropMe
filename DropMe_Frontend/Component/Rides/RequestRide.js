@@ -71,7 +71,8 @@ const RequestRides = ({ navigation }) => {
             >
               <Image
                 source={{
-                  uri: "https://stimg.cardekho.com/images/carexteriorimages/630x420/Maruti/Swift-Dzire-Tour/8862/1646139841911/front-left-side-47.jpg?tr=h-140",
+                  uri: ride.Vehicle.vehicleImage,
+                  //uri: "https://stimg.cardekho.com/images/carexteriorimages/630x420/Maruti/Swift-Dzire-Tour/8862/1646139841911/front-left-side-47.jpg?tr=h-140",
                 }}
                 alt="Alternate Text"
                 size={"xl"}

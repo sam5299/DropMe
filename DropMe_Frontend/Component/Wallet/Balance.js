@@ -12,7 +12,6 @@ import {
   AlertDialog,
   Center,
 } from "native-base";
-import Dialog from "react-native-dialog";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
 import axios from "axios";
@@ -156,7 +155,7 @@ const Balance = ({ route, navigation }) => {
     );
   } else {
     return (
-      <Box alignItems={"center"} display={"flex"} bg={"#F0F8FF"}>
+      <Box flex={1} alignItems={"center"} display={"flex"} bg={"#F0F8FF"}>
         {showAlert ? AlertField : ""}
         <Box
           bg={"#aaa"}
@@ -228,10 +227,10 @@ const Balance = ({ route, navigation }) => {
             </Button>
           </Stack>
         </Box>
-        <Box width={"84%"} bg={"#F0F8FF"}>
-          <Button variant="outline" colorScheme="primary">
-            <Text fontSize={"sm"} fontWeight={"bold"}>
-              View Transactions
+        <Box width={"70%"}>
+          <Button small primary>
+            <Text fontSize={"sm"} fontWeight={"bold"} color="white">
+              View History
             </Text>
           </Button>
         </Box>

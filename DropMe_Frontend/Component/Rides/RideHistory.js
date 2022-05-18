@@ -48,7 +48,7 @@ const RideHistory = () => {
       <ScrollView w="95%" bg={"#F0F8FF"} m="2">
         {rideHistoryList.map((trip) => (
           <Box
-            key={trip.id}
+            key={trip._id}
             borderRadius={10}
             display="flex"
             flexDirection={"column"}
@@ -72,7 +72,7 @@ const RideHistory = () => {
           >
             <Image
               source={{
-                uri: "", //trip.PassengerId.profile,
+                uri: trip.PassengerId.profile,
               }}
               size={"xl"}
               alt="Image not available"
@@ -117,11 +117,21 @@ const RideHistory = () => {
   }
 
   if (isLoading) {
-    return <Box>Loading...!</Box>;
+    return (
+      <Box flex={1} justifyContent={"center"} alignItems={"center"}>
+        Loading...!
+      </Box>
+    );
   } else {
     return (
-      <Box>
-        {rideHistoryList.length ? getHistory() : <Text>No details found</Text>}
+      <Box flex={1}>
+        {rideHistoryList.length ? (
+          getHistory()
+        ) : (
+          <Box flex={1} justifyContent="center" alignItems={"center"}>
+            No details found
+          </Box>
+        )}
       </Box>
     );
   }

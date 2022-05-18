@@ -30,6 +30,14 @@ async function getCreatedRides(
 ) {
   //   TripRide.find({rideId:rid, status:status}).populate("tripId","-_id User",Trip);
   // }
+
+  console.log("Userid:" + userId);
+  console.log("Source:" + Source);
+  console.log("Destination:" + Destination);
+  console.log("Date:" + Date);
+  console.log("Seats:" + seats);
+  console.log("Gender:" + gender);
+
   return await Ride.find({
     source: Source,
     destination: Destination,
@@ -63,6 +71,7 @@ async function getUserRides(userId) {
   return await Ride.find({
     User: userId,
     status: "Created",
+    availableSeats: { $gt: 0 },
   })
     .populate("Vehicle", "_id  vehicleImage ", Vehicle)
     .populate("User", "_id name", User)

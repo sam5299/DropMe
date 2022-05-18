@@ -4,7 +4,6 @@ import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { Rating, AirbnbRating } from "react-native-ratings";
 import axios from "axios";
 import { AuthContext } from "../Context";
-import Spinner from "../ReusableComponents/Spinner";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TripHistory = () => {
@@ -43,13 +42,14 @@ const TripHistory = () => {
           },
         });
         if (mounted) {
+          console.log(result);
           setPassengerHistory(result.data);
           setToken(parseUser.userToken);
           console.log("Set done", result.data);
           setIsHistoryFetchDone(false);
         }
       } catch (ex) {
-        console.log("Exception", ex.response.data);
+        console.log("Exception", ex);
         setIsHistoryFetchDone(false);
       }
       return () => (mounted = false);
@@ -64,7 +64,7 @@ const TripHistory = () => {
       <ScrollView w="95%" bg={"#F0F8FF"} m="2">
         {passengerHistory.map((trip) => (
           <Box
-            key={trip.id}
+            key={trip._id}
             borderRadius={10}
             display="flex"
             flexDirection={"column"}
@@ -116,16 +116,13 @@ const TripHistory = () => {
               <Text fontSize={18} fontWeight="bold" color="black" p={1}>
                 Date: {trip.tripId.date}
               </Text>
-              {trip.status == "Completed" ? (
-                <Text fontSize={18} fontWeight="bold" color="black">
-                  <FontAwesome name="rupee" size={18} color="black" />-
-                  {trip.amount}
-                </Text>
-              ) : (
-                <Text fontSize={18} fontWeight="bold" color="black">
-                  {trip.status}
-                </Text>
-              )}
+              <Text fontSize={18} fontWeight="bold" color="black">
+                <FontAwesome name="rupee" size={18} color="black" />-
+                {trip.amount}
+              </Text>
+              <Text fontSize={18} fontWeight="bold" color="black">
+                {trip.status}
+              </Text>
             </Stack>
           </Box>
         ))}
@@ -134,13 +131,17 @@ const TripHistory = () => {
   }
 
   return (
-    <Box>
+    <Box flex={1}>
       {isHistoryFetchingDone ? (
-        Spinner
+        <Box flex={1} justifyContent="center" alignItems={"center"}>
+          <Text>Loading...</Text>
+        </Box>
       ) : passengerHistory.length ? (
         getHistory()
       ) : (
-        <Text>No details found</Text>
+        <Box flex={1} justifyContent="center" alignItems={"center"}>
+          No trips found
+        </Box>
       )}
     </Box>
   );
