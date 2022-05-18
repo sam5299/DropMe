@@ -29,12 +29,7 @@ const PaymentInterface = ({ navigation }) => {
   const [userToken, setToken] = useState(null);
   const [status, setStatus] = useState({ status: "", title: "" });
   const [error, setError] = useState(false);
-  const [show, setShow] = React.useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [alertField, setAlertField] = useState({
-    status: "success",
-    title: "",
-  });
   const [isLoading, setIsLoading] = useState(false);
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();

@@ -1,4 +1,4 @@
-import { View } from "react-native";
+//import { View,Alert } from "react-native";
 import { React, useState, useEffect, useContext } from "react";
 import {
   Box,
@@ -79,6 +79,27 @@ const ViewVehicles = () => {
     getVehicleDetails();
     return () => (mounted = false);
   }, []);
+
+  const showConfirmDialog = (vehicle) => {
+    return Alert.alert(
+      "Are your sure?",
+      `Do you really want to remove vehicle`,
+      [
+        // The "Yes" button
+        {
+          text: "Yes",
+          onPress: () => {
+            removeVehicle(vehicle);
+          },
+        },
+        // The "No" button
+        // Does nothing but dismiss the dialog when tapped
+        {
+          text: "No",
+        },
+      ]
+    );
+  };
 
   async function removeVehicle(vehicle) {
     try {
@@ -162,6 +183,7 @@ const ViewVehicles = () => {
                 onPress={() => {
                   // setStatus({ status: "error", title: "Remvoing vehicle.." });
                   // setShowAlert(true);
+                  //showConfirmDialog(vehicle);
                   removeVehicle(vehicle);
                 }}
               >

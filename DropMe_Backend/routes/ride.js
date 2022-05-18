@@ -133,7 +133,7 @@ router.get("/getTripRequestList/:rid", auth, async (req, res) => {
     // requestedTripList = { ...requestedTripList, result };
     requestedTripList.push(result);
   }
-
+  console.log(requestedTripList);
   return res.status(200).send(requestedTripList);
 });
 

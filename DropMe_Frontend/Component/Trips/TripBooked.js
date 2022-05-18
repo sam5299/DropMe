@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
 import { Box, Button, Image, ScrollView, Stack, Text } from "native-base";
 
@@ -13,6 +13,30 @@ function TripBooked() {
   const url = getUrl();
   const [isLoading, setIsLoading] = useState(false);
   const [isBookedTripFetchingDone, setIsBookedTripFetchDone] = useState(true);
+
+  const showConfirmDialog = (tripRideId,amount) => {
+    return Alert.alert(
+      "Are your sure?",
+      `Canceling a trip reduce your credit points by Rs.${parseInt(
+        amount * 0.1
+      )} Do you want to cancel the trip`,
+      [
+        // The "Yes" button
+        {
+          text: "Yes",
+          onPress: () => {
+            CancelTrip(tripRideId);
+          },
+        },
+        // The "No" button
+        // Does nothing but dismiss the dialog when tapped
+        {
+          text: "No",
+        },
+      ]
+    );
+  };
+
   async function CancelTrip(tripRideId) {
     try {
       const User = await AsyncStorage.getItem("User");
@@ -61,43 +85,6 @@ function TripBooked() {
     return () => (mounted = false);
   }, []);
 
-  // async function loadBookedList(vehicle) {
-  //   try {
-  //     let result = await axios.delete(
-  //       `${url}/vehicle/deleteVehicle/${vehicle.vehicleNumber}`,
-  //       {
-  //         headers: {
-  //           "x-auth-token": userToken,
-  //         },
-  //       }
-  //     );
-
-  //     let newVehicle = vehicleDetails.filter(
-  //       (vehicleObj) => vehicleObj._id != vehicle._id
-  //     );
-  //     setVehicle(newVehicle);
-  //   } catch (ex) {
-  //     console.log(ex.response.data);
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   async function loadRides() {
-  //     try {
-  //       let rideList = await axios.get("", {
-  //         headers: {
-  //           "x-auth-token": "",
-  //         },
-  //       });
-  //       setRideDetails(rideList.data)
-  //     } catch (ex) {
-  //       console.log("Exception " + ex);
-  //     }
-  //   }
-
-  //   loadRides();
-  // }, []);
-
   function getBookedTrips() {
     return (
       <ScrollView w={"85%"} bg={"#F0F8FF"}>
@@ -107,7 +94,7 @@ function TripBooked() {
             display={"flex"}
             flexDirection={"column"}
             borderRadius={10}
-            m={4}
+            my={5}
             p={5}
             borderColor="coolGray.200"
             borderWidth="1"
@@ -152,7 +139,11 @@ function TripBooked() {
                 Vehicle Number: {trip.vehicleNumber}
               </Text>
               <Text style={styles.details}>OTP: {trip.token}</Text>
-              <Button size={"lg"} px={10} onPress={() => CancelTrip(trip._id)}>
+              <Button
+                size={"lg"}
+                px={10}
+                onPress={() => showConfirmDialog(trip._id, trip.amount)}
+              >
                 Cancel trip
               </Button>
             </Stack>
