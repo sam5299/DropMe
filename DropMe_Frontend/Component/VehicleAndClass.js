@@ -36,7 +36,7 @@ const VehicleAndClass = ({ dispatch }) => {
           setVehicles(list.data);
         }
       } catch (error) {
-        console.log(error);
+        console.log("no vehicle found error:", error);
       }
     };
     getVehicles();

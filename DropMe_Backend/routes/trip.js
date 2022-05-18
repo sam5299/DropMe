@@ -74,7 +74,7 @@ router.post("/requestRide", auth, async (req, res) => {
     message: `You got trip request from passenger ${user.name}`,
   };
 
-  let notificationResult = createNotification(notificationObj);
+  let notificationResult = await createNotification(notificationObj);
   console.log("notification result:", notificationResult);
 
   return res.status(200).send(requestedRide);
@@ -117,11 +117,12 @@ router.put("/updateTripStatus", auth, async (req, res) => {
   let tripRideId = req.body.tripRideId;
   let tripId = req.body.tripId;
   let status = req.body.status;
-  let TripRideObj = await getTripRideByTripId(tripRideId, tripId,status);
-  
- // let saveResult = await TripRideObj.save();
+  let TripRideObj = await getTripRideByTripId(tripRideId, tripId, status);
 
-  if (!TripRideObj) return res.status(400).send("Something failed try after some time");
+  // let saveResult = await TripRideObj.save();
+
+  if (!TripRideObj)
+    return res.status(400).send("Something failed try after some time");
 
   return res.status(200).send(`Trip ${status}`);
 });

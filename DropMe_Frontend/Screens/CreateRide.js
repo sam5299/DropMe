@@ -1,4 +1,4 @@
-import { Alert, View } from "react-native";
+import { View } from "react-native";
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import SourceDestination from "../Component/SourceDestination";
 import GoogleMap from "../Component/GoogleMap";
@@ -12,6 +12,11 @@ import {
   ScrollView,
   Text,
   WarningOutlineIcon,
+  VStack,
+  HStack,
+  IconButton,
+  CloseIcon,
+  Alert,
 } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -130,6 +135,11 @@ const CreateRide = ({ navigation }) => {
   const [gender, setGender] = useState("");
   const [userToken, setToken] = useState(null);
   const [isLoading, setLoading] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertField, setAlertField] = useState({
+    status: "success",
+    title: "",
+  });
 
   const { source, destination, date, time, Vehicle } = state;
   const { validate, isFieldInError } = useValidation({
@@ -138,6 +148,28 @@ const CreateRide = ({ navigation }) => {
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
+
+  let AlertField = (
+    <Alert w="100%" status={alertField.status}>
+      <VStack space={2} flexShrink={1} w="100%">
+        <HStack flexShrink={1} space={2} justifyContent="space-between">
+          <HStack space={2} flexShrink={1}>
+            <Alert.Icon mt="1" />
+            <Text fontSize="md" color="coolGray.800">
+              {alertField.title}
+            </Text>
+          </HStack>
+          <IconButton
+            variant="unstyled"
+            _focus={{
+              borderWidth: 0,
+            }}
+            icon={<CloseIcon size="3" color="coolGray.600" />}
+          />
+        </HStack>
+      </VStack>
+    </Alert>
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -201,9 +233,20 @@ const CreateRide = ({ navigation }) => {
           { headers: { "x-auth-token": userToken } }
         );
 
-        Alert.alert("Success", "Ride Created...!");
+        setLoading(false);
+        setAlertField({ status: "success", title: "Ride created!" });
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
       } catch (error) {
-        console.log("Create Ride:", error.response.data);
+        setLoading(false);
+        setAlertField({ status: "error", title: error.response.data });
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
+        console.log("Create Ride:", error);
       }
     }
     setLoading(false);
@@ -211,6 +254,7 @@ const CreateRide = ({ navigation }) => {
 
   return (
     <Box flex={1} bg={"#f5f5f5"} flexDirection="column">
+      {showAlert ? AlertField : ""}
       <GoogleMap />
       <ScrollView>
         <FormControl p={2}>
