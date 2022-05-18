@@ -71,7 +71,7 @@ const TripHistory = () => {
             alignItems={"center"}
             justifyContent={"space-between"}
             p={4}
-            mb={10}
+            my={10}
             borderColor="coolGray.200"
             borderWidth="1"
             _dark={{
@@ -104,25 +104,45 @@ const TripHistory = () => {
               isDisabled={true}
             />
             <Stack direction={"column"} alignItems="center" space={5} m={2}>
-              <Text fontSize={18} fontWeight="bold" color="black">
-                Source: {trip.tripId.source}
-              </Text>
-              <Text fontSize={18} fontWeight="bold" color="black">
-                Destination: {trip.tripId.destination}
-              </Text>
-              <Text fontSize={18} fontWeight="bold" color="black">
-                Pickup Point: {trip.tripId.pickupPoint}
-              </Text>
-              <Text fontSize={18} fontWeight="bold" color="black" p={1}>
-                Date: {trip.tripId.date}
-              </Text>
+              <Stack direction={"row"}>
+                <Text fontSize={18} fontWeight="bold" color="black">
+                  From:
+                </Text>
+                <Text fontSize={18}> {trip.tripId.source}</Text>
+              </Stack>
+              <Stack direction={"row"}>
+                <Text fontSize={18} fontWeight="bold" color="black">
+                  To:
+                </Text>
+                <Text fontSize={18}> {trip.tripId.destination}</Text>
+              </Stack>
+
+              <Stack direction={"row"}>
+                <Text fontSize={18} fontWeight="bold" color="black">
+                  Pickup Point:
+                </Text>
+                <Text fontSize={18}> {trip.tripId.pickupPoint}</Text>
+              </Stack>
+
+              <Stack direction={"row"}>
+                <Text fontSize={18} fontWeight="bold" color="black">
+                  Date:
+                </Text>
+                <Text fontSize={18}> {trip.tripId.date}</Text>
+              </Stack>
+
               <Text fontSize={18} fontWeight="bold" color="black">
                 <FontAwesome name="rupee" size={18} color="black" />-
                 {trip.amount}
               </Text>
-              <Text fontSize={18} fontWeight="bold" color="black">
-                {trip.status}
-              </Text>
+
+              <Stack direction={"row"}>
+                <Text fontSize={18} fontWeight="bold" color="black">
+                  Status:
+                </Text>
+                <Text fontSize={18}> {trip.status}</Text>
+              </Stack>
+             
             </Stack>
           </Box>
         ))}

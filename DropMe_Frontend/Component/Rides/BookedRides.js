@@ -73,7 +73,7 @@ const BookedRides = ({ navigation }) => {
     }
   };
 
-  const endTrip = async (tripRideId, tripId, status, token) => {
+  const endTrip = async (tripRideId, tripId, status, amount) => {
     try {
       const result = await axios.put(
         url + "/trip/updateTripStatus",
@@ -87,13 +87,32 @@ const BookedRides = ({ navigation }) => {
     }
   };
 
+  const cancelTrip = async (tripRideId, tripId, status,amount) => {
+    let inp=confirm(
+      `Canceling a ride reduce your safety points by ${parseInt(amount*0.1)} Do you want to cancel the ride`);
+    if(inp){
+      try {
+        const result = await axios.put(
+          url + "/trip/updateTripStatus",
+          { tripRideId, tripId, status },
+          { headers: { "x-auth-token": userToken } }
+        );
+        alert(result.data);
+        setStarted("Ended");
+      } catch (error) {
+        console.log("Cancel Rides: ", error.response.data);
+      }
+    }
+    
+  };
+
   function allUserRides() {
     return (
       <ScrollView>
         {bookedRides.map((ride) => (
           <Box
             key={ride._id}
-            mb={5}
+            my={5}
             mx={5}
             rounded="lg"
             borderColor="coolGray.200"
@@ -180,7 +199,9 @@ const BookedRides = ({ navigation }) => {
                   </Button>
                   <Button
                     colorScheme="secondary"
-                    onPress={() => alert("End Trip")}
+                    onPress={() =>
+                      cancelTrip(ride._id, ride.tripId._id, "Cancelled",ride.amount)
+                    }
                   >
                     Cancel Trip
                   </Button>

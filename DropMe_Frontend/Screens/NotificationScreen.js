@@ -98,11 +98,11 @@ const NotificationScreen = () => {
             //display={"flex"}
             //flexDirection={"column"}
             direction="row"
-            p={2}
+            p={3}
             m={2}
-            borderRadius={20}
-            w="100%"
-            bg={"#F0F8FF"}
+            borderRadius={10}
+            bg={"white"}
+            w="95%"
           >
             <Box
               alignItems={"center"}
@@ -116,6 +116,7 @@ const NotificationScreen = () => {
               name="cancel"
               size={30}
               color="rgba(6,182,212,1.00)"
+              //color='red'
               onPress={() => markReadNotification(msg._id)}
             />
           </Stack>
@@ -138,21 +139,26 @@ const NotificationScreen = () => {
         flex={1}
         flexDirection={"column"}
         alignItems={"center"}
-        bg={"white"}
+        bg={"#F0F8FF"}
       >
         {notificationList.length != 0 ? (
           getNotification()
         ) : (
-          <Text>No new notification</Text>
+          <Box flex={1} justifyContent={"center"}>
+            <Text>No new notification</Text>
+          </Box>
         )}
-
-        <Button
-          w={"100%"}
-          onPress={markAllRead}
-          isDisabled={notificationList.length ? false : true}
-        >
-          Mark all read
-        </Button>
+        {notificationList.length > 0 && (
+          <Button
+            w={"40%"}
+            p={2}
+            m={4}
+            onPress={markAllRead}
+            variant={"outline"}
+          >
+            Mark all read
+          </Button>
+        )}
       </Box>
     );
   }
