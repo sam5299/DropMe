@@ -38,7 +38,7 @@ function TripBooked() {
       "Are your sure?",
       `Canceling a trip reduce your credit points by Rs.${parseInt(
         amount * 0.1
-      )} Do you want to cancel the trip`,
+      )}.\nDo you want to cancel the trip?`,
       [
         // The "Yes" button
         {
