@@ -227,7 +227,11 @@ const Balance = ({ route, navigation }) => {
         </Box>
         <Box width={"70%"}>
           <Button variant={"outline"}>
-            <Text fontSize={"sm"} fontWeight={"bold"}>
+            <Text
+              fontSize={"15"}
+              color="rgba(6,182,212,1.00)"
+              fontWeight={"bold"}
+            >
               Transactions
             </Text>
           </Button>

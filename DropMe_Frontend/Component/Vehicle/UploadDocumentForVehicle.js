@@ -191,7 +191,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
         setShowAlert(true);
         console.log("Add vehicle done..");
         setTimeout(() => {
-          navigation.navigate("AddRemove");
+          navigation.navigate("AddVehicle");
         }, 3000);
       } catch (ex) {
         setIsLoading(false);

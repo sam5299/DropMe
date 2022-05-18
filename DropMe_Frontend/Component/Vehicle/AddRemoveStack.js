@@ -15,16 +15,6 @@ const AddRemoveStack = ({ navigation }) => {
     <View style={{ flex: 1 }} collapsable={false}>
       <Stack.Navigator>
         <Stack.Screen
-          name="AddRemove"
-          component={AddRemoveScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ViewVehicles"
-          component={ViewVehicles}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
           name="AddVehicle"
           component={AddVehicle}
           options={{ headerShown: false }}

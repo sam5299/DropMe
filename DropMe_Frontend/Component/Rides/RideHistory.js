@@ -45,7 +45,7 @@ const RideHistory = () => {
 
   function getHistory() {
     return (
-      <ScrollView w="95%" bg={"#F0F8FF"} m="2">
+      <ScrollView m="2">
         {rideHistoryList.map((trip) => (
           <Box
             key={trip._id}
@@ -55,7 +55,7 @@ const RideHistory = () => {
             alignItems={"center"}
             justifyContent={"space-between"}
             p={4}
-            my={10}
+            my={5}
             borderColor="coolGray.200"
             borderWidth="1"
             _dark={{
@@ -88,8 +88,7 @@ const RideHistory = () => {
               isDisabled={true}
             />
             <Stack direction={"column"} alignItems="center" space={5} m={2}>
-
-            <Stack direction={"row"}>
+              <Stack direction={"row"}>
                 <Text fontSize={18} fontWeight="bold" color="black">
                   From:
                 </Text>
@@ -103,8 +102,6 @@ const RideHistory = () => {
                 <Text fontSize={18}> {trip.tripId.destination}</Text>
               </Stack>
 
-        
-              
               <Stack direction={"row"}>
                 <Text fontSize={18} fontWeight="bold" color="black">
                   Pickup Point:
@@ -120,7 +117,7 @@ const RideHistory = () => {
               </Stack>
 
               <Text fontSize={18} fontWeight="bold" color="black">
-                <FontAwesome name="rupee" size={18} color="black" />-
+                <FontAwesome name="rupee" size={18} color="black" />
                 {trip.amount}
               </Text>
               <Stack direction={"row"}>
@@ -144,7 +141,7 @@ const RideHistory = () => {
     );
   } else {
     return (
-      <Box flex={1}>
+      <Box flex={1} bg={"#F0F8FF"}>
         {rideHistoryList.length ? (
           getHistory()
         ) : (

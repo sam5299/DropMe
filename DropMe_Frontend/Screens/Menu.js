@@ -90,7 +90,7 @@ const Menu = ({ navigation }) => {
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
-        onPress={() => navigation.navigate("Vehicles")}
+        onPress={() => navigation.navigate("Vehicle")}
       >
         <Box flexDir={"row"} alignItems={"center"} p="5">
           <MaterialCommunityIcons
