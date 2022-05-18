@@ -48,7 +48,7 @@ const RideHistory = () => {
       <ScrollView w="95%" bg={"#F0F8FF"} m="2">
         {rideHistoryList.map((trip) => (
           <Box
-            key={trip.id}
+            key={trip._id}
             borderRadius={10}
             display="flex"
             flexDirection={"column"}

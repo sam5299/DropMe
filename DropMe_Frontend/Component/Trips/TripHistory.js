@@ -64,7 +64,7 @@ const TripHistory = () => {
       <ScrollView w="95%" bg={"#F0F8FF"} m="2">
         {passengerHistory.map((trip) => (
           <Box
-            key={trip.id}
+            key={trip._id}
             borderRadius={10}
             display="flex"
             flexDirection={"column"}
