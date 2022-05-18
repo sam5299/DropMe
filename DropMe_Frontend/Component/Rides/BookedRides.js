@@ -8,8 +8,13 @@ import {
   ScrollView,
   Divider,
   Input,
+  Alert,
+  VStack,
+  HStack,
+  IconButton,
+  CloseIcon,
 } from "native-base";
-import { Alert } from "react-native";
+import { Alert as NewAlert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { AuthContext } from "../Context";
@@ -20,8 +25,35 @@ const BookedRides = ({ navigation }) => {
   const [userToken, setToken] = useState(null);
   const [passengerToken, setPassengerToken] = useState("");
   const [isTripStarted, setStarted] = useState("No");
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertField, setAlertField] = useState({
+    status: "success",
+    title: "",
+  });
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
+
+  let AlertField = (
+    <Alert w="100%" status={alertField.status}>
+      <VStack space={2} flexShrink={1} w="100%">
+        <HStack flexShrink={1} space={2} justifyContent="space-between">
+          <HStack space={2} flexShrink={1}>
+            <Alert.Icon mt="1" />
+            <Text fontSize="md" color="coolGray.800">
+              {alertField.title}
+            </Text>
+          </HStack>
+          <IconButton
+            variant="unstyled"
+            _focus={{
+              borderWidth: 0,
+            }}
+            icon={<CloseIcon size="3" color="coolGray.600" />}
+          />
+        </HStack>
+      </VStack>
+    </Alert>
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -85,7 +117,7 @@ const BookedRides = ({ navigation }) => {
   };
 
   const showConfirmDialog = (tripRideId, tripId, status, amount) => {
-    return Alert.alert(
+    return NewAlert.alert(
       "Are your sure?",
       `Canceling a ride will reduce your safety points by ${parseInt(
         amount * 0.1
@@ -115,7 +147,15 @@ const BookedRides = ({ navigation }) => {
         { tripRideId, tripId, status },
         { headers: { "x-auth-token": userToken } }
       );
-      alert(result.data);
+      // alert(result.data);
+      setAlertField({
+        status: "success",
+        title: "Trip cancelled successfully!",
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 2000);
       setStarted("Ended");
     } catch (error) {
       console.log("Cancel Rides: ", error.response.data);
@@ -254,6 +294,7 @@ const BookedRides = ({ navigation }) => {
   } else {
     return (
       <Box flex={1} alignItems={"center"} pb={"5"} bg={"#F0F8FF"}>
+        {showAlert ? AlertField : null}
         <Box mt={2}>
           {bookedRides.length ? (
             allUserRides()
