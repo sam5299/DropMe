@@ -233,7 +233,7 @@ const Balance = ({ route, navigation }) => {
         <Box width={"70%"}>
           <Button
             variant={"outline"}
-            onPress={() => navigation.navigate("Wallet History")}
+            onPress={() => navigation.navigate("Transactions")}
           >
             <Text
               fontSize={"sm"}

@@ -24,7 +24,7 @@ const WalletStack = ({ navigation }) => {
           options={{ headerShown: false }}
         />
         <SliderStack.Screen
-          name="Wallet History"
+          name="Transactions"
           component={WalletHistory}
           options={{ headerShown: true }}
         />

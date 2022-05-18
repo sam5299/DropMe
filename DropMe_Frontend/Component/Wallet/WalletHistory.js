@@ -10,28 +10,34 @@ const WalletHistory = () => {
   const { getUrl } = useContext(AuthContext);
   const [userToken, setToken] = useState(null);
   const url = getUrl();
-  const [isLoaded, setIsLoaded] = useState(false);
-   useEffect(()=>{
+  const [isLoaded, setIsLoaded] = useState(true);
+
+  useEffect(() => {
+    let mount = true;
     async function loadHistory() {
-        try {
-            const User = await AsyncStorage.getItem("User");
-            const userDetails = JSON.parse(User);
-            setToken(userDetails.userToken);
-            const allHistory = await axios.get(url + "/walletHistory/getWalletHistory", {
-              headers: {
-                "x-auth-token": userDetails.userToken,
-              },
-            });
-            setHistoryList(allHistory.data);
-             //console.log("@@@", allHistory.data);
-            setIsLoaded(false);
-          } catch (error) {
-            console.log("Booked Rides Exception: ", error);
-            setIsLoaded(true);
+      try {
+        const User = await AsyncStorage.getItem("User");
+        const userDetails = JSON.parse(User);
+        setToken(userDetails.userToken);
+        const allHistory = await axios.get(
+          url + "/walletHistory/getWalletHistory",
+          {
+            headers: {
+              "x-auth-token": userDetails.userToken,
+            },
           }
-          }
-    loadHistory()
-   },[isLoaded])
+        );
+        setHistoryList(allHistory.data);
+        //console.log("@@@", allHistory.data);
+        setIsLoaded(false);
+      } catch (error) {
+        console.log("Booked Rides Exception: ", error);
+        setIsLoaded(false);
+      }
+    }
+    loadHistory();
+    return () => (mount = false);
+  }, []);
 
   function getHistory() {
     return (
@@ -44,7 +50,6 @@ const WalletHistory = () => {
             alignItems={"center"}
             justifyContent={"space-between"}
             m={3}
-            
             bg={"white"}
           >
             <Box padding={2} borderRadius={50}>
@@ -79,14 +84,14 @@ const WalletHistory = () => {
   }
   if (isLoaded)
     return (
-        <Box flex={1} justifyContent="center" alignItems={"center"}>
+      <Box flex={1} justifyContent="center" alignItems={"center"} bg="#F0F8FF">
         <Text>Loading...!</Text>
       </Box>
     );
   else
     return (
       <Box flex={1} bg={"#F0F8FF"}>
-        <Box alignItems={"center"} >
+        <Box alignItems={"center"}>
           {historyList.length ? (
             getHistory()
           ) : (
