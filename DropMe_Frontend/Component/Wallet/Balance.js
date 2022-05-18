@@ -9,8 +9,6 @@ import {
   HStack,
   IconButton,
   CloseIcon,
-  AlertDialog,
-  Center,
 } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
@@ -228,9 +226,9 @@ const Balance = ({ route, navigation }) => {
           </Stack>
         </Box>
         <Box width={"70%"}>
-          <Button small primary>
-            <Text fontSize={"sm"} fontWeight={"bold"} color="white">
-              View History
+          <Button variant={"outline"}>
+            <Text fontSize={"sm"} fontWeight={"bold"}>
+              Transactions
             </Text>
           </Button>
         </Box>
