@@ -142,6 +142,7 @@ async function calculateTripAmount(vehicleId, distance) {
 }
 
 
+
 module.exports = {
   requestRide,
   getTripDetails,

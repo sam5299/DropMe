@@ -14,6 +14,8 @@ const {
   getPassengerHistory,
   deleteBookedTrip,
   getTripRideByTripId,
+  addRating,
+  setRating,
 } = require("../services/trip_ride");
 
 //endpoint to search riders who are travelling on route passenger searching for
@@ -126,5 +128,15 @@ router.put("/updateTripStatus", auth, async (req, res) => {
   return res.status(200).send(`Trip ${status}`);
 });
 
+
+// set rating to raider
+router.put("/setRating",auth,async(req,res)=>{
+  let tripRideId=req.body.tripRideId;
+  let rating=req.body.rating;
+  let addRatingResult= await setRating(tripRideId,rating);
+  if(!addRatingResult)
+  return res.status(400).send("Error in set rating");
+  return res.status(200).send(addRatingResult)
+})
 
 module.exports = router;

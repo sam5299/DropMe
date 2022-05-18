@@ -4,7 +4,12 @@ const { TripRide } = require("../models/trip_ride");
 const { User } = require("../models/user");
 const { createNotification } = require("./notification");
 const { getTimeDifference } = require("./ride");
-const { updateWallet, updateUsedCredit, addPenalty } = require("./wallet");
+const {
+  updateWallet,
+  updateUsedCredit,
+  addPenalty,
+  addSafetyPoints,
+} = require("./wallet");
 
 async function addAcceptedTrip(body) {
   let tripRide = new TripRide(body);
@@ -155,14 +160,37 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
     );
   } else {
     //console.log(status);
-    // apply safety points penalty to rider  
+    // apply safety points penalty to rider
     let penalty = TripRideObj.amount * 0.1;
     let result = await addPenalty(TripRideObj.RaiderId, penalty);
     if (!result) console.log("error while applying penalty");
-  
   }
 
   return await TripRideObj.save();
+}
+
+// Set rating to a trip ride and rider
+async function setRating(tripRideId, rating) {
+  let tripRideObj = await TripRide.findOne({ _id: tripRideId });
+  // increase the total number of rides
+  let raiderObj = await User.findOne({ _id: tripRideObj.RaiderId });
+  raiderObj.totalNumberOfRides = raiderObj.totalNumberOfRides + 1;
+
+  // update rider rating , rated ride and set rating to tripRide object
+  if (rating) {
+    raiderObj.sumOfRating = raiderObj.sumOfRating + rating;
+    raiderObj.totalNumberOfRatedRides = raiderObj.totalNumberOfRatedRides + 1;
+    tripRideObj.tripRating = rating;
+  }
+  let saveResult = await raiderObj.save();
+
+  // add safety points in raider wallet
+  let updateSafetyPointResult = await addSafetyPoints(
+    tripRideObj.RaiderId,
+    rating
+  );
+
+  return await tripRideObj.save();
 }
 
 module.exports = {
@@ -174,4 +202,5 @@ module.exports = {
   getPassengerHistory,
   deleteBookedTrip,
   getTripRideByTripId,
+  setRating,
 };
