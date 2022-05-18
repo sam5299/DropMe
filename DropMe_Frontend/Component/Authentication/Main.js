@@ -20,6 +20,11 @@ const Main = () => {
     animating: true,
   };
 
+  useEffect(() => {
+    let mounted = true;
+    return () => (mounted = false);
+  });
+
   const reducer = (state, action) => {
     switch (action.type) {
       case "RETRIVE_TOKEN":

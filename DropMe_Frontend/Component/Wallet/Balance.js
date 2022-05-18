@@ -17,7 +17,7 @@ import { AuthContext } from "../Context";
 import axios from "axios";
 import { StyleSheet, View } from "react-native";
 
-const Balance = ({ navigation }) => {
+const Balance = ({ route, navigation }) => {
   const [status, setStatus] = useState({ status: "", title: "" });
   const [isPageLoading, setIspageLoading] = useState(false);
   const [userToken, setToken] = useState(null);
@@ -25,7 +25,6 @@ const Balance = ({ navigation }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [visible, setVisible] = useState(false); //alert field
-  const [showConfirmAlert, setShowConfirmAlert] = useState(false);
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
@@ -53,6 +52,11 @@ const Balance = ({ navigation }) => {
       </Alert>
     </Box>
   );
+  if (route.params) {
+    let { amount } = route.params;
+    wallet.creditPoint = parseInt(wallet.creditPoint) + parseInt(amount);
+    //console.log(amount);
+  }
 
   useEffect(() => {
     let mounted = true;
@@ -92,61 +96,53 @@ const Balance = ({ navigation }) => {
     return () => (mounted = false);
   }, []);
 
-  const handleCancel = () => {
-    setVisible(false);
-  };
-
-  const handleDelete = () => {
-    console.log("Hii handle Delete done");
-    setVisible(false);
-  };
-
-  // let confirmAlert = (
-  //   <View style={styles.container}>
-  //     <Dialog.Container visible={visible}>
-  //       <Dialog.Title>Account delete</Dialog.Title>
-  //       <Dialog.Description>
-  //         Do you want to delete this account? You cannot undo this action.
-  //       </Dialog.Description>
-  //       <Dialog.Button label="Cancel" onPress={handleCancel} />
-  //       <Dialog.Button label="Delete" onPress={handleDelete} />
-  //     </Dialog.Container>
-  //   </View>
-  // );
-
   let reedeemSafetyPoints = async () => {
     console.log("method called");
-    try {
-      //setShowConfirmAlert(true);
-      setIsLoading(true);
-      let result = await axios.put(
-        url + "/wallet/reedeemSafetyPoints",
-        {},
-        {
-          headers: {
-            "x-auth-token": userToken,
-          },
-        }
-      );
-      console.log(result.data);
-      setBalance(result.data); //adding data into wallet to changed into ui
+
+    //check if safety points greater than 0 to reedeem
+    if (wallet.safetyPoint <= 0) {
       setIsLoading(false);
       setStatus({
-        status: "success",
-        title: "Safety point's redeemed successfull!",
+        status: "error",
+        title: "Safety points must be greater than 0 to redeem!",
       });
       setShowAlert(true);
       setTimeout(() => {
         setShowAlert(false);
+        return;
       }, 3000);
-    } catch (ex) {
-      console.log("Exception:", ex);
-      setIsLoading(false);
-      setStatus({ status: "error", title: ex.response.data });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 5000);
+    } else {
+      try {
+        setIsLoading(true);
+        let result = await axios.put(
+          url + "/wallet/reedeemSafetyPoints",
+          {},
+          {
+            headers: {
+              "x-auth-token": userToken,
+            },
+          }
+        );
+        console.log(result.data);
+        setBalance(result.data); //adding data into wallet to changed into ui
+        setIsLoading(false);
+        setStatus({
+          status: "success",
+          title: "Safety point's redeemed successfully!",
+        });
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
+      } catch (ex) {
+        console.log("Exception:", ex);
+        setIsLoading(false);
+        setStatus({ status: "error", title: ex.response.data });
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 5000);
+      }
     }
   };
 
@@ -181,6 +177,7 @@ const Balance = ({ navigation }) => {
             backgroundColor: "gray.100",
           }}
         >
+          <Box></Box>
           <Stack space={5} direction={"column"} m="5">
             <Box
               backgroundColor={"blue.100"}
@@ -204,18 +201,6 @@ const Balance = ({ navigation }) => {
                 Add Credits
               </Text>
             </Button>
-            {/* <Button
-              onPress={() =>
-                setBalance({
-                  safetyPoints: 0,
-                  creditPoints: wallet.creditPoints + wallet.safetyPoints,
-                })
-              }
-            >
-              <Text fontSize={"sm"} fontWeight={"bold"} color="white">
-                Withdraw Credits
-              </Text>
-            </Button> */}
           </Stack>
           <Stack space={5} direction={"column"} m="5">
             <Box

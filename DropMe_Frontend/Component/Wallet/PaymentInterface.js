@@ -88,43 +88,71 @@ const PaymentInterface = ({ navigation }) => {
     });
 
     if (isTrue) {
-      setIsLoading(true);
-      try {
-        let body = {
-          method: "Card Payment",
-          date: new Date().toDateString(),
-          amount: amount,
-        };
-        const result = await axios.post(
-          `${url}/walletHistory/addHistory`,
-          body,
-          {
-            headers: {
-              "x-auth-token": userToken,
-            },
-          }
-        );
-        setIsLoading(false);
-        setStatus({
-          status: "success",
-          title: "Credit added successfully!",
-        });
-        setShowAlert(true);
-        console.log("Add balance done.");
-        setTimeout(() => {
-          navigation.navigate("Balance");
-        }, 3000);
-      } catch (exception) {
-        console.log("exception at PaymentInterface:", exception.response.data);
-        setIsLoading(false);
+      let pattern = /\d{16}/;
+      let namePattern = /\{w+' '}+/;
+      if (!pattern.test(cardNumber)) {
+        console.log("card number is not right");
         setStatus({
           status: "error",
-          title: "Please Add Valid Amount",
+          title: "Invalid card number!",
         });
         setShowAlert(true);
         setTimeout(() => {
           setShowAlert(false);
+          return;
         }, 5000);
+      } else if (!namePattern.test(cardHolderName)) {
+        setStatus({
+          status: "error",
+          title: "Invalid card holder name!",
+        });
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+          return;
+        }, 5000);
+      } else {
+        setIsLoading(true);
+        try {
+          let body = {
+            method: "Card Payment",
+            date: new Date().toDateString(),
+            amount: amount,
+          };
+          const result = await axios.post(
+            `${url}/walletHistory/addHistory`,
+            body,
+            {
+              headers: {
+                "x-auth-token": userToken,
+              },
+            }
+          );
+          setIsLoading(false);
+          setStatus({
+            status: "success",
+            title: "Credit added successfully!",
+          });
+          setShowAlert(true);
+          console.log("Add balance done.");
+          setTimeout(() => {
+            navigation.navigate("Balance", { amount });
+          }, 1000);
+        } catch (exception) {
+          console.log(
+            "exception at PaymentInterface:",
+            exception.response.data
+          );
+          setIsLoading(false);
+          setStatus({
+            status: "error",
+            title: "Please Add Valid Amount",
+          });
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 5000);
+        }
       }
     }
   };
@@ -201,7 +229,9 @@ const PaymentInterface = ({ navigation }) => {
                   />
                 }
                 placeholder="Card number"
-                onChangeText={(value) => setCardNumber(value)}
+                onChangeText={(value) => {
+                  setCardNumber(value);
+                }}
               />
               {isFieldInError("cardNumber") && (
                 <FormControl.ErrorMessage
