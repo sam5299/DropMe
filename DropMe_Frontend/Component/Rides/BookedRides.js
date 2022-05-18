@@ -87,9 +87,9 @@ const BookedRides = ({ navigation }) => {
   const showConfirmDialog = (tripRideId, tripId, status, amount) => {
     return Alert.alert(
       "Are your sure?",
-      `Canceling a ride reduce your safety points by Rs.${parseInt(
+      `Canceling a ride will reduce your safety points by ${parseInt(
         amount * 0.1
-      )} Do you want to cancel the ride`,
+      )}.\nDo you want to cancel the ride?`,
       [
         // The "Yes" button
         {
