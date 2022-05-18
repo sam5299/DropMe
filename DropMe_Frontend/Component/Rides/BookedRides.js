@@ -1,4 +1,4 @@
-import  {React, useState, useEffect, useContext } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import {
   Box,
   Text,
@@ -12,7 +12,7 @@ import {
   Input,
   Center,
 } from "native-base";
-import  {Alert } from "react-native";
+import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { AuthContext } from "../Context";
@@ -88,7 +88,7 @@ const BookedRides = ({ navigation }) => {
     }
   };
 
-  const showConfirmDialog = (tripRideId,tripId,status,amount) => {
+  const showConfirmDialog = (tripRideId, tripId, status, amount) => {
     return Alert.alert(
       "Are your sure?",
       `Canceling a ride reduce your safety points by Rs.${parseInt(
@@ -99,7 +99,7 @@ const BookedRides = ({ navigation }) => {
         {
           text: "Yes",
           onPress: () => {
-            cancelTrip(tripRideId,tripId,status);
+            cancelTrip(tripRideId, tripId, status);
           },
         },
         // The "No" button
@@ -111,19 +111,19 @@ const BookedRides = ({ navigation }) => {
     );
   };
   const cancelTrip = async (tripRideId, tripId, status) => {
-   // let inp = confirmDelete();
+    // let inp = confirmDelete();
     // if(inp){
-      try {
-        const result = await axios.put(
-          url + "/trip/updateTripStatus",
-          { tripRideId, tripId, status },
-          { headers: { "x-auth-token": userToken } }
-        );
-        alert(result.data);
-        setStarted("Ended");
-      } catch (error) {
-        console.log("Cancel Rides: ", error.response.data);
-      }
+    try {
+      const result = await axios.put(
+        url + "/trip/updateTripStatus",
+        { tripRideId, tripId, status },
+        { headers: { "x-auth-token": userToken } }
+      );
+      alert(result.data);
+      setStarted("Ended");
+    } catch (error) {
+      console.log("Cancel Rides: ", error.response.data);
+    }
   };
 
   function allUserRides() {
@@ -220,10 +220,12 @@ const BookedRides = ({ navigation }) => {
                   <Button
                     colorScheme="secondary"
                     onPress={() =>
-                     showConfirmDialog(ride._id,
+                      showConfirmDialog(
+                        ride._id,
                         ride.tripId._id,
                         "Cancelled",
-                        ride.amount)
+                        ride.amount
+                      )
                     }
                   >
                     Cancel Trip

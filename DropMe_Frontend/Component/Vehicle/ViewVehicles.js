@@ -31,6 +31,34 @@ const ViewVehicles = () => {
   const [status, setStatus] = useState({ status: "", title: "" });
   const [fetching, setFetching] = useState(true);
 
+  useEffect(() => {
+    let mounted = true;
+    async function getVehicleDetails() {
+      try {
+        const User = await AsyncStorage.getItem("User");
+        const parseUser = JSON.parse(User);
+        console.log("getting vehicle information.");
+        let result = await axios.get(url + "/vehicle/getVehicleList", {
+          headers: {
+            "x-auth-token": parseUser.userToken,
+          },
+        });
+        if (mounted) {
+          setVehicle(result.data);
+          setToken(parseUser.userToken);
+          console.log("Setting vehicle done.");
+          setFetching(false);
+        }
+      } catch (ex) {
+        console.log("Exception", ex.response.data);
+        setFetching(false);
+      }
+    }
+
+    getVehicleDetails();
+    return () => (mounted = false);
+  }, []);
+
   let AlertField = (
     <Alert w="100%" status={status.status}>
       <VStack space={2} flexShrink={1} w="100%">
@@ -52,33 +80,6 @@ const ViewVehicles = () => {
       </VStack>
     </Alert>
   );
-
-  useEffect(() => {
-    let mounted = true;
-    async function getVehicleDetails() {
-      try {
-        const User = await AsyncStorage.getItem("User");
-        const parseUser = JSON.parse(User);
-        console.log("getting vehicle information.");
-        let result = await axios.get(url + "/vehicle/getVehicleList", {
-          headers: {
-            "x-auth-token": parseUser.userToken,
-          },
-        });
-        if (mounted) {
-          setVehicle(result.data);
-          setToken(parseUser.userToken);
-          console.log("Setting vehicle done.");
-        }
-      } catch (ex) {
-        console.log("Exception", ex.response.data);
-      }
-      setFetching(false);
-    }
-
-    getVehicleDetails();
-    return () => (mounted = false);
-  }, []);
 
   const showConfirmDialog = (vehicle) => {
     return Alert.alert(
@@ -145,6 +146,7 @@ const ViewVehicles = () => {
             alignItems={"center"}
             bg={"#F0F8FF"}
             p={5}
+            rounded="lg"
             borderColor="coolGray.200"
             borderWidth="1"
             _dark={{

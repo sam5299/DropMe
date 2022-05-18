@@ -61,7 +61,7 @@ const TripHistory = () => {
 
   function getHistory() {
     return (
-      <ScrollView w="95%" bg={"#F0F8FF"} m="2">
+      <ScrollView bg={"#F0F8FF"}>
         {passengerHistory.map((trip) => (
           <Box
             key={trip._id}
@@ -132,7 +132,7 @@ const TripHistory = () => {
               </Stack>
 
               <Text fontSize={18} fontWeight="bold" color="black">
-                <FontAwesome name="rupee" size={18} color="black" />-
+                <FontAwesome name="rupee" size={18} color="black" />
                 {trip.amount}
               </Text>
 
@@ -142,7 +142,6 @@ const TripHistory = () => {
                 </Text>
                 <Text fontSize={18}> {trip.status}</Text>
               </Stack>
-             
             </Stack>
           </Box>
         ))}

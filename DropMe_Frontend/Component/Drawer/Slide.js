@@ -1,15 +1,13 @@
 import * as React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Menu from "../../Screens/Menu";
-import Rides from "../Rides/Rides";
-import { Text, View } from "native-base";
-import Balance from "../Wallet/Balance";
-import AddRemoveStack from "../Vehicle/AddRemoveStack";
-import TripsStack from "../Trips/TripsStack";
+import { View } from "native-base";
 import ViewProfile from "../Profile/ViewProfile";
-import RideStack from "../Rides/RideStack";
 import NotificationScreen from "../../Screens/NotificationScreen";
 import WalletStack from "../Wallet/WalletStack";
+import RideTopBar from "../Rides/RideTopBar";
+import TripsTopBar from "../Trips/TripsTopBar";
+import VehicleTopBar from "../Vehicle/VehicleTopBar";
 const SliderStack = createNativeStackNavigator();
 
 const Slide = () => {
@@ -23,7 +21,7 @@ const Slide = () => {
         />
         <SliderStack.Screen
           name="RideStack"
-          component={RideStack}
+          component={RideTopBar}
           options={{ headerShown: false }}
         />
         <SliderStack.Screen
@@ -32,13 +30,13 @@ const Slide = () => {
           options={{ headerShown: false }}
         />
         <SliderStack.Screen
-          name="Vehicles"
-          component={AddRemoveStack}
+          name="Vehicle"
+          component={VehicleTopBar}
           options={{ headerShown: false }}
         />
         <SliderStack.Screen
           name="TripsStack"
-          component={TripsStack}
+          component={TripsTopBar}
           options={{ headerShown: false }}
         />
         <SliderStack.Screen name="Profile" component={ViewProfile} />

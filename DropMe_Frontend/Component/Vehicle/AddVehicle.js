@@ -174,18 +174,13 @@ const AddVehicle = ({ navigation }) => {
   );
 
   let buttonField = (
-    <Stack direction={"row"} mb={2} space="20" justifyContent={"center"}>
-      <Button size="md" onPress={() => navigation.goBack()}>
-        <Text fontSize={"lg"} color="white">
-          Go Back
-        </Text>
-      </Button>
-
+    <Stack direction={"row"} space="20" justifyContent={"center"}>
       <Button
         isLoading={isLoading}
         isLoadingText="Adding vehicle.."
         size="md"
         onPress={handleAddVehicle}
+        px={5}
       >
         <Text fontSize={"lg"} color="white">
           Add Vehicle
@@ -195,7 +190,7 @@ const AddVehicle = ({ navigation }) => {
   );
 
   return (
-    <ScrollView maxW="100%" h="80" bg={"#F0F8FF"}>
+    <ScrollView maxW="100%" h="80" bg={"#F0F8FF"} mt={"2"}>
       <Box
         alignItems={"center"}
         justifyContent={"center"}
@@ -203,6 +198,7 @@ const AddVehicle = ({ navigation }) => {
         bg={"#F0F8FF"}
       >
         <Box
+          p={2}
           width={"90%"}
           rounded="lg"
           overflow="hidden"
@@ -221,9 +217,6 @@ const AddVehicle = ({ navigation }) => {
           }}
         >
           <FormControl justifyContent="center" alignItems={"center"}>
-            <Text color="rgba(6,182,212,1.00)" fontSize="xl" mb="2">
-              Add Vehicle
-            </Text>
             <TouchableHighlight
               onPress={() => uploadImage()}
               underlayColor="rgba(0,0,0,0)"

@@ -180,7 +180,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
         {tripRequestList.map((list) => (
           <Box
             key={list._id}
-            mb={5}
+            my={5}
             mx={5}
             rounded="lg"
             borderColor="coolGray.200"

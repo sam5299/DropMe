@@ -45,7 +45,7 @@ const RequestRides = ({ navigation }) => {
         {allRides.map((ride) => (
           <Box
             key={ride._id}
-            mb={5}
+            my={5}
             mx={5}
             rounded="lg"
             borderColor="coolGray.200"
