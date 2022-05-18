@@ -150,10 +150,10 @@ const TripHistory = () => {
   }
 
   return (
-    <Box flex={1}>
+    <Box flex={1} bg={"#F0F8FF"}>
       {isHistoryFetchingDone ? (
         <Box flex={1} justifyContent="center" alignItems={"center"}>
-          <Text>Loading...</Text>
+          <Text>Loading...!</Text>
         </Box>
       ) : passengerHistory.length ? (
         getHistory()
