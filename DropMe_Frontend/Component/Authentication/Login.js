@@ -113,7 +113,7 @@ const Login = ({ navigation }) => {
           backgroundColor: "gray.50",
         }}
       >
-        {showAlert ? AlertField : ""}
+        {showAlert ? AlertField : null}
         <FormControl m="5" isInvalid={error}>
           <Text color="rgba(6,182,212,1.00)" fontSize={"lg"} mb="2">
             Welcome!

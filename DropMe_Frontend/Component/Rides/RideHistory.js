@@ -78,7 +78,18 @@ const RideHistory = () => {
               alt="Image not available"
               borderRadius={100}
             />
-            <AirbnbRating
+            {trip.status === "Completed" ? (
+              <AirbnbRating
+                count={trip.tripRating}
+                reviews={["OK", "Good", "Very Good", "Wow", "Amazing"]}
+                readonly={true}
+                size={15}
+                reviewColor={"black"}
+                reviewSize={20}
+                isDisabled={true}
+              />
+            ) : null}
+            {/* <AirbnbRating
               count={trip.tripRating}
               reviews={["OK", "Good", "Very Good", "Wow", "Amazing"]}
               readonly={true}
@@ -86,7 +97,7 @@ const RideHistory = () => {
               reviewColor={"black"}
               reviewSize={20}
               isDisabled={true}
-            />
+            /> */}
             <Stack direction={"column"} alignItems="center" space={5} m={2}>
               <Stack direction={"row"}>
                 <Text fontSize={18} fontWeight="bold" color="black">

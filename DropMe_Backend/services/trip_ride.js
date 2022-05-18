@@ -2,6 +2,7 @@ const { Ride } = require("../models/ride");
 const { Trip } = require("../models/trip");
 const { TripRide } = require("../models/trip_ride");
 const { User } = require("../models/user");
+const { WalletHistory } = require("../models/wallet_history");
 const { createNotification } = require("./notification");
 const { getTimeDifference } = require("./ride");
 const {
@@ -82,6 +83,14 @@ async function deleteBookedTrip(tripRideId) {
   tripRideObj.date = tripRideObj.rideId.date;
   console.log("tripRideObj:", tripRideObj);
 
+  //setting simple sourcename and destination name for wallethistory purpose
+  let sourceArrary = tripRideObj.rideId.source.split(",");
+  let destinationArray = tripRideObj.rideId.destination.split(",");
+  let sourceName = sourceArrary[0];
+  let destinationName = destinationArray[0];
+  console.log("SourceName:" + sourceName);
+  //console.log("DestinationName:" + destinationName);
+
   let today = new Date();
   let currentTime =
     today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -105,6 +114,19 @@ async function deleteBookedTrip(tripRideId) {
       depositAmount * -1
     );
     if (!result) console.log("error while adding deposit amount");
+
+    //add code to add new entry in wallet_history collection for deducted credit point
+    let body = {
+      User: tripRideObj.PassengerId._id,
+      type: "Debit",
+      method: `Cancelation charges for booked trip from ${sourceName} to ${destinationName}.`,
+      amount: depositAmount,
+      date: new Date().toDateString(),
+    };
+    let newWalletHisotry = new WalletHistory(body);
+    let walletHistoryResult = await newWalletHisotry.save();
+    if (!walletHistoryResult) console.log(walletHistoryResult);
+    console.log("WalletHistory in trip ride deleteRide function");
   }
 
   let notificationDetails = {

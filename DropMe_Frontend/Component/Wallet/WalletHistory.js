@@ -73,10 +73,20 @@ const WalletHistory = () => {
               </Text>
               <Text fontSize={12}>{transaction.date}</Text>
             </Box>
-            <Text fontWeight={"bold"} fontSize={18} p={2}>
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              p={2}
+            >
               <FontAwesome5 name="rupee-sign" size={18} color="black" />
-              {transaction.amount}
-            </Text>
+              <Text fontWeight={"bold"} fontSize={18}>
+                {" "}
+                {/*color={transaction.type === "Credit" ?"green.999":"red.999"}> */}
+                {transaction.amount}
+              </Text>
+            </Box>
           </Box>
         ))}
       </ScrollView>

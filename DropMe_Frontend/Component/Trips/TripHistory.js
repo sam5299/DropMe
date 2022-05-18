@@ -42,7 +42,7 @@ const TripHistory = () => {
           },
         });
         if (mounted) {
-          console.log(result);
+          console.log("TripHistory object:", result.data);
           setPassengerHistory(result.data);
           setToken(parseUser.userToken);
           console.log("Set done", result.data);
@@ -94,15 +94,18 @@ const TripHistory = () => {
               alt="Image not available"
               borderRadius={100}
             />
-            <AirbnbRating
-              count={trip.tripRating}
-              reviews={["OK", "Good", "Very Good", "Wow", "Amazing"]}
-              readonly={true}
-              size={15}
-              reviewColor={"black"}
-              reviewSize={20}
-              isDisabled={true}
-            />
+            {trip.status === "Completed" ? (
+              <AirbnbRating
+                count={trip.tripRating}
+                reviews={["OK", "Good", "Very Good", "Wow", "Amazing"]}
+                readonly={true}
+                size={15}
+                reviewColor={"black"}
+                reviewSize={20}
+                isDisabled={true}
+              />
+            ) : null}
+
             <Stack direction={"column"} alignItems="center" space={5} m={2}>
               <Stack direction={"row"}>
                 <Text fontSize={18} fontWeight="bold" color="black">
