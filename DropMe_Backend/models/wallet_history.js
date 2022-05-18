@@ -5,7 +5,7 @@ const walletHistorySchema = new mongoose.Schema({
   User: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   type: { type: String, enum: ["Credit", "Debit"], required: true },
   amount: { type: Number, required: true },
-  method: { type: String, required: true },
+  message: { type: String, required: true },
   date: { type: String, required: true },
 });
 
@@ -16,7 +16,7 @@ function validateWalletHistoryDetails(historyData) {
   let joiWalletHistorySchema = Joi.object({
     type: Joi.string().required().valid("Credit", "Debit"),
     amount: Joi.number().required().min(1),
-    method: Joi.string().required(),
+    message: Joi.string().required(),
     date: Joi.string().required(),
     User: Joi.string().required(),
   });

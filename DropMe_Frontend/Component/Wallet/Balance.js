@@ -226,7 +226,8 @@ const Balance = ({ route, navigation }) => {
           </Stack>
         </Box>
         <Box width={"70%"}>
-          <Button variant={"outline"}>
+          <Button variant={"outline"}                 
+          onPress={()=>navigation.navigate("Wallet History")}>
             <Text fontSize={"sm"} fontWeight={"bold"}>
               Transactions
             </Text>

@@ -84,7 +84,7 @@ const PaymentInterface = ({ navigation }) => {
 
     if (isTrue) {
       let pattern = /\d{16}/;
-      let namePattern = /\{w+' '}+/;
+      let namePattern =/ \w*/ // /{\w+' '}+/;
       if (!pattern.test(cardNumber)) {
         console.log("card number is not right");
         setStatus({
@@ -110,7 +110,7 @@ const PaymentInterface = ({ navigation }) => {
         setIsLoading(true);
         try {
           let body = {
-            method: "Card Payment",
+            message: "Card Payment",
             date: new Date().toDateString(),
             amount: amount,
           };
@@ -141,7 +141,7 @@ const PaymentInterface = ({ navigation }) => {
           setIsLoading(false);
           setStatus({
             status: "error",
-            title: "Please Add Valid Amount",
+            title: "Please add valid amount",
           });
           setShowAlert(true);
           setTimeout(() => {

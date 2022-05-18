@@ -150,7 +150,7 @@ router.put("/changePassword", auth, async (req, res) => {
   }
 });
 
-// api to get details of user who logged in maily will be used for profile.
+// api to get details of user who logged in mainly will be used for profile.
 router.get("/getUser", auth, async (req, res) => {
   try {
     let user = await getUser(req.body.User);

@@ -5,6 +5,7 @@ import Balance from "./Balance";
 import { Button, Icon } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import WalletHistory from "./WalletHistory";
 
 const SliderStack = createNativeStackNavigator();
 
@@ -21,6 +22,11 @@ const WalletStack = ({ navigation }) => {
           name="PaymentInterFace"
           component={PaymentInterface}
           options={{ headerShown: false }}
+        />
+        <SliderStack.Screen
+          name="Wallet History"
+          component={WalletHistory}
+          options={{ headerShown: true }}
         />
       </SliderStack.Navigator>
     </View>
