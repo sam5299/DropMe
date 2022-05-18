@@ -110,7 +110,7 @@ function TripBooked() {
               backgroundColor: "gray.50",
             }}
           >
-            <Stack direction={"column"} alignItems={"center"} space={2}>
+            <Stack direction={"column"} alignItems={"center"} space={2}>  
               <Text style={styles.details}>Source: {trip.tripId.source}</Text>
               <Text style={styles.details}>
                 Destination : {trip.tripId.destination}

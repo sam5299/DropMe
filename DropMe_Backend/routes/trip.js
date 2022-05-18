@@ -112,7 +112,7 @@ router.delete("/deleteBookedTrip/:tripRideId", auth, async (req, res) => {
   return res.status(200).send("Trip deleted");
 });
 
-//endpoint to update the status of particular trip
+//endpoint to update the status of particular trip initiated/completed/ Rejected/canceled
 router.put("/updateTripStatus", auth, async (req, res) => {
   let tripRideId = req.body.tripRideId;
   let tripId = req.body.tripId;
@@ -126,7 +126,5 @@ router.put("/updateTripStatus", auth, async (req, res) => {
   return res.status(200).send(`Trip ${status}`);
 });
 
-//endpoint to complete trip set start time and set status
-router.put("/endTrip/:tripRideId/:tid", auth, async (req, res) => {});
 
 module.exports = router;
