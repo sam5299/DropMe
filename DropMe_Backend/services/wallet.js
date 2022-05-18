@@ -22,7 +22,7 @@ async function getWallet(userId) {
 async function updateWallet(userId, amount) {
   console.log("in updatewallet", userId);
   let walletObj = await Wallet.findOne({ User: userId });
-  console.log(walletObj);
+  //console.log(walletObj);
   walletObj.creditPoint = walletObj.creditPoint + parseInt(amount);
   return await walletObj.save();
 }
@@ -44,6 +44,13 @@ async function reedemSafetyPoints(userId) {
   walletObj.creditPoint =
     walletObj.creditPoint + parseInt(walletObj.safetyPoint / 2);
   walletObj.safetyPoint = 0;
+  return await walletObj.save();
+}
+
+// add safety points +/- number
+async function addSafetyPoints(userId, points) {
+  let [walletObj] = await Wallet.find({ User: userId });
+  walletObj.safetyPoint = walletObj.safetyPoint + points;
   return await walletObj.save();
 }
 
@@ -73,4 +80,5 @@ module.exports = {
   reedemSafetyPoints,
   addPenalty,
   getWallet,
+  addSafetyPoints
 };

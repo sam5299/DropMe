@@ -17,12 +17,13 @@ const ViewProfile = () => {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-        // console.log("In viewprofile data:", parseUser);
+        // console.log("In view profile data:", parseUser);
 
         if (mounted) {
           setUserDetails(parseUser);
           setPageLoading(false);
           // setToken(parseUser.userToken);
+          console.log(parseUser.totalNumberOfRatedRides);
         }
       } catch (ex) {
         console.log("Exception in profile", ex.response.data);
@@ -83,7 +84,7 @@ const ViewProfile = () => {
               <Box
                 alignItems={"center"}
                 justifyContent={"center"}
-                bg={"white"}
+                // bg={"white"}
                 borderRadius={10}
               >
                 <Text style={styles.details}>
@@ -95,12 +96,12 @@ const ViewProfile = () => {
               <Box
                 alignItems={"center"}
                 justifyContent={"center"}
-                bg={"white"}
+                // bg={"white"}
                 borderRadius={10}
               >
                 <Text style={styles.details}>
                   {userDetails.totalNumberOfRatedRides == 0
-                    ? 0
+                    ? 0.0
                     : (
                         userDetails.sumOfRating /
                         userDetails.totalNumberOfRatedRides

@@ -231,11 +231,14 @@ const Balance = ({ route, navigation }) => {
           </Stack>
         </Box>
         <Box width={"70%"}>
-          <Button variant={"outline"}>
+          <Button
+            variant={"outline"}
+            onPress={() => navigation.navigate("Wallet History")}
+          >
             <Text
-              fontSize={"15"}
-              color="rgba(6,182,212,1.00)"
+              fontSize={"sm"}
               fontWeight={"bold"}
+              color="rgba(6,182,212,1.00)"
             >
               Transactions
             </Text>
