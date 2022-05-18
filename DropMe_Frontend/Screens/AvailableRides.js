@@ -1,10 +1,23 @@
-import { Alert, View } from "react-native";
+import { View } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Stack, Text, Image, Button, ScrollView } from "native-base";
+import {
+  Box,
+  Stack,
+  Text,
+  Image,
+  Button,
+  ScrollView,
+  VStack,
+  HStack,
+  IconButton,
+  CloseIcon,
+  Alert,
+} from "native-base";
 import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 import { AuthContext } from "../Component/Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import RideForType from "../Component/RideForType";
 
 const AvailableRides = ({ route, navigation }) => {
   const [RideDetails, setRideDetails] = useState([]);
@@ -14,6 +27,35 @@ const AvailableRides = ({ route, navigation }) => {
   const { getUrl } = useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
   const url = getUrl();
+
+  const [isSentRequest, setIsSetRequest] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertField, setAlertField] = useState({
+    status: "success",
+    title: "",
+  });
+
+  let AlertField = (
+    <Alert w="100%" status={alertField.status}>
+      <VStack space={2} flexShrink={1} w="100%">
+        <HStack flexShrink={1} space={2} justifyContent="space-between">
+          <HStack space={2} flexShrink={1}>
+            <Alert.Icon mt="1" />
+            <Text fontSize="md" color="coolGray.800">
+              {alertField.title}
+            </Text>
+          </HStack>
+          <IconButton
+            variant="unstyled"
+            _focus={{
+              borderWidth: 0,
+            }}
+            icon={<CloseIcon size="3" color="coolGray.600" />}
+          />
+        </HStack>
+      </VStack>
+    </Alert>
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -25,8 +67,12 @@ const AvailableRides = ({ route, navigation }) => {
             headers: { "x-auth-token": token },
           }
         );
-        //console.log(rides.data);
+        //console.log("ride data:", rides.data);
         setRideDetails(rides.data);
+        let tempObj = [];
+        RideDetails.forEach((ride) => {
+          console.log(ride._id);
+        });
         setLoading(false);
       } catch (error) {
         console.log("AvailableRides: ", error.response.data);
@@ -45,26 +91,49 @@ const AvailableRides = ({ route, navigation }) => {
     tripDetails["amount"] = parseInt(ride.amount * seats);
     tripDetails["rideId"] = ride._id;
 
-    console.log("Trip: ", tripDetails);
+    // console.log("Trip: ", tripDetails);
     try {
       const result = await axios.post(url + "/trip/requestRide", tripDetails, {
         headers: {
           "x-auth-token": token,
         },
       });
-      console.log("done");
-      alert(
-        `Request has been sent to rider.\nYou will receive notification once rider accept/reject your request.`
-      );
+
+      let newResult = [];
+      RideDetails.forEach((ride) => {
+        if (ride._id != tripDetails.rideId) {
+          newResult.push(ride);
+        }
+      });
+
+      // console.log("done");
+      setAlertField({
+        status: "success",
+        title: `Request has been sent to rider.\nYou will receive notification once rider \n accept/reject your request.`,
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+        setRideDetails(newResult);
+      }, 2000);
     } catch (error) {
-      console.log("Request to ride: ", error.response.data);
-      alert(" Please Add credits point to wallet");
+      setAlertField({
+        status: "error",
+        title: error.response.data,
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+        setIsSetRequest(false);
+      }, 3000);
+      console.log("Request to ride: ", error);
     }
   };
 
   function getRides() {
     return (
       <ScrollView bg={"#F0F8FF"}>
+        {showAlert ? AlertField : null}
         {RideDetails.map((ride) => (
           <Box
             key={ride._id}
