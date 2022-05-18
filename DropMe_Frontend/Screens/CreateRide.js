@@ -253,11 +253,11 @@ const CreateRide = ({ navigation }) => {
   };
 
   return (
-    <Box flex={1} bg={"#f5f5f5"} flexDirection="column">
-      {showAlert ? AlertField : ""}
+    <Box flex={1} bg={"#F0F8FF"} flexDirection="column">
+      {showAlert ? AlertField : null}
       <GoogleMap />
       <ScrollView>
-        <FormControl p={2}>
+        <FormControl p={1}>
           <SourceDestination dispatch={dispatch} />
           <Box ml="5" flexDirection={"row"} justifyContent={"space-between"}>
             {isFieldInError("source") && (

@@ -176,14 +176,14 @@ const BookRide = ({ navigation }) => {
     <View
       style={{
         width: "100%",
-        backgroundColor: "#f5f5f5",
+        backgroundColor: "#F0F8FF",
         height: "100%",
         flexDirection: "column",
       }}
     >
       <GoogleMap />
       <ScrollView>
-        <FormControl>
+        <FormControl p={1}>
           <SourceDestination dispatch={dispatch} />
           <Box flexDirection={"row"} justifyContent="space-around">
             {isFieldInError("source") && (

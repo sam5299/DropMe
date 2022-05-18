@@ -7,10 +7,7 @@ import {
   Button,
   ScrollView,
   Divider,
-  Modal,
-  FormControl,
   Input,
-  Center,
 } from "native-base";
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -22,7 +19,6 @@ const BookedRides = ({ navigation }) => {
   const [showRides, setShowRides] = useState(true);
   const [userToken, setToken] = useState(null);
   const [passengerToken, setPassengerToken] = useState("");
-  const [isError, setError] = useState(false);
   const [isTripStarted, setStarted] = useState("No");
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
@@ -74,7 +70,7 @@ const BookedRides = ({ navigation }) => {
     }
   };
 
-  const endTrip = async (tripRideId, tripId, status, amount) => {
+  const endTrip = async (tripRideId, tripId, status, token) => {
     try {
       const result = await axios.put(
         url + "/trip/updateTripStatus",
@@ -84,7 +80,7 @@ const BookedRides = ({ navigation }) => {
       alert(result.data);
       setStarted("Ended");
     } catch (error) {
-      console.log("Booked Rides: ", error.response.data);
+      console.log("Booked Rides: ", error);
     }
   };
 
@@ -185,22 +181,18 @@ const BookedRides = ({ navigation }) => {
                 </Text>
                 <Text fontSize={15}>{ride.PassengerId.mobileNumber}</Text>
                 <Text fontSize={18} fontWeight="bold" p={1}>
-                  Time:
+                  Pickup Point:
                 </Text>
-                <Text fontSize={15}>12:24</Text>
+                <Text fontSize={15}>{ride.tripId.pickupPoint}</Text>
               </Box>
-              <FormControl key={ride._id} isInvalid={isError}>
-                <Input
-                  isDisabled={ride.status === "Booked" ? false : true}
-                  variant={"outline"}
-                  keyboardType="numeric"
-                  placeholder="Enter the token"
-                  onChangeText={(value) => setPassengerToken(value)}
-                />
-                <FormControl.ErrorMessage>
-                  Please enter valid token
-                </FormControl.ErrorMessage>
-              </FormControl>
+              <Input
+                isDisabled={ride.status === "Booked" ? false : true}
+                variant={"outline"}
+                keyboardType="numeric"
+                placeholder="Enter the token"
+                onChangeText={(value) => setPassengerToken(value)}
+              />
+
               <Divider color={"black"} mb={2} />
               {ride.status === "Booked" ? (
                 <Stack direction={"row"} space={5} mt={2}>
@@ -250,7 +242,12 @@ const BookedRides = ({ navigation }) => {
 
   if (showRides) {
     return (
-      <Box flex={1} justifyContent="center" alignItems={"center"}>
+      <Box
+        flex={1}
+        justifyContent="center"
+        alignItems={"center"}
+        bg={"#F0F8FF"}
+      >
         <Text>Loading...!</Text>
       </Box>
     );

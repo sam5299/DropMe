@@ -221,7 +221,7 @@ function TripBooked() {
       {showAlert ? AlertField : null}
       {isBookedTripFetchingDone ? (
         <Box flex={1} justifyContent="center" alignItems={"center"}>
-          <Text>Loading...</Text>
+          <Text>Loading...!</Text>
         </Box>
       ) : bookedTripList.length ? (
         getBookedTrips()
