@@ -4,7 +4,7 @@ const { TripRide } = require("../models/trip_ride");
 const { User } = require("../models/user");
 const { createNotification } = require("./notification");
 const { getTimeDifference } = require("./ride");
-const { updateWallet, updateUsedCredit } = require("./wallet");
+const { updateWallet, updateUsedCredit, addPenalty } = require("./wallet");
 
 async function addAcceptedTrip(body) {
   let tripRide = new TripRide(body);
@@ -40,7 +40,14 @@ async function getAllBookedTrips(passengerId) {
 
 // return all history of the passenger
 async function getPassengerHistory(passengerId) {
-  return await TripRide.find({ PassengerId: passengerId })
+  return await TripRide.find({
+    PassengerId: passengerId,
+    $or: [
+      { status: "Completed" },
+      { status: "Cancelled" },
+      { status: "Rejected" },
+    ],
+  })
     .populate("RaiderId", "_id profile name mobileNumber", User)
     .populate("tripId", "source destination pickupPoint date", Trip)
     .sort({ _id: -1 });
@@ -48,7 +55,14 @@ async function getPassengerHistory(passengerId) {
 
 // return all history of the passenger
 async function getRiderHistory(raiderId) {
-  return await TripRide.find({ RiderId: raiderId })
+  return await TripRide.find({
+    RiderId: raiderId,
+    $or: [
+      { status: "Completed" },
+      { status: "Cancelled" },
+      { status: "Rejected" },
+    ],
+  })
     .populate("PassengerId", "_id profile name mobileNumber", User)
     .populate("tripId", "source destination pickupPoint date", Trip)
     .sort({ _id: -1 });
@@ -117,7 +131,7 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
     currentDate.getSeconds();
   //console.log(time);
   if (status == "Initiated") TripRideObj.startTime = currentTime;
-  else {
+  else if (status == "Completed") {
     TripRideObj.endTime = currentTime;
 
     // add 90% amount to riders wallet and 10% commision will be given to DropMe.
@@ -139,6 +153,13 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
       TripRideObj.PassengerId._id,
       TripRideObj.amount - TripRideObj.amount
     );
+  } else {
+    //console.log(status);
+    // apply safety points penalty to rider  
+    let penalty = TripRideObj.amount * 0.1;
+    let result = await addPenalty(TripRideObj.RaiderId, penalty);
+    if (!result) console.log("error while applying penalty");
+  
   }
 
   return await TripRideObj.save();

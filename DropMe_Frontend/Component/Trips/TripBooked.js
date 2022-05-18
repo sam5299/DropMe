@@ -61,43 +61,7 @@ function TripBooked() {
     return () => (mounted = false);
   }, []);
 
-  // async function loadBookedList(vehicle) {
-  //   try {
-  //     let result = await axios.delete(
-  //       `${url}/vehicle/deleteVehicle/${vehicle.vehicleNumber}`,
-  //       {
-  //         headers: {
-  //           "x-auth-token": userToken,
-  //         },
-  //       }
-  //     );
-
-  //     let newVehicle = vehicleDetails.filter(
-  //       (vehicleObj) => vehicleObj._id != vehicle._id
-  //     );
-  //     setVehicle(newVehicle);
-  //   } catch (ex) {
-  //     console.log(ex.response.data);
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   async function loadRides() {
-  //     try {
-  //       let rideList = await axios.get("", {
-  //         headers: {
-  //           "x-auth-token": "",
-  //         },
-  //       });
-  //       setRideDetails(rideList.data)
-  //     } catch (ex) {
-  //       console.log("Exception " + ex);
-  //     }
-  //   }
-
-  //   loadRides();
-  // }, []);
-
+  
   function getBookedTrips() {
     return (
       <ScrollView w={"85%"} bg={"#F0F8FF"}>
@@ -107,7 +71,7 @@ function TripBooked() {
             display={"flex"}
             flexDirection={"column"}
             borderRadius={10}
-            m={4}
+            my={5}
             p={5}
             borderColor="coolGray.200"
             borderWidth="1"
