@@ -130,7 +130,7 @@ function TripBooked() {
                 borderRadius={100}
               />
               <Text style={styles.details}>
-                Raider Name: {trip.RaiderId.name}
+                Rider Name: {trip.RaiderId.name}
               </Text>
               <Text style={styles.details}>
                 Mobile No.: {trip.RaiderId.mobileNumber}
