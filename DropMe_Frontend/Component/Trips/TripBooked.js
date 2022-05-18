@@ -1,6 +1,19 @@
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { Alert as NewAlert } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
-import { Box, Button, Image, ScrollView, Stack, Text } from "native-base";
+import {
+  Box,
+  Button,
+  Image,
+  ScrollView,
+  Stack,
+  Text,
+  Alert,
+  VStack,
+  HStack,
+  IconButton,
+  CloseIcon,
+} from "native-base";
 
 import axios from "axios";
 import { AuthContext } from "../Context";
@@ -13,9 +26,15 @@ function TripBooked() {
   const url = getUrl();
   const [isLoading, setIsLoading] = useState(false);
   const [isBookedTripFetchingDone, setIsBookedTripFetchDone] = useState(true);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertField, setAlertField] = useState({
+    status: "success",
+    title: "",
+  });
+  let [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  const showConfirmDialog = (tripRideId,amount) => {
-    return Alert.alert(
+  const showConfirmDialog = (tripRideId, amount) => {
+    return NewAlert.alert(
       "Are your sure?",
       `Canceling a trip reduce your credit points by Rs.${parseInt(
         amount * 0.1
@@ -39,9 +58,10 @@ function TripBooked() {
 
   async function CancelTrip(tripRideId) {
     try {
+      setIsButtonDisabled(true);
       const User = await AsyncStorage.getItem("User");
       const parseUser = JSON.parse(User);
-      console.log("deleting booked ride");
+      //console.log("deleting booked ride");
       let result = await axios.delete(
         url + `/trip/deleteBookedTrip/${tripRideId}`,
         {
@@ -50,9 +70,29 @@ function TripBooked() {
           },
         }
       );
-      alert(result.data);
-      //alert(tripRideId)
+      let newBookedTripList = [];
+      bookedTripList.forEach((trip) => {
+        if (trip._id != tripRideId) {
+          newBookedTripList.push(trip);
+        }
+      });
+      setAlertField({
+        status: "success",
+        title: "Cancelled trip successfully!",
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+        setBookedTripList(newBookedTripList);
+        setIsButtonDisabled(false);
+      }, 2000);
     } catch (ex) {
+      setAlertField({ status: "error", title: ex.response.data });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+        setIsButtonDisabled(false);
+      }, 4000);
       console.log("Exception in delete", ex.response.data);
     }
   }
@@ -85,6 +125,28 @@ function TripBooked() {
     return () => (mounted = false);
   }, []);
 
+  let AlertField = (
+    <Alert w="100%" status={alertField.status}>
+      <VStack space={2} flexShrink={1} w="100%">
+        <HStack flexShrink={1} space={2} justifyContent="space-between">
+          <HStack space={2} flexShrink={1}>
+            <Alert.Icon mt="1" />
+            <Text fontSize="md" color="coolGray.800">
+              {alertField.title}
+            </Text>
+          </HStack>
+          <IconButton
+            variant="unstyled"
+            _focus={{
+              borderWidth: 0,
+            }}
+            icon={<CloseIcon size="3" color="coolGray.600" />}
+          />
+        </HStack>
+      </VStack>
+    </Alert>
+  );
+
   function getBookedTrips() {
     return (
       <ScrollView w={"85%"} bg={"#F0F8FF"}>
@@ -110,7 +172,7 @@ function TripBooked() {
               backgroundColor: "gray.50",
             }}
           >
-            <Stack direction={"column"} alignItems={"center"} space={2}>  
+            <Stack direction={"column"} alignItems={"center"} space={2}>
               <Text style={styles.details}>Source: {trip.tripId.source}</Text>
               <Text style={styles.details}>
                 Destination : {trip.tripId.destination}
@@ -142,6 +204,7 @@ function TripBooked() {
               <Button
                 size={"lg"}
                 px={10}
+                disabled={isButtonDisabled}
                 onPress={() => showConfirmDialog(trip._id, trip.amount)}
               >
                 Cancel trip
@@ -155,6 +218,7 @@ function TripBooked() {
 
   return (
     <Box flex={1} alignItems={"center"} bg={"#F0F8FF"}>
+      {showAlert ? AlertField : null}
       {isBookedTripFetchingDone ? (
         <Box flex={1} justifyContent="center" alignItems={"center"}>
           <Text>Loading...</Text>
