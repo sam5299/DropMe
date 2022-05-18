@@ -2,7 +2,19 @@ import { View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../Context";
-import { Box, Stack, Text, Image, Button, ScrollView } from "native-base";
+import {
+  Box,
+  Stack,
+  Text,
+  Image,
+  Button,
+  ScrollView,
+  Alert,
+  VStack,
+  HStack,
+  IconButton,
+  CloseIcon,
+} from "native-base";
 
 const AcceptRejectRequest = ({ route, navigation }) => {
   const { rideId, token, amount, name, vehicleNumber } = route.params;
@@ -11,6 +23,34 @@ const AcceptRejectRequest = ({ route, navigation }) => {
 
   const [tripRequestList, setTripRequestList] = useState([]);
   const [isLoading, setLoading] = useState(true);
+
+  //alert box states
+  const [status, setStatus] = useState({ status: "", title: "" });
+  const [showAlert, setShowAlert] = useState(false);
+
+  let AlertField = (
+    <Box>
+      <Alert w="100%" status={status.status}>
+        <VStack space={2} flexShrink={1} w="100%">
+          <HStack flexShrink={1} space={2} justifyContent="space-between">
+            <HStack space={2} flexShrink={1}>
+              <Alert.Icon mt="1" />
+              <Text fontSize="md" color="coolGray.800">
+                {status.title}
+              </Text>
+            </HStack>
+            <IconButton
+              variant="unstyled"
+              _focus={{
+                borderWidth: 0,
+              }}
+              icon={<CloseIcon size="3" color="coolGray.600" />}
+            />
+          </HStack>
+        </VStack>
+      </Alert>
+    </Box>
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -25,7 +65,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
           }
         );
         if (mounted) {
-          // console.log(requestList.data);
+          console.log(requestList.data);
           setTripRequestList(requestList.data);
           setLoading(false);
         }
@@ -53,9 +93,31 @@ const AcceptRejectRequest = ({ route, navigation }) => {
         { tripId, rideId, raiderName, amount, vehicleNumber },
         { headers: { "x-auth-token": token } }
       );
-      alert(result.data);
+      setStatus({
+        status: "success",
+        title: "Trip request accepted!",
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        let newTripRequestList = [];
+        tripRequestList.forEach((tripObj) => {
+          if (tripObj._id != tripId) {
+            newTripRequestList.push(tripObj);
+          }
+        });
+        setTripRequestList(newTripRequestList);
+        setShowAlert(false);
+      }, 2000);
     } catch (error) {
       console.log("Accept Request: ", error.response.data);
+      setStatus({
+        status: "error",
+        title: "Error while accepting trip!",
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
     }
   };
 
@@ -82,8 +144,31 @@ const AcceptRejectRequest = ({ route, navigation }) => {
         { headers: { "x-auth-token": token } }
       );
       console.log(result.data);
-      alert("Request Rejected..!");
+      setStatus({
+        status: "error",
+        title: "Trip request rejected!",
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        //add logic to remove that trip from ui
+        let newTripRequestList = [];
+        tripRequestList.forEach((tripObj) => {
+          if (tripObj._id != tripId) {
+            newTripRequestList.push(tripObj);
+          }
+        });
+        setTripRequestList(newTripRequestList);
+        setShowAlert(false);
+      }, 2000);
     } catch (error) {
+      setStatus({
+        status: "error",
+        title: error.response.data,
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
       console.log("Reject Request: ", error.response.data);
     }
   };
@@ -91,6 +176,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
   function viewRequest() {
     return (
       <ScrollView>
+        {showAlert ? AlertField : null}
         {tripRequestList.map((list) => (
           <Box
             key={list._id}
