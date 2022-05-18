@@ -147,8 +147,13 @@ const Balance = ({ route, navigation }) => {
   //rendering page
   if (isPageLoading) {
     return (
-      <Box flex={1} justifyContent={"center"} alignItems={"center"}>
-        <Text>Loading..</Text>
+      <Box
+        flex={1}
+        justifyContent={"center"}
+        alignItems={"center"}
+        bg="#F0F8FF"
+      >
+        <Text>Loading...!</Text>
       </Box>
     );
   } else {

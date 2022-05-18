@@ -16,7 +16,7 @@ export default function TripsTopBar() {
         }}
       >
         <Tab.Screen name="Booked Trips" component={TripBooked} />
-        <Tab.Screen name="Trip History" component={TripHistory} />
+        <Tab.Screen name="History" component={TripHistory} />
       </Tab.Navigator>
     </Box>
   );

@@ -34,7 +34,7 @@ const ViewProfile = () => {
   }, []);
   if (pageLoading) {
     return (
-      <Box flex={1} justifyContent="center" alignItems={"center"}>
+      <Box flex={1} justifyContent="center" alignItems={"center"} bg="#F0F8FF">
         <Text>Loading...</Text>
       </Box>
     );

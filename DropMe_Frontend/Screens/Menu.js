@@ -18,7 +18,7 @@ const Menu = ({ navigation }) => {
   const { signOut } = useContext(AuthContext);
 
   return (
-    <VStack flex={1} space={0.5} mt={1}>
+    <VStack flex={1} space={0.5} mt={1} bg={"#F0F8FF"}>
       <Pressable
         justifyContent={"space-between"}
         w="100%"

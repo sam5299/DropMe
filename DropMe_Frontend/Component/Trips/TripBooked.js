@@ -14,7 +14,7 @@ function TripBooked() {
   const [isLoading, setIsLoading] = useState(false);
   const [isBookedTripFetchingDone, setIsBookedTripFetchDone] = useState(true);
 
-  const showConfirmDialog = (tripRideId,amount) => {
+  const showConfirmDialog = (tripRideId, amount) => {
     return Alert.alert(
       "Are your sure?",
       `Canceling a trip reduce your credit points by Rs.${parseInt(
@@ -110,7 +110,7 @@ function TripBooked() {
               backgroundColor: "gray.50",
             }}
           >
-            <Stack direction={"column"} alignItems={"center"} space={2}>  
+            <Stack direction={"column"} alignItems={"center"} space={2}>
               <Text style={styles.details}>Source: {trip.tripId.source}</Text>
               <Text style={styles.details}>
                 Destination : {trip.tripId.destination}
@@ -157,7 +157,7 @@ function TripBooked() {
     <Box flex={1} alignItems={"center"} bg={"#F0F8FF"}>
       {isBookedTripFetchingDone ? (
         <Box flex={1} justifyContent="center" alignItems={"center"}>
-          <Text>Loading...</Text>
+          <Text>Loading...!</Text>
         </Box>
       ) : bookedTripList.length ? (
         getBookedTrips()

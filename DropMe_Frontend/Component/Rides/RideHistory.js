@@ -135,7 +135,12 @@ const RideHistory = () => {
 
   if (isLoading) {
     return (
-      <Box flex={1} justifyContent={"center"} alignItems={"center"}>
+      <Box
+        flex={1}
+        justifyContent={"center"}
+        alignItems={"center"}
+        bg={"#F0F8FF"}
+      >
         Loading...!
       </Box>
     );

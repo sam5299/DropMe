@@ -13,12 +13,12 @@ export default function RideTopBar() {
       <Tab.Navigator
         screenOptions={{
           tabBarLabelStyle: { fontSize: 12 },
-          tabBarStyle: { backgroundColor: "powderblue" },
+          tabBarStyle: { backgroundColor: "#F0F8FF" },
         }}
       >
         <Tab.Screen name="Rides" component={RideStack} />
         <Tab.Screen name="Booked Rides" component={BookedRides} />
-        <Tab.Screen name="Ride History" component={RideHistory} />
+        <Tab.Screen name="History" component={RideHistory} />
       </Tab.Navigator>
     </Box>
   );
