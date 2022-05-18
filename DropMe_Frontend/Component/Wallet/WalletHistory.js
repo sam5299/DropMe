@@ -11,27 +11,30 @@ const WalletHistory = () => {
   const [userToken, setToken] = useState(null);
   const url = getUrl();
   const [isLoaded, setIsLoaded] = useState(false);
-   useEffect(()=>{
+  useEffect(() => {
     async function loadHistory() {
-        try {
-            const User = await AsyncStorage.getItem("User");
-            const userDetails = JSON.parse(User);
-            setToken(userDetails.userToken);
-            const allHistory = await axios.get(url + "/walletHistory/getWalletHistory", {
-              headers: {
-                "x-auth-token": userDetails.userToken,
-              },
-            });
-            setHistoryList(allHistory.data);
-             //console.log("@@@", allHistory.data);
-            setIsLoaded(false);
-          } catch (error) {
-            console.log("Booked Rides Exception: ", error);
-            setIsLoaded(true);
+      try {
+        const User = await AsyncStorage.getItem("User");
+        const userDetails = JSON.parse(User);
+        setToken(userDetails.userToken);
+        const allHistory = await axios.get(
+          url + "/walletHistory/getWalletHistory",
+          {
+            headers: {
+              "x-auth-token": userDetails.userToken,
+            },
           }
-          }
-    loadHistory()
-   },[isLoaded])
+        );
+        setHistoryList(allHistory.data);
+        //console.log("@@@", allHistory.data);
+        setIsLoaded(false);
+      } catch (error) {
+        console.log("Booked Rides Exception: ", error);
+        setIsLoaded(true);
+      }
+    }
+    loadHistory();
+  }, [isLoaded]);
 
   function getHistory() {
     return (
@@ -44,7 +47,6 @@ const WalletHistory = () => {
             alignItems={"center"}
             justifyContent={"space-between"}
             m={3}
-            
             bg={"white"}
           >
             <Box padding={2} borderRadius={50}>
@@ -68,10 +70,20 @@ const WalletHistory = () => {
               </Text>
               <Text fontSize={12}>{transaction.date}</Text>
             </Box>
-            <Text fontWeight={"bold"} fontSize={18} p={2}>
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              p={2}
+            >
               <FontAwesome5 name="rupee-sign" size={18} color="black" />
-              {transaction.amount}
-            </Text>
+              <Text fontWeight={"bold"} fontSize={18}>
+                {" "}
+                {/*color={transaction.type === "Credit" ?"green.999":"red.999"}> */}
+                {transaction.amount}
+              </Text>
+            </Box>
           </Box>
         ))}
       </ScrollView>
@@ -79,14 +91,14 @@ const WalletHistory = () => {
   }
   if (isLoaded)
     return (
-        <Box flex={1} justifyContent="center" alignItems={"center"}>
+      <Box flex={1} justifyContent="center" alignItems={"center"}>
         <Text>Loading...!</Text>
       </Box>
     );
   else
     return (
       <Box flex={1} bg={"#F0F8FF"}>
-        <Box alignItems={"center"} >
+        <Box alignItems={"center"}>
           {historyList.length ? (
             getHistory()
           ) : (
