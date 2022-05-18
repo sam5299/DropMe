@@ -12,7 +12,7 @@ export default function VehicleTopBar() {
       <Tab.Navigator
         screenOptions={{
           tabBarLabelStyle: { fontSize: 12 },
-          tabBarStyle: { backgroundColor: "powderblue" },
+          tabBarStyle: { backgroundColor: "#F0F8FF" },
         }}
       >
         <Tab.Screen name="Vehicles" component={ViewVehicles} />
