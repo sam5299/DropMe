@@ -211,16 +211,16 @@ const BookedRides = ({ navigation }) => {
                   From:
                 </Text>
                 <Text fontSize={15}>{ride.tripId.source}</Text>
-                <Text fontSize={18} fontWeight="bold" p={1}>
+                <Text fontSize={18} fontWeight="bold" >
                   To:
                 </Text>
                 <Text fontSize={15}>{ride.tripId.destination}</Text>
 
-                <Text fontSize={18} fontWeight="bold" p={1}>
+                <Text fontSize={18} fontWeight="bold" >
                   Mobile No:
                 </Text>
                 <Text fontSize={15}>{ride.PassengerId.mobileNumber}</Text>
-                <Text fontSize={18} fontWeight="bold" p={1}>
+                <Text fontSize={18} fontWeight="bold" >
                   Pickup Point:
                 </Text>
                 <Text fontSize={15}>{ride.tripId.pickupPoint}</Text>

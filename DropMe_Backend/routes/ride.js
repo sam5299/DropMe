@@ -22,7 +22,6 @@ const {
   getAllRequest,
 } = require("../services/trip");
 const { validateTripRide } = require("../models/trip_ride");
-
 const { func } = require("joi");
 const {
   addAcceptedTrip,

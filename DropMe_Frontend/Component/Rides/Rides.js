@@ -75,13 +75,14 @@ const Rides = () => {
                   <Text fontSize={15}>{ride.source}</Text>
                 </Box>
                 <Box>
-                  <Text fontSize={18} fontWeight="bold" p={1}>
+                  <Text fontSize={18} fontWeight="bold">
                     To:
                   </Text>
                   <Text fontSize={15}>{ride.destination}</Text>
-                  <Text fontSize={18} fontWeight="bold" mt={2}>
-                    Seats: {ride.availableSeats}
+                  <Text fontSize={18} fontWeight="bold">                
+                    Seats:
                   </Text>
+                  <Text fontSize={15}>{ride.availableSeats}</Text>
                 </Box>
               </Box>
             </Stack>
