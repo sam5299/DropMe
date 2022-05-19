@@ -41,7 +41,7 @@ const Slide = () => {
         />
         <SliderStack.Screen name="Profile" component={ViewProfile} />
         <SliderStack.Screen
-          name="Notification"
+          name="Notifications"
           component={NotificationScreen}
         />
       </SliderStack.Navigator>
