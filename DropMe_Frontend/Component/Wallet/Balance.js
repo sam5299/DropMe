@@ -28,7 +28,7 @@ const Balance = ({ route, navigation }) => {
   const url = getUrl();
 
   let AlertField = (
-    <Box>
+    <Box m={5}>
       <Alert w="100%" status={status.status}>
         <VStack space={2} flexShrink={1} w="100%">
           <HStack flexShrink={1} space={2} justifyContent="space-between">

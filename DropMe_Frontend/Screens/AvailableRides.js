@@ -115,7 +115,7 @@ const AvailableRides = ({ route, navigation }) => {
       setTimeout(() => {
         setShowAlert(false);
         setRideDetails(newResult);
-      }, 2000);
+      }, 3000);
     } catch (error) {
       setAlertField({
         status: "error",
@@ -126,7 +126,7 @@ const AvailableRides = ({ route, navigation }) => {
         setShowAlert(false);
         setIsSetRequest(false);
       }, 3000);
-      console.log("Request to ride: ", error);
+      console.log("Request to ride: ", error.response.data);
     }
   };
 

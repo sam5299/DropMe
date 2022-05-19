@@ -38,6 +38,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
   const [pucError, setPucError] = useState(false);
   const [licenseNumberError, setLicenseNumberError] = useState(false);
   const [licenseImageError, setLicenseImageError] = useState(false);
+  let [isPageLoading, setIsPageLoading] = useState(false);
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
@@ -54,6 +55,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
 
   useEffect(() => {
     let mounted = true;
+    setIsPageLoading(true);
     async function fetchUserData() {
       try {
         const User = await AsyncStorage.getItem("User");
@@ -70,6 +72,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
         if (mounted) {
           setToken(parseUser.userToken);
           setUserData(result.data);
+          setIsPageLoading(false);
         }
       } catch (ex) {
         console.log("Exception:", ex.response.data);
@@ -78,6 +81,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
           setShowAlert(true);
           setTimeout(() => {
             setShowAlert(false);
+            setIsPageLoading(false);
           }, 2000);
         }
         // console.log(ex.response.data);
@@ -296,145 +300,153 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
     </Box>
   );
 
-  return (
-    <ScrollView
-      _contentContainerStyle={{
-        px: "20px",
-        mb: "4",
-        minW: "72",
-      }}
-    >
-      <Box
-        alignItems={"center"}
-        justifyContent={"center"}
-        flex="1"
-        bg={"#F0F8FF"}
+  if (isPageLoading) {
+    return (
+      <Box flex={1} justifyContent="center" alignItems={"center"}>
+        <Text>Loading...</Text>
+      </Box>
+    );
+  } else {
+    return (
+      <ScrollView
+        _contentContainerStyle={{
+          px: "20px",
+          mb: "4",
+          minW: "72",
+        }}
       >
         <Box
-          rounded="lg"
-          overflow="hidden"
-          borderColor={"coolGray.200"}
-          borderWidth="1"
-          _dark={{
-            borderColor: "coolGray.600",
-            backgroundColor: "gray.700",
-          }}
-          _web={{
-            shadow: 2,
-            borderWidth: 0,
-          }}
-          _light={{
-            backgroundColor: "gray.50",
-          }}
+          alignItems={"center"}
+          justifyContent={"center"}
+          flex="1"
+          bg={"#F0F8FF"}
         >
-          {showAlert ? AlertField : ""}
-          <FormControl justifyContent="center" alignItems={"center"}>
-            <Text color="rgba(6,182,212,1.00)" fontSize="xl" mb="2">
-              {"Add Vehicle Detail's"}
-            </Text>
-            {userData.licenseNumber === null ? licenseNumberInput : ""}
-            {userData.licenseImage === null ? licenseImageInput : ""}
-            <Box alignItems={"center"}>
-              <Box ml={3} w={"95%"} flexDir={"row"}>
-                <Box
-                  mt="5"
-                  w={"95%"}
-                  flexDir={"row"}
-                  alignItems="center"
-                  justifyContent={"flex-start"}
-                >
-                  <Avatar
-                    bg="green.500"
-                    size="xl"
-                    source={{
-                      uri: rcBookImage,
-                    }}
+          <Box
+            rounded="lg"
+            overflow="hidden"
+            borderColor={"coolGray.200"}
+            borderWidth="1"
+            _dark={{
+              borderColor: "coolGray.600",
+              backgroundColor: "gray.700",
+            }}
+            _web={{
+              shadow: 2,
+              borderWidth: 0,
+            }}
+            _light={{
+              backgroundColor: "gray.50",
+            }}
+          >
+            {showAlert ? AlertField : ""}
+            <FormControl justifyContent="center" alignItems={"center"}>
+              <Text color="rgba(6,182,212,1.00)" fontSize="xl" mb="2">
+                {"Add Vehicle Detail's"}
+              </Text>
+              {userData.licenseNumber === null ? licenseNumberInput : ""}
+              {userData.licenseImage === null ? licenseImageInput : ""}
+              <Box alignItems={"center"}>
+                <Box ml={3} w={"95%"} flexDir={"row"}>
+                  <Box
+                    mt="5"
+                    w={"95%"}
+                    flexDir={"row"}
+                    alignItems="center"
+                    justifyContent={"flex-start"}
                   >
-                    <Text fontSize={"sm"}>RC Book</Text>
-                  </Avatar>
-                  <Button
-                    w={"200"}
-                    h={10}
-                    ml={2}
-                    mb={2}
-                    variant="outline"
-                    colorScheme="primary"
-                    onPress={() => uploadImage("rcBookImage")}
-                  >
-                    Add RC Book Image
-                  </Button>
+                    <Avatar
+                      bg="green.500"
+                      size="xl"
+                      source={{
+                        uri: rcBookImage,
+                      }}
+                    >
+                      <Text fontSize={"sm"}>RC Book</Text>
+                    </Avatar>
+                    <Button
+                      w={"200"}
+                      h={10}
+                      ml={2}
+                      mb={2}
+                      variant="outline"
+                      colorScheme="primary"
+                      onPress={() => uploadImage("rcBookImage")}
+                    >
+                      Add RC Book Image
+                    </Button>
+                  </Box>
                 </Box>
+                {rcError && (
+                  <FormControl.ErrorMessage
+                    isInvalid={true}
+                    leftIcon={<WarningOutlineIcon size="xs" />}
+                  >
+                    RC Book Image is required!
+                  </FormControl.ErrorMessage>
+                )}
               </Box>
-              {rcError && (
-                <FormControl.ErrorMessage
-                  isInvalid={true}
-                  leftIcon={<WarningOutlineIcon size="xs" />}
-                >
-                  RC Book Image is required!
-                </FormControl.ErrorMessage>
-              )}
-            </Box>
-            <Box alignItems={"center"}>
-              <Box ml={3} w={"95%"} flexDir={"row"}>
-                <Box
-                  mt="5"
-                  w={"95%"}
-                  flexDir={"row"}
-                  alignItems="center"
-                  justifyContent={"flex-start"}
-                >
-                  <Avatar
-                    bg="green.500"
-                    size="xl"
-                    source={{
-                      uri: pucImage,
-                    }}
+              <Box alignItems={"center"}>
+                <Box ml={3} w={"95%"} flexDir={"row"}>
+                  <Box
+                    mt="5"
+                    w={"95%"}
+                    flexDir={"row"}
+                    alignItems="center"
+                    justifyContent={"flex-start"}
                   >
-                    <Text fontSize={"sm"}>PUC Image</Text>
-                  </Avatar>
-                  <Button
-                    w={"200"}
-                    h={10}
-                    ml={2}
-                    mb={2}
-                    variant="outline"
-                    colorScheme="primary"
-                    onPress={() => uploadImage("pucImage")}
-                  >
-                    Add PUC Image
-                  </Button>
+                    <Avatar
+                      bg="green.500"
+                      size="xl"
+                      source={{
+                        uri: pucImage,
+                      }}
+                    >
+                      <Text fontSize={"sm"}>PUC Image</Text>
+                    </Avatar>
+                    <Button
+                      w={"200"}
+                      h={10}
+                      ml={2}
+                      mb={2}
+                      variant="outline"
+                      colorScheme="primary"
+                      onPress={() => uploadImage("pucImage")}
+                    >
+                      Add PUC Image
+                    </Button>
+                  </Box>
                 </Box>
+                {pucError && (
+                  <FormControl.ErrorMessage
+                    isInvalid={true}
+                    leftIcon={<WarningOutlineIcon size="xs" />}
+                  >
+                    PUC Image is required!
+                  </FormControl.ErrorMessage>
+                )}
               </Box>
-              {pucError && (
-                <FormControl.ErrorMessage
-                  isInvalid={true}
-                  leftIcon={<WarningOutlineIcon size="xs" />}
+              {/* add button to handle click event */}
+              {/* {showSpinner ? ShowSpinner : buttonField} */}
+              <Box>
+                <Button
+                  isLoading={isLoading}
+                  isLoadingText="Adding vehicle.."
+                  size="md"
+                  onPress={handleUploadDocument}
+                  mt="5%"
+                  mb={"5%"}
                 >
-                  PUC Image is required!
-                </FormControl.ErrorMessage>
-              )}
-            </Box>
-            {/* add button to handle click event */}
-            {/* {showSpinner ? ShowSpinner : buttonField} */}
-            <Box>
-              <Button
-                isLoading={isLoading}
-                isLoadingText="Adding vehicle.."
-                size="md"
-                onPress={handleUploadDocument}
-                mt="5%"
-                mb={"5%"}
-              >
-                <Text fontSize={"lg"} color="white">
-                  Upload Document
-                </Text>
-              </Button>
-            </Box>
-          </FormControl>
+                  <Text fontSize={"lg"} color="white">
+                    Upload Document
+                  </Text>
+                </Button>
+              </Box>
+            </FormControl>
+          </Box>
         </Box>
-      </Box>
-    </ScrollView>
-  );
+      </ScrollView>
+    );
+  }
 };
 
 export default UploadDocumentForVehicle;
