@@ -149,13 +149,7 @@ const NotificationScreen = () => {
           </Box>
         )}
         {notificationList.length > 0 && (
-          <Button
-            w={"40%"}
-            p={2}
-            m={4}
-            onPress={markAllRead}
-            variant={"outline"}
-          >
+          <Button w={"40%"} p={2} m={4} onPress={markAllRead}>
             Mark all read
           </Button>
         )}

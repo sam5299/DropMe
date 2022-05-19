@@ -18,7 +18,8 @@ export default function BottomBar() {
           height: 20,
           marginTop: 20,
         }}
-        activeColor="black"
+        activeColor="white"
+        inactiveColor="#36454f"
         barStyle={{ backgroundColor: "rgba(6,182,212,1.00)" }}
       >
         <Tab.Screen

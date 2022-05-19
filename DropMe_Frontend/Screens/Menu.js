@@ -182,7 +182,7 @@ const Menu = ({ navigation }) => {
         borderWidth={1}
         //onPress={() => alert("notification")}
 
-        onPress={() => navigation.navigate("Notification")}
+        onPress={() => navigation.navigate("Notifications")}
       >
         <Box flexDir={"row"} alignItems={"center"} p="5">
           <FontAwesome5 name="bell" size={40} color="rgba(6,182,212,1.00)" />
