@@ -11,6 +11,7 @@ const {
   addPenalty,
   addSafetyPoints,
 } = require("./wallet");
+const { addNewHistory } = require("./walletHistory");
 
 async function addAcceptedTrip(body) {
   let tripRide = new TripRide(body);
@@ -120,7 +121,7 @@ async function deleteBookedTrip(tripRideId) {
     let body = {
       User: tripRideObj.PassengerId._id,
       type: "Debit",
-      message: `Cancelation charges for booked trip from ${sourceName} to ${destinationName}.`,
+      message: `Cancellation charges for booked trip from ${sourceName} to ${destinationName}.`,
       amount: depositAmount,
       date: new Date().toDateString(),
     };
@@ -148,7 +149,8 @@ async function deleteBookedTrip(tripRideId) {
 
 // get trip ride details by TripRideId and tripId
 async function getTripRideByTripId(tripRideId, tripId, status) {
-  let TripRideObj = await TripRide.findOne({ _id: tripRideId, tripId: tripId });
+  let TripRideObj = await TripRide.findOne({ _id: tripRideId, tripId: tripId })
+  .populate("rideId", "source destination pickupPoint date", Ride)  ;
   TripRideObj.status = status;
   let currentDate = new Date();
   let currentTime =
@@ -162,11 +164,37 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
   else if (status == "Completed") {
     TripRideObj.endTime = currentTime;
 
-    // add 90% amount to riders wallet and 10% commision will be given to DropMe.
+    // add 90% amount to riders wallet and 10% commission will be given to DropMe.
+
+    // let sourceArrary = TripRideObj.rideId.source.split(",");
+    // let destinationArray = TripRideObj.rideId.destination.split(",");
+    // let sourceName = sourceArrary[0];
+    // let destinationName = destinationArray[0];
+
+
+    let sourceName=TripRideObj.rideId.source;
+    let destinationName=TripRideObj.rideId.destination;
+
+
+    let tripAmount=TripRideObj.amount - parseInt(TripRideObj.amount / 10);
     let updateRiderWallet = await updateWallet(
       TripRideObj.RaiderId._id,
-      TripRideObj.amount - parseInt(TripRideObj.amount / 10)
+      tripAmount
     );
+
+    //call to updateWallet history for raider
+    let riderWalletHistoryDetails={
+      User:TripRideObj.RaiderId._id,
+      amount:tripAmount,
+      message:`Credit point added for ride from ${sourceName} to ${sourceName}`,
+      date:TripRideObj.date,
+      type:"Credit"
+    }
+
+    let riderWalletHistoryDetailsResult= await addNewHistory(riderWalletHistoryDetails);
+
+    if(!riderWalletHistoryDetailsResult)
+    console.log("Error in rider set wallet history",riderWalletHistoryDetailsResult);
 
     // deduct trip amount from passenger's wallet
     let updatePassengerWallet = await updateWallet(
@@ -174,7 +202,22 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
       TripRideObj.amount * -1
     );
 
-    //call to updateWallet history
+    //call to updateWallet history for passenger
+    let passengerWalletHistoryDetails={
+      User:TripRideObj.PassengerId._id,
+      amount:tripAmount,
+      message:`Completed trip from ${sourceName} to ${sourceName}`,
+      date:TripRideObj.date,
+      type:"Debit"
+    }
+
+    let passengerWalletHistoryDetailsResult= await addNewHistory(passengerWalletHistoryDetails);
+
+    if(!passengerWalletHistoryDetailsResult)
+    console.log("Error in passenger set wallet history",passengerWalletHistoryDetailsResult);
+
+
+
 
     // deduct amount from passenger's Used credit
     let updateUsedCreditResult = await updateUsedCredit(
@@ -185,7 +228,7 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
     let ratingResult = setRating(TripRideObj._id, 3);
     if (!ratingResult)
       console.log(
-        "error while seting default rating in trip_ride:",
+        "error while setting default rating in trip_ride:",
         ratingResult
       );
   } else {

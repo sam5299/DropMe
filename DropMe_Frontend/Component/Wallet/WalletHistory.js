@@ -67,7 +67,7 @@ const WalletHistory = () => {
                 />
               )}
             </Box>
-            <Box overflow={"hidden"}>
+            <Box w={"60%"} flex={1} justifyContent={"center"}>
               <Text fontWeight={"bold"} fontSize={18}>
                 {transaction.message}
               </Text>
