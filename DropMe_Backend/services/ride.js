@@ -31,7 +31,7 @@ async function getCreatedRides(
   //   TripRide.find({rideId:rid, status:status}).populate("tripId","-_id User",Trip);
   // }
 
-  console.log("Userid:" + userId);
+  console.log("User id:" + userId);
   console.log("Source:" + Source);
   console.log("Destination:" + Destination);
   console.log("Date:" + Date);
