@@ -231,17 +231,8 @@ const Balance = ({ route, navigation }) => {
           </Stack>
         </Box>
         <Box width={"70%"}>
-          <Button
-            variant={"outline"}
-            onPress={() => navigation.navigate("Transactions")}
-          >
-            <Text
-              fontSize={"sm"}
-              fontWeight={"bold"}
-              color="rgba(6,182,212,1.00)"
-            >
-              Transactions
-            </Text>
+          <Button onPress={() => navigation.navigate("Transactions")}>
+            Transactions
           </Button>
         </Box>
       </Box>
