@@ -12,7 +12,7 @@ export default function TripsTopBar() {
       <Tab.Navigator
         screenOptions={{
           tabBarLabelStyle: { fontSize: 12 },
-          tabBarStyle: { backgroundColor: "powderblue" },
+          tabBarStyle: { backgroundColor: "#F0F8FF" },
         }}
       >
         <Tab.Screen name="Booked Trips" component={TripBooked} />

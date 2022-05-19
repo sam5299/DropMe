@@ -60,14 +60,15 @@ async function getPassengerHistory(passengerId) {
 }
 
 // return all history of the passenger
-async function getRiderHistory(raiderId) {
+async function getRiderHistory(riderId) {
   return await TripRide.find({
-    RiderId: raiderId,
+    RaiderId: riderId,
     $or: [
       { status: "Completed" },
       { status: "Cancelled" },
       { status: "Rejected" },
     ],
+    // status: { $ne: "Booked" },
   })
     .populate("PassengerId", "_id profile name mobileNumber", User)
     .populate("tripId", "source destination pickupPoint date", Trip)
@@ -119,7 +120,7 @@ async function deleteBookedTrip(tripRideId) {
     let body = {
       User: tripRideObj.PassengerId._id,
       type: "Debit",
-      method: `Cancelation charges for booked trip from ${sourceName} to ${destinationName}.`,
+      message: `Cancelation charges for booked trip from ${sourceName} to ${destinationName}.`,
       amount: depositAmount,
       date: new Date().toDateString(),
     };
@@ -180,6 +181,13 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
       TripRideObj.PassengerId._id,
       TripRideObj.amount - TripRideObj.amount
     );
+    //add default rating for completed ride once rider click on end trip
+    let ratingResult = setRating(TripRideObj._id, 3);
+    if (!ratingResult)
+      console.log(
+        "error while seting default rating in trip_ride:",
+        ratingResult
+      );
   } else {
     //console.log(status);
     // apply safety points penalty to rider

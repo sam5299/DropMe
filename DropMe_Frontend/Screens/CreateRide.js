@@ -37,7 +37,7 @@ const initialState = {
   availableSeats: "1",
   rideFor: "Both",
   rideType: "Paid",
-  distance: null,
+  // distance: null,
 };
 
 const reducer = (state, action) => {
@@ -109,11 +109,12 @@ const reducer = (state, action) => {
         ...state,
         rideType: action.payload,
       };
-    case "distance":
-      return {
-        ...state,
-        distance: action.payload,
-      };
+    // case "distance":
+    //   alert(action.payload);
+    //   return {
+    //     ...state,
+    //     distance: action.payload,
+    //   };
     default:
       return {
         source: "",
@@ -125,7 +126,7 @@ const reducer = (state, action) => {
         availableSeats: "1",
         rideFor: "Both",
         rideType: "Paid",
-        distance: null,
+        // distance: null,
       };
   }
 };
@@ -205,6 +206,7 @@ const CreateRide = ({ navigation }) => {
     });
     if (isTrue) {
       console.log(state);
+      let distance = null;
       try {
         //call api to get exact latitude longitude of source,destination lat,log
         try {
@@ -219,9 +221,11 @@ const CreateRide = ({ navigation }) => {
           let newResult = await axios.get(
             `${url}/map/api/directionApi/${state.s_lon}/${state.s_lat}/${state.d_lon}/${state.d_lat}`
           );
-          console.log("185" + typeof newResult.data);
-          state.distance = newResult.data;
-          dispatch({ type: "distance", payload: newResult.data });
+          //console.log("185" + typeof newResult.data);
+
+          // state.distance = newResult.data;
+          distance = newResult.data;
+          // dispatch({ type: "distance", payload: newResult.data });
         } catch (error) {
           console.log("exception is here..");
           console.log(error.response.data);
@@ -229,7 +233,7 @@ const CreateRide = ({ navigation }) => {
         //state.distance = parseFloat(state.distance);
         const result = await axios.post(
           url + "/ride/createRide",
-          { ...state },
+          { ...state, distance },
           { headers: { "x-auth-token": userToken } }
         );
 

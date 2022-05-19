@@ -187,7 +187,7 @@ const Login = ({ navigation }) => {
           </FormControl.ErrorMessage>
         </FormControl>
         <Box justifyContent={"space-between"} flexDirection="row">
-          <Text m="2" fontSize={"sm"} color="#D0CFCF">
+          <Text m="2" fontSize={"sm"} color="#A0A0A0">
             {"Don't have an account? "}
             <Text
               bold
