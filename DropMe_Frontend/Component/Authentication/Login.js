@@ -115,10 +115,10 @@ const Login = ({ navigation }) => {
       >
         {showAlert ? AlertField : null}
         <FormControl m="5" isInvalid={error}>
-          <Text color="rgba(6,182,212,1.00)" fontSize={"lg"} mb="2">
-            Welcome!
-          </Text>
-          <Stack space={6} m="2">
+          <Stack space={6}>
+            <Text color="rgba(6,182,212,1.00)" fontSize={"lg"}>
+              Welcome!
+            </Text>
             <Box>
               <Input
                 maxLength={10}
@@ -187,7 +187,7 @@ const Login = ({ navigation }) => {
           </FormControl.ErrorMessage>
         </FormControl>
         <Box justifyContent={"space-between"} flexDirection="row">
-          <Text m="2" fontSize={"sm"} color="#D0CFCF">
+          <Text m="2" fontSize={"sm"} color="#A0A0A0">
             {"Don't have an account? "}
             <Text
               bold

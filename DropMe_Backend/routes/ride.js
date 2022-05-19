@@ -325,11 +325,11 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
 
 //route to get all history of raider
 router.get("/getRaiderHistory", auth, async (req, res) => {
-  let raiderId = req.body.User;
-  let riderHistory = await getRiderHistory(raiderId);
+  let riderId = req.body.User;
+  let riderHistory = await getRiderHistory(riderId);
   if (!riderHistory) return res.status(400).send("No history found");
 
-  console.log("@@@", riderHistory);
+  // console.log("@@@", riderHistory);
   return res.status(200).send(riderHistory);
 });
 

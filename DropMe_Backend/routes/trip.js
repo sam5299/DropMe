@@ -49,6 +49,7 @@ router.post("/requestRide", auth, async (req, res) => {
   //check if passenger has sufficent balance for booking ride.
   let balance = await getWallet(req.body.User);
   console.log("balance:" + balance);
+  console.log("ride amount:" + req.body.amount);
   if (balance.creditPoint < req.body.amount + balance.usedCreditPoint)
     return res
       .status(400)
@@ -129,15 +130,13 @@ router.put("/updateTripStatus", auth, async (req, res) => {
   return res.status(200).send(`Trip ${status}`);
 });
 
-
 // set rating to raider
-router.put("/setRating",auth,async(req,res)=>{
-  let tripRideId=req.body.tripRideId;
-  let rating=req.body.rating;
-  let addRatingResult= await setRating(tripRideId,rating);
-  if(!addRatingResult)
-  return res.status(400).send("Error in set rating");
-  return res.status(200).send(addRatingResult)
-})
+router.put("/setRating", auth, async (req, res) => {
+  let tripRideId = req.body.tripRideId;
+  let rating = req.body.rating;
+  let addRatingResult = await setRating(tripRideId, rating);
+  if (!addRatingResult) return res.status(400).send("Error in set rating");
+  return res.status(200).send(addRatingResult);
+});
 
 module.exports = router;
