@@ -86,7 +86,13 @@ const BookedRides = ({ navigation }) => {
       console.log(passengerToken);
       // setError(true);
       // setTimeout(() => setError(false), 3000);
-      alert("Invalid token");
+      // alert("Invalid token");
+      setAlertField({ status: "error", title: "Invalid trip token!" });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 5000);
+      //add alert field wala part
       return;
     }
     try {
@@ -95,9 +101,19 @@ const BookedRides = ({ navigation }) => {
         { tripRideId, tripId, status, token },
         { headers: { "x-auth-token": userToken } }
       );
-      alert(result.data);
-      setStarted("Accepted");
+      //alert(result.data);
+      setAlertField({ status: "success", title: "Trip Initiated!" });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+        setStarted("Accepted");
+      }, 5000);
     } catch (error) {
+      setAlertField({ status: "error", title: error.response.data });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 5000);
       console.log("Booked Rides: ", error.response.data);
     }
   };
@@ -109,9 +125,22 @@ const BookedRides = ({ navigation }) => {
         { tripRideId, tripId, status, token },
         { headers: { "x-auth-token": userToken } }
       );
-      alert(result.data);
-      setStarted("Ended");
+      //alert(result.data);
+      setAlertField({
+        status: "success",
+        title: "Trip successfully completed!",
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+        setStarted("Ended");
+      }, 3000);
     } catch (error) {
+      etAlertField({ status: "error", title: error.response.data });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
       console.log("Booked Rides: ", error);
     }
   };
@@ -211,16 +240,16 @@ const BookedRides = ({ navigation }) => {
                   From:
                 </Text>
                 <Text fontSize={15}>{ride.tripId.source}</Text>
-                <Text fontSize={18} fontWeight="bold" >
+                <Text fontSize={18} fontWeight="bold">
                   To:
                 </Text>
                 <Text fontSize={15}>{ride.tripId.destination}</Text>
 
-                <Text fontSize={18} fontWeight="bold" >
+                <Text fontSize={18} fontWeight="bold">
                   Mobile No:
                 </Text>
                 <Text fontSize={15}>{ride.PassengerId.mobileNumber}</Text>
-                <Text fontSize={18} fontWeight="bold" >
+                <Text fontSize={18} fontWeight="bold">
                   Pickup Point:
                 </Text>
                 <Text fontSize={15}>{ride.tripId.pickupPoint}</Text>
