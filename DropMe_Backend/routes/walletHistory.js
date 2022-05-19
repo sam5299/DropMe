@@ -48,7 +48,7 @@ router.get("/getWalletHistory", auth, async (req, res) => {
   try {
     let result = await getUserWalletHistory(req.body.User);
     if (!result) return res.status(400).send("Failed to get history..");
-
+    
     if (result.length == 0) return res.status(400).send("No wallet history..");
 
     return res.status(200).send(result);
