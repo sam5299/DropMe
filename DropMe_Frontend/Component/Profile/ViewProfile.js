@@ -90,7 +90,7 @@ const ViewProfile = () => {
                 <Text style={styles.details}>
                   {userDetails.totalNumberOfRatedRides}
                 </Text>
-                <Text style={styles.details}>Total{"\n"}Rides</Text>
+                <Text style={styles.details}>Total Rides</Text>
               </Box>
 
               <Box
@@ -107,7 +107,7 @@ const ViewProfile = () => {
                         userDetails.totalNumberOfRatedRides
                       ).toPrecision(2)}
                 </Text>
-                <Text style={styles.details}>Average{"\n"} Rating</Text>
+                <Text style={styles.details}>Average Rating</Text>
               </Box>
             </Box>
           </Stack>

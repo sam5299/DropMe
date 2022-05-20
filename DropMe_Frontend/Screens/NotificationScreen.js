@@ -145,7 +145,7 @@ const NotificationScreen = () => {
           getNotification()
         ) : (
           <Box flex={1} justifyContent={"center"}>
-            <Text>No new notification</Text>
+            <Text>No new notifications</Text>
           </Box>
         )}
         {notificationList.length > 0 && (
