@@ -97,11 +97,12 @@ const AcceptRejectRequest = ({ route, navigation }) => {
         status: "success",
         title: "Trip request accepted!",
       });
+      console.log("result:",result);
       setShowAlert(true);
       setTimeout(() => {
         let newTripRequestList = [];
         tripRequestList.forEach((tripObj) => {
-          if (tripObj._id != tripId) {
+          if (tripObj._id != tripId && tripObj.seatRequest<=result.data.remainingSeat) {
             newTripRequestList.push(tripObj);
           }
         });

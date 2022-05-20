@@ -161,7 +161,6 @@ const Balance = ({ route, navigation }) => {
       <Box flex={1} alignItems={"center"} display={"flex"} bg={"#F0F8FF"}>
         {showAlert ? AlertField : ""}
         <Box
-          bg={"#aaa"}
           justifyContent={"center"}
           borderRadius={10}
           flexDirection="row"
@@ -180,7 +179,6 @@ const Balance = ({ route, navigation }) => {
             backgroundColor: "gray.100",
           }}
         >
-          <Box></Box>
           <Stack space={5} direction={"column"} m="5">
             <Box
               backgroundColor={"blue.100"}
@@ -191,8 +189,8 @@ const Balance = ({ route, navigation }) => {
               <Text fontWeight={"bold"} mx={5} fontSize={30}>
                 {wallet.creditPoint}
               </Text>
-              <Text fontWeight={"bold"} fontSize={15} mb={2}>
-                Credit{"\n"}Points
+              <Text fontWeight={"bold"} fontSize={15} my={2}>
+                Credit Points
               </Text>
             </Box>
             <Button
@@ -215,8 +213,8 @@ const Balance = ({ route, navigation }) => {
               <Text fontWeight={"bold"} mx={5} fontSize={30}>
                 {wallet.safetyPoint}
               </Text>
-              <Text fontWeight={"bold"} fontSize={15} mb={2}>
-                Safety{"\n"}Points
+              <Text fontWeight={"bold"} fontSize={15} my={2}>
+                Safety Points
               </Text>
             </Box>
             <Button
@@ -230,9 +228,34 @@ const Balance = ({ route, navigation }) => {
             </Button>
           </Stack>
         </Box>
+        <Box
+          justifyContent={"center"}
+          borderRadius={10}
+          flexDirection="row"
+          rounded="lg"
+        >
+          <Box
+            backgroundColor={"blue.100"}
+            borderRadius={10}
+            alignContent="center"
+            alignItems="center"
+            bg={"#F0F8FF"}
+            my={2}
+          >
+            <Text fontWeight={"bold"} mx={5} fontSize={30}>
+              {wallet.usedCreditPoint}
+            </Text>
+            <Text fontWeight={"bold"} fontSize={15} my={2}>
+              Used Credit
+            </Text>
+          </Box>
+        </Box>
+
         <Box width={"70%"}>
           <Button onPress={() => navigation.navigate("Transactions")}>
-            Transactions
+            <Text fontSize={"sm"} fontWeight={"bold"} color="white">
+              Transactions
+            </Text>
           </Button>
         </Box>
       </Box>
