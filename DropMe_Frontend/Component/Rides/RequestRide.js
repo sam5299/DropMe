@@ -62,6 +62,7 @@ const RequestRides = ({ navigation }) => {
               backgroundColor: "gray.50",
             }}
           >
+            {console.log("Ride", ride.date)}
             <Stack
               direction={"column"}
               alignItems="center"
@@ -93,16 +94,23 @@ const RequestRides = ({ navigation }) => {
                   <Text fontSize={15}>{ride.source}</Text>
                 </Box>
                 <Box>
-                  <Text fontSize={18} fontWeight="bold" p={1}>
+                  <Text fontSize={18} fontWeight="bold" mt={2}>
                     To:
                   </Text>
                   <Text fontSize={15}>{ride.destination}</Text>
-                  <Text fontSize={18} fontWeight="bold" mt={2}>
-                    Seats: {ride.availableSeats}
+                </Box>
+                <Text fontSize={18} fontWeight="bold" mt={2}>
+                  Available Seats: {ride.availableSeats}
+                </Text>
+                <Box mt={2}>
+                  <Text fontSize={18} fontWeight="bold">
+                    Date:
                   </Text>
+                  <Text fontSize={18}>{ride.date}</Text>
                 </Box>
               </Box>
               <Button
+                mt={2}
                 onPress={() =>
                   navigation.navigate("ViewRequest", {
                     rideId: ride._id,
