@@ -286,7 +286,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
             viewRequest()
           ) : (
             <Box flex={1} justifyContent="center" alignItems={"center"}>
-              <Text>No Request!!!</Text>
+              <Text>No Pending Request!!!</Text>
             </Box>
           )}
         </Box>

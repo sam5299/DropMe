@@ -17,6 +17,7 @@ import {
   IconButton,
   CloseIcon,
   Alert,
+  useToast,
 } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -142,6 +143,7 @@ const CreateRide = ({ navigation }) => {
     title: "",
   });
 
+  const toast = useToast();
   const { source, destination, date, time, Vehicle } = state;
   const { validate, isFieldInError } = useValidation({
     state: { source, destination, date, time, Vehicle },
@@ -238,11 +240,23 @@ const CreateRide = ({ navigation }) => {
         );
 
         setLoading(false);
-        setAlertField({ status: "success", title: "Ride created!" });
-        setShowAlert(true);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 3000);
+
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="green.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>Ride Created Successfully..!</Text>
+              </Box>
+            );
+          },
+          placement: "top",
+        });
+        // setAlertField({ status: "success", title: "Ride created!" });
+        // setShowAlert(true);
+
+        // setTimeout(() => {
+        //   setShowAlert(false);
+        // }, 3000);
       } catch (error) {
         setLoading(false);
         setAlertField({ status: "error", title: error.response.data });

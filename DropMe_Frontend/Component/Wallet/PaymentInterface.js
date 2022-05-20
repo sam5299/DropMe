@@ -84,7 +84,7 @@ const PaymentInterface = ({ navigation }) => {
 
     if (isTrue) {
       let pattern = /\d{16}/;
-      let namePattern =/ \w*/ // /{\w+' '}+/;
+      let namePattern = / \w*/; // /{\w+' '}+/;
       if (!pattern.test(cardNumber)) {
         console.log("card number is not right");
         setStatus({
@@ -132,7 +132,7 @@ const PaymentInterface = ({ navigation }) => {
           console.log("Add balance done.");
           setTimeout(() => {
             navigation.navigate("Balance", { amount });
-          }, 1000);
+          }, 3000);
         } catch (exception) {
           console.log(
             "exception at PaymentInterface:",
