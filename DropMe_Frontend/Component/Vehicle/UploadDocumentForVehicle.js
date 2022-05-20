@@ -308,13 +308,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
     );
   } else {
     return (
-      <ScrollView
-        _contentContainerStyle={{
-          px: "20px",
-          mb: "4",
-          minW: "72",
-        }}
-      >
+      <ScrollView mt={5}>
         <Box
           alignItems={"center"}
           justifyContent={"center"}
@@ -340,7 +334,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
           >
             {showAlert ? AlertField : ""}
             <FormControl justifyContent="center" alignItems={"center"}>
-              <Text color="rgba(6,182,212,1.00)" fontSize="xl" mb="2">
+              <Text color="rgba(6,182,212,1.00)" fontSize="xl">
                 {"Add Vehicle Detail's"}
               </Text>
               {userData.licenseNumber === null ? licenseNumberInput : ""}
@@ -348,7 +342,6 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
               <Box alignItems={"center"}>
                 <Box ml={3} w={"95%"} flexDir={"row"}>
                   <Box
-                    mt="5"
                     w={"95%"}
                     flexDir={"row"}
                     alignItems="center"

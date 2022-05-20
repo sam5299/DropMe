@@ -232,7 +232,7 @@ const BookRide = ({ navigation }) => {
             </FormControl.ErrorMessage>
           )}
           <Box mt={5} alignItems={"center"}>
-            <Text textAlign="center">Select Seats: {state.seats}</Text>
+            <Text textAlign="center">Selected Seats: {state.seats}</Text>
             <Slider
               isDisabled={false}
               mt={"2"}
