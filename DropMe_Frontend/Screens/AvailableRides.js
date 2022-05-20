@@ -113,9 +113,9 @@ const AvailableRides = ({ route, navigation }) => {
       });
       setShowAlert(true);
       setTimeout(() => {
-        setShowAlert(false);
         setRideDetails(newResult);
-      }, 3000);
+        setShowAlert(false);
+      }, 5000);
     } catch (error) {
       setAlertField({
         status: "error",
@@ -210,7 +210,7 @@ const AvailableRides = ({ route, navigation }) => {
                 {ride.Vehicle.vehicleNumber}
               </Text>
               <Text fontWeight={"bold"} color={"black"} fontSize={18}>
-                Rs.{ride.amount == 0 ? "Free" : ride.amount*seats}
+                Rs.{ride.amount == 0 ? "Free" : ride.amount * seats}
               </Text>
               {/* <Button size={"md"} px="10" onPress={() => sendRequest(ride)}>
                 Send Request
