@@ -62,7 +62,7 @@ const RequestRides = ({ navigation }) => {
               backgroundColor: "gray.50",
             }}
           >
-            {console.log("Ride", ride.date)}
+            {/* {console.log("Ride", ride.date)} */}
             <Stack
               direction={"column"}
               alignItems="center"
@@ -99,31 +99,37 @@ const RequestRides = ({ navigation }) => {
                   </Text>
                   <Text fontSize={15}>{ride.destination}</Text>
                 </Box>
-                <Text fontSize={18} fontWeight="bold" mt={2}>
-                  Available Seats: {ride.availableSeats}
-                </Text>
                 <Box mt={2}>
                   <Text fontSize={18} fontWeight="bold">
                     Date:
                   </Text>
                   <Text fontSize={18}>{ride.date}</Text>
                 </Box>
+                <Text fontSize={18} fontWeight="bold" mt={2}>
+                  Available Seats: {ride.availableSeats}
+                </Text>
               </Box>
-              <Button
-                mt={2}
-                onPress={() =>
-                  navigation.navigate("ViewRequest", {
-                    rideId: ride._id,
-                    token,
-                    amount: ride.amount,
-                    name: ride.User.name,
-                    vehicleNumber: ride.vehicleNumber,
-                  })
-                }
-                px={5}
-              >
-                View Request
-              </Button>
+              {ride.requestedTripList.length != 0 ? (
+                <Button
+                  mt={2}
+                  onPress={() =>
+                    navigation.navigate("ViewRequest", {
+                      rideId: ride._id,
+                      token,
+                      amount: ride.amount,
+                      name: ride.User.name,
+                      vehicleNumber: ride.vehicleNumber,
+                    })
+                  }
+                  px={8}
+                >
+                  View Request
+                </Button>
+              ) : (
+                <Button mt={2} isDisabled={true} px={8}>
+                  <Text>No requests found</Text>
+                </Button>
+              )}
             </Stack>
           </Box>
         ))}

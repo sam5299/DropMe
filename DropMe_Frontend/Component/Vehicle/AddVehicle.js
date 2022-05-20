@@ -26,7 +26,7 @@ import * as ImagePicker from "expo-image-picker";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import axios from "axios";
 
-const AddVehicle = ({ navigation }) => {
+const AddVehicle = ({ route, navigation }) => {
   let [Picture, setPic] = useState(
     "https://www.extremetech.com/wp-content/uploads/2019/12/SONATA-hero-option1-764A5360-edit-640x354.jpg"
   );
@@ -44,6 +44,29 @@ const AddVehicle = ({ navigation }) => {
   ]);
   let FuelTypeArray = ["Petrol", "Diesel", "CNG", "Electric"];
   const [isLoading, setIsLoading] = useState(false);
+  const [pageRerender, setPageRerender] = useState(false);
+
+  const clearFields = () => {
+    setPic(
+      "https://www.extremetech.com/wp-content/uploads/2019/12/SONATA-hero-option1-764A5360-edit-640x354.jpg"
+    );
+    setVehicleType("Bike");
+    setVehicleClass("");
+    setVehicleNumber("");
+    setVehicleName("");
+    setFuelType("");
+    setSeatingCapacity(1);
+    setFuelTypeArray(["Petrol", "Electric"]);
+    setVehicleClassArray(["NormalBike", "SportBike", "Scooter"]);
+    FuelTypeArray = ["Petrol", "Diesel", "CNG", "Electric"];
+    setIsLoading(false);
+  };
+
+  if (route.params) {
+    console.log("params available..");
+    clearFields();
+    delete route.params;
+  }
 
   useEffect(() => {
     let mounted = true;
@@ -100,19 +123,6 @@ const AddVehicle = ({ navigation }) => {
     if (!result.cancelled) {
       setPic("data:image/png;base64," + result.base64);
     }
-  };
-
-  const clearFields = () => {
-    setVehicleType("Bike");
-    setVehicleClass("");
-    setVehicleNumber("");
-    setVehicleName("");
-    setFuelType("");
-    setSeatingCapacity(1);
-    setFuelTypeArray(["Petrol", "Electric"]);
-    setVehicleClassArray(["NormalBike", "SportBike", "Scooter"]);
-    FuelTypeArray = ["Petrol", "Diesel", "CNG", "Electric"];
-    setIsLoading(false);
   };
 
   let selectForVehicleClass = (
@@ -288,6 +298,7 @@ const AddVehicle = ({ navigation }) => {
                     />
                   }
                   placeholder="Vehicle Name"
+                  value={vehicleName}
                   onChangeText={(value) => setVehicleName(value)}
                 />
                 {isFieldInError("vehicleName") && (
@@ -313,6 +324,7 @@ const AddVehicle = ({ navigation }) => {
                     />
                   }
                   placeholder="Vehicle Number"
+                  value={vehicleNumber}
                   onChangeText={(value) => setVehicleNumber(value)}
                 />
                 {isFieldInError("vehicleNumber") && (

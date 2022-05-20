@@ -38,10 +38,13 @@ router.get("/searchForRide", auth, async (req, res) => {
   return res.status(200).send("searchForRide called and result:" + rides);
 });
 
+//route to request a rider for his ride by passenger
 router.post("/requestRide", auth, async (req, res) => {
   delete req.body.userId;
   let rideId = req.body.rideId;
   delete req.body.rideId;
+  console.log("body for request ride:", req.body);
+
   let { error } = validateTrip(req.body);
   if (error) return res.status(400).send(error.details[0].message);
   console.log("USER:" + req.body.User);
@@ -50,6 +53,7 @@ router.post("/requestRide", auth, async (req, res) => {
   let balance = await getWallet(req.body.User);
   console.log("balance:" + balance);
   console.log("ride amount:" + req.body.amount);
+  //return res.status(400).send("testing error");
   if (balance.creditPoint < req.body.amount + balance.usedCreditPoint)
     return res
       .status(400)
@@ -74,7 +78,7 @@ router.post("/requestRide", auth, async (req, res) => {
   let notificationObj = {
     fromUser: req.body.User,
     toUser: rideDetails.User,
-    message: `You got trip request from passenger ${user.name}`,
+    message: `You got trip request from passenger ${user.name} for your ride from ${req.body.source} to ${req.body.destination} on date ${req.body.date} `,
   };
 
   let notificationResult = await createNotification(notificationObj);
