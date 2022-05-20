@@ -78,6 +78,7 @@ router.post("/requestRide", auth, async (req, res) => {
   let notificationObj = {
     fromUser: req.body.User,
     toUser: rideDetails.User,
+    notificationType: "Ride",
     message: `You got trip request from passenger ${user.name} for your ride from ${req.body.source} to ${req.body.destination} on date ${req.body.date} `,
   };
 

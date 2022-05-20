@@ -6,7 +6,7 @@ import axios from "axios";
 import { AuthContext } from "../Component/Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const NotificationScreen = () => {
+const NotificationScreen = ({ navigation }) => {
   const [notificationList, setNotification] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [isUpdated, setUpdated] = useState(false);
@@ -57,6 +57,22 @@ const NotificationScreen = () => {
       setUpdated(false);
     }
   }
+
+  const redirectToPage = (notificationType) => {
+    switch (notificationType) {
+      case "Wallet":
+        navigation.navigate("WalletStack");
+        return;
+      case "Ride":
+        navigation.navigate("RideStack");
+        return;
+      case "Trip":
+        navigation.navigate("TripsStack");
+        return;
+      default:
+        return;
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -110,7 +126,12 @@ const NotificationScreen = () => {
               maxW="90%"
               minWidth={"90%"}
             >
-              <Text fontSize={15}>{msg.message}</Text>
+              <Text
+                fontSize={15}
+                onPress={() => redirectToPage(msg.notificationType)}
+              >
+                {msg.message}
+              </Text>
             </Box>
             <MaterialIcons
               name="cancel"

@@ -4,7 +4,7 @@ const Joi = require("joi");
 // Create a wallet
 async function createWallet(userId) {
   const newWallet = new Wallet({
-    creditPoint: 500,
+    creditPoint: 100,
     usedCreditPoint: 0,
     safetyPoint: 0,
     User: userId,
@@ -80,5 +80,5 @@ module.exports = {
   reedemSafetyPoints,
   addPenalty,
   getWallet,
-  addSafetyPoints
+  addSafetyPoints,
 };
