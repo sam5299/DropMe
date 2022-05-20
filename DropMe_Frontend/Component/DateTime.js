@@ -65,6 +65,7 @@ const DateTime = ({ dispatch }) => {
           mode="date"
           is24Hour={true}
           onChange={onDateChange}
+          minimumDate={new Date()}
         />
       )}
 

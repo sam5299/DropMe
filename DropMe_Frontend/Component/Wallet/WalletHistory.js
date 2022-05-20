@@ -51,6 +51,9 @@ const WalletHistory = () => {
             justifyContent={"space-between"}
             m={3}
             bg={"white"}
+            borderColor={"coolGray.200"}
+            borderWidth="1"
+            p={1}
           >
             <Box padding={2} borderRadius={50}>
               {transaction.type === "Credit" ? (
@@ -68,7 +71,7 @@ const WalletHistory = () => {
               )}
             </Box>
             <Box w={"60%"} flex={1} justifyContent={"center"}>
-              <Text fontWeight={"bold"} fontSize={18}>
+              <Text fontWeight={"bold"} fontSize={16}>
                 {transaction.message}
               </Text>
               <Text fontSize={12}>{transaction.date}</Text>

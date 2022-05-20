@@ -12,6 +12,7 @@ const VehicleAndClass = ({ dispatch }) => {
   const [vehicle, setVehicle] = useState("");
   const [vehicleClass, setVehicleClass] = useState("");
   const [capacity, setCapacity] = useState(1);
+  const [availableCapacity, setavailableCapacity] = useState(1);
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
@@ -54,6 +55,10 @@ const VehicleAndClass = ({ dispatch }) => {
           onValueChange={(itemValue) => {
             setVehicle(itemValue.vehicleName);
             setVehicleClass(itemValue.vehicleClass);
+            setavailableCapacity(itemValue.seatingCapacity);
+            if (itemValue.seatingCapacity === 1) {
+              setCapacity(1);
+            }
             dispatch({ type: "Vehicle", payload: itemValue._id });
             dispatch({
               type: "vehicleNumber",
@@ -75,13 +80,13 @@ const VehicleAndClass = ({ dispatch }) => {
       <Box mt={5} alignItems={"center"}>
         <Text textAlign="center">Available Seats: {capacity}</Text>
         <Slider
-          isDisabled={false}
+          isDisabled={availableCapacity === 1 ? true : false}
           mt={"2"}
           w="300"
           maxW="300"
           defaultValue={1}
           minValue={1}
-          maxValue={8}
+          maxValue={availableCapacity}
           accessibilityLabel="Available Seats"
           step={1}
           onChange={(v) => {
