@@ -5,6 +5,7 @@ const fs = require("fs");
 const req = require("express/lib/request");
 const { Vehicle } = require("../models/vehicle");
 const { trip_ride } = require("../models/trip_ride");
+const { Trip } = require("../models/trip");
 
 // create ride function
 async function createRide(rideDetails) {
@@ -53,7 +54,7 @@ async function getCreatedRides(
       "_id profile name sumOfRating totalNumberOfRatedRides",
       User
     )
-    .populate("Vehicle", "_id vehicleNumber vehicleName vehicleImage", Vehicle)
+    .populate("Vehicle", "_id vehicleNumber vehicleName vehicleImage vehicleClass", Vehicle)
     .find({ $or: [{ rideFor: gender }, { rideFor: "Both" }] });
   // .find({ $not: [{ User: userId }] });
 }
@@ -100,10 +101,13 @@ async function reduceAvailableSeats(rid, seatCount) {
 //remove trip id from requestList array of Ride
 async function removeTripId(rideId, tripId) {
   let rideObj = await Ride.findOne({ _id: rideId });
+  let tripObj = await Trip.findOne({ _id: tripId });
+
   //console.log(rideObj.requestedTripList);
   let index = rideObj.requestedTripList.indexOf(tripId);
   rideObj.requestedTripList.splice(index, 1);
   rideObj.requestedUserList.splice(index, 1);
+  rideObj.availableSeats+=tripObj.seatRequest;
   return rideObj.save();
 }
 

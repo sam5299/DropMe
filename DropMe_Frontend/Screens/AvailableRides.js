@@ -179,15 +179,15 @@ const AvailableRides = ({ route, navigation }) => {
                   source={{
                     uri: ride.User.profile,
                   }}
-                  alt="noimage"
-                  size={"sm"}
+                  alt="no image"
+                  size={"md"}
                   borderRadius={100}
                 />
                 <Text fontWeight={"bold"} color={"black"} fontSize={18}>
                   {ride.User.name}
                 </Text>
                 <Stack direction={"column"}>
-                  <Entypo name="star" size={20} color="black" />
+                  <Entypo name="star" size={20} color="#FF9529" />
                   <Text fontWeight={"bold"} color={"black"} fontSize={15}>
                     {ride.User.totalNumberOfRatedRides == 0
                       ? 0.0
@@ -203,11 +203,14 @@ const AvailableRides = ({ route, navigation }) => {
                   uri: ride.Vehicle.vehicleImage,
                 }}
                 alt="Image not found"
-                size={"md"}
-                borderRadius={100}
+                size={"xl"}
+                borderRadius={50}
               />
               <Text fontWeight={"bold"} color={"black"} fontSize={18}>
-                {ride.Vehicle.vehicleNumber}
+                {ride.Vehicle.vehicleName}
+              </Text>
+              <Text fontWeight={"bold"} color={"black"} fontSize={18}>
+                {ride.Vehicle.vehicleClass}
               </Text>
               <Text fontWeight={"bold"} color={"black"} fontSize={18}>
                 Rs.{ride.amount == 0 ? "Free" : ride.amount * seats}
@@ -217,7 +220,7 @@ const AvailableRides = ({ route, navigation }) => {
               </Button> */}
               <Button
                 px="10"
-                mt={"5"}
+                mt={"2"}
                 //w="90%"
                 ml={2}
                 onPress={() => sendRequest(ride)}

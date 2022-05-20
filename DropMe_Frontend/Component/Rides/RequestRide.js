@@ -25,9 +25,11 @@ const RequestRides = ({ navigation }) => {
             "x-auth-token": userDetails.userToken,
           },
         });
-        setUserRides(allRides.data);
-        //console.log("Ride Details:", allRides.data);
-        setShowRides(false);
+        if (mounted) {
+          setUserRides(allRides.data);
+          //console.log("Ride Details:", allRides.data);
+          setShowRides(false);
+        }
       } catch (error) {
         console.log("Rides Exception: ", error.response.data);
         setShowRides(false);
