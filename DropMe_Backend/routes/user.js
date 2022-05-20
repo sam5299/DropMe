@@ -17,22 +17,24 @@ const {
   encryptPassword,
   validatePassword,
 } = require("../services/user");
-const { isUserDataValidate } = require("../models/user");
+const { isUserDataValidate, User } = require("../models/user");
 const {
   uploadFile,
   uploadFileWithParam,
 } = require("../middleware/upload_file");
+const { Notification } = require("../models/notification");
 
 const { createWallet } = require("../services/wallet");
 const { getNotification } = require("../services/notification");
 const fileUpload = require("express-fileupload");
+const { WalletHistory } = require("../models/wallet_history");
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(fileUpload({ useTempFiles: true, tempFileDir: "../image_files" }));
 
 //register user route
 router.post("/register", async (req, res) => {
-  console.log("register:", req.body);
+  //console.log("register:", req.body);
   try {
     let userId = await getUniqueId();
     req.body.userId = userId;
@@ -51,6 +53,32 @@ router.post("/register", async (req, res) => {
         return res.status(400).send("Something went wrong try again latter.");
       let walletResult = await createWallet(user._id);
       //console.log(walletResult);
+      let walletHistoryBody = {
+        User: user._id,
+        message: "Welcome bonus",
+        type: "Credit",
+        date: new Date().toDateString(),
+        amount: 100,
+      };
+
+      let historyObj = new WalletHistory(walletHistoryBody);
+      let historyObjResult = await historyObj.save();
+      if (!historyObjResult)
+        console.log("Error while adding bonus history in registation");
+      //add notification for new user for welcome bonus
+      let notifcationBody = {
+        fromUser: user._id,
+        toUser: user._id,
+        message: `Hii ${user.name} you got welcome bonus of 100 credit points`,
+        notificationType: "Wallet",
+      };
+
+      let notification = new Notification(notifcationBody);
+      let notificationResult = await notification.save();
+
+      if (!notificationResult)
+        console.log("error while creating welcome notification");
+
       return res.status(200).send("User added:" + user);
     } catch (ex) {
       if (ex.name === "ValidationError") {
@@ -65,6 +93,7 @@ router.post("/register", async (req, res) => {
 
 //endpoint for user login
 router.post("/login", async (req, res) => {
+  console.log("Called login route!");
   let { error } = await validateLogin(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 

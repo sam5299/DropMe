@@ -139,6 +139,7 @@ const Registration = ({ navigation }) => {
           navigation.navigate("DropMe");
         }, 1000);
       } catch (error) {
+        console.log(error);
         setAlertField({ status: "error", title: error.response.data });
         setShowAlert(true);
         setIsLoading(false);

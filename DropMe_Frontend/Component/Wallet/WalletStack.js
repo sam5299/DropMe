@@ -16,7 +16,7 @@ const WalletStack = ({ navigation }) => {
         <SliderStack.Screen
           name="Balance"
           component={Balance}
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
         />
         <SliderStack.Screen
           name="PaymentInterFace"

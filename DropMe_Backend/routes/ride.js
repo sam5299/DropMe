@@ -203,6 +203,7 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
     fromUser: req.body.RaiderId,
     toUser: req.body.PassengerId,
     message: `Your trip request from ${trip.source} to ${trip.destination} is accepted by ${riderName}`,
+    notificationType: "Trip",
   };
 
   let newNotification = await createNotification(notificationDetails);
@@ -237,6 +238,7 @@ router.put("/rejectTripRequest", auth, async (req, res) => {
     fromUser: req.body.User,
     toUser: req.body.passengerId,
     message: `Your trip request from ${req.body.source} to ${req.body.destination} is rejected by ${req.body.raiderName}`,
+    notificationType: "Trip",
   };
 
   let newNotification = await createNotification(notificationDetails);
@@ -291,6 +293,7 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
         toUser: trip.tripId.User.toString(),
         message:
           "Your booked trip has been cancelled by rider! \nYour credit points will be added to your wallet shortly.",
+        notificationType: "Trip",
       });
       if (!notificationResult) console.log("error while sending notification");
 

@@ -108,6 +108,7 @@ function TripBooked() {
             "x-auth-token": parseUser.userToken,
           },
         });
+        // console.log("result:", result.data);
         if (mounted) {
           setBookedTripList(result.data);
           setToken(parseUser.userToken);
@@ -151,6 +152,7 @@ function TripBooked() {
     return (
       <ScrollView w={"85%"} bg={"#F0F8FF"}>
         {bookedTripList.map((trip) => (
+          // console.log(trip.amount)
           <Box
             key={trip._id}
             display={"flex"}
@@ -201,14 +203,20 @@ function TripBooked() {
                 Vehicle Number: {trip.vehicleNumber}
               </Text>
               <Text style={styles.details}>OTP: {trip.token}</Text>
-              <Button
-                size={"lg"}
-                px={10}
-                disabled={isButtonDisabled}
-                onPress={() => showConfirmDialog(trip._id, trip.amount)}
-              >
-                Cancel trip
-              </Button>
+              {trip.status === "Booked" ? (
+                <Button
+                  size={"lg"}
+                  px={10}
+                  disabled={isButtonDisabled}
+                  onPress={() => showConfirmDialog(trip._id, trip.amount)}
+                >
+                  Cancel trip
+                </Button>
+              ) : (
+                <Button size={"lg"} px={10} isDisabled={true}>
+                  Trip initiated
+                </Button>
+              )}
             </Stack>
           </Box>
         ))}

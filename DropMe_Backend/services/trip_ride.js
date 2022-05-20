@@ -1,3 +1,4 @@
+const { Notification } = require("../models/notification");
 const { Ride } = require("../models/ride");
 const { Trip } = require("../models/trip");
 const { TripRide } = require("../models/trip_ride");
@@ -39,7 +40,10 @@ async function getAllBookedRides(raiderId) {
 
 // return all booked rides of the passenger
 async function getAllBookedTrips(passengerId) {
-  return await TripRide.find({ PassengerId: passengerId, status: "Booked" })
+  return await TripRide.find({
+    PassengerId: passengerId,
+    $or: [{ status: "Booked" }, { status: "Initiated" }],
+  })
     .populate("RaiderId", "_id profile name mobileNumber", User)
     .populate("tripId", "_id source destination pickupPoint date time", Trip)
     .sort({ _id: -1 });
@@ -135,6 +139,7 @@ async function deleteBookedTrip(tripRideId) {
     fromUser: tripRideObj.PassengerId._id,
     toUser: tripRideObj.RaiderId,
     message: `Your booked trip from ${tripRideObj.rideId.source} to ${tripRideObj.rideId.destination} is canceled by ${tripRideObj.PassengerId.name}. `,
+    notificationType: "Ride",
   };
 
   let newNotification = await createNotification(notificationDetails);
@@ -153,6 +158,10 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
     _id: tripRideId,
     tripId: tripId,
   }).populate("rideId", "source destination pickupPoint date", Ride);
+
+  // console.log(TripRideObj.PassengerId);
+  // return;
+
   TripRideObj.status = status;
   let currentDate = new Date();
   let currentTime =
@@ -162,9 +171,23 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
     ":" +
     currentDate.getSeconds();
   //console.log(time);
-  if (status == "Initiated") TripRideObj.startTime = currentTime;
-  else if (status == "Completed") {
+
+  //define variable according to condition for user notification
+  let fromUserId, toUserId, messageContent, notificationTypeName;
+
+  if (status == "Initiated") {
+    TripRideObj.startTime = currentTime;
+    fromUserId = TripRideObj.RaiderId._id;
+    toUserId = TripRideObj.PassengerId._id;
+    (messageContent = `Your trip from ${TripRideObj.rideId.source} to ${TripRideObj.rideId.destination} is initiated.`),
+      (notificationTypeName = "Trip");
+  } else if (status == "Completed") {
     TripRideObj.endTime = currentTime;
+
+    fromUserId = TripRideObj.RaiderId._id;
+    toUserId = TripRideObj.PassengerId._id;
+    (messageContent = `Your trip from ${TripRideObj.rideId.source} to ${TripRideObj.rideId.destination} is completed.`),
+      (notificationTypeName = "Trip");
 
     // add 90% amount to riders wallet and 10% commission will be given to DropMe.
 
@@ -234,7 +257,6 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
         TripRideObj.amount - TripRideObj.amount
       );
       //add default rating for completed ride once rider click on end trip
-     
     }
     let ratingResult = setRating(TripRideObj._id, 3);
     if (!ratingResult)
@@ -245,10 +267,30 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
   } else {
     //console.log(status);
     // apply safety points penalty to rider
-    let penalty = TripRideObj.amount * 0.1;
-    let result = await addPenalty(TripRideObj.RaiderId, penalty);
-    if (!result) console.log("error while applying penalty");
+    if (TripRideObj.amount) {
+      let penalty = TripRideObj.amount * 0.1;
+      let result = await addPenalty(TripRideObj.RaiderId, penalty);
+      if (!result) console.log("error while applying penalty");
+    }
+    //update notification body variables
+    fromUserId = TripRideObj.RaiderId._id;
+    toUserId = TripRideObj.PassengerId._id;
+    (messageContent = `Your trip from ${TripRideObj.rideId.source} to ${TripRideObj.rideId.destination} is cancelled by rider.`),
+      (notificationTypeName = "Trip");
   }
+
+  //create notification and send it to passenger
+
+  let notificationBody = {
+    fromUser: fromUserId,
+    toUser: toUserId,
+    message: messageContent,
+    notificationType: notificationTypeName,
+  };
+  let newNotification = new Notification(notificationBody);
+  let notificationResult = await newNotification.save();
+  if (!notificationResult)
+    console.log("error while creating notification in updateRideStatus.");
 
   return await TripRideObj.save();
 }
