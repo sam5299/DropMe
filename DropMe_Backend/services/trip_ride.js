@@ -149,8 +149,10 @@ async function deleteBookedTrip(tripRideId) {
 
 // get trip ride details by TripRideId and tripId
 async function getTripRideByTripId(tripRideId, tripId, status) {
-  let TripRideObj = await TripRide.findOne({ _id: tripRideId, tripId: tripId })
-  .populate("rideId", "source destination pickupPoint date", Ride)  ;
+  let TripRideObj = await TripRide.findOne({
+    _id: tripRideId,
+    tripId: tripId,
+  }).populate("rideId", "source destination pickupPoint date", Ride);
   TripRideObj.status = status;
   let currentDate = new Date();
   let currentTime =
@@ -171,60 +173,69 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
     // let sourceName = sourceArrary[0];
     // let destinationName = destinationArray[0];
 
+    // if the ride is free then just update the status
+    if (TripRideObj.amount) {
+      let sourceName = TripRideObj.rideId.source;
+      let destinationName = TripRideObj.rideId.destination;
 
-    let sourceName=TripRideObj.rideId.source;
-    let destinationName=TripRideObj.rideId.destination;
+      let tripAmount = TripRideObj.amount - parseInt(TripRideObj.amount / 10);
+      let updateRiderWallet = await updateWallet(
+        TripRideObj.RaiderId._id,
+        tripAmount
+      );
 
+      //call to updateWallet history for raider
+      let riderWalletHistoryDetails = {
+        User: TripRideObj.RaiderId._id,
+        amount: tripAmount,
+        message: `Credit point added for ride from ${sourceName} to ${sourceName}`,
+        date: TripRideObj.date,
+        type: "Credit",
+      };
 
-    let tripAmount=TripRideObj.amount - parseInt(TripRideObj.amount / 10);
-    let updateRiderWallet = await updateWallet(
-      TripRideObj.RaiderId._id,
-      tripAmount
-    );
+      let riderWalletHistoryDetailsResult = await addNewHistory(
+        riderWalletHistoryDetails
+      );
 
-    //call to updateWallet history for raider
-    let riderWalletHistoryDetails={
-      User:TripRideObj.RaiderId._id,
-      amount:tripAmount,
-      message:`Credit point added for ride from ${sourceName} to ${sourceName}`,
-      date:TripRideObj.date,
-      type:"Credit"
+      if (!riderWalletHistoryDetailsResult)
+        console.log(
+          "Error in rider set wallet history",
+          riderWalletHistoryDetailsResult
+        );
+
+      // deduct trip amount from passenger's wallet
+      let updatePassengerWallet = await updateWallet(
+        TripRideObj.PassengerId._id,
+        TripRideObj.amount * -1
+      );
+
+      //call to updateWallet history for passenger
+      let passengerWalletHistoryDetails = {
+        User: TripRideObj.PassengerId._id,
+        amount: tripAmount,
+        message: `Completed trip from ${sourceName} to ${sourceName}`,
+        date: TripRideObj.date,
+        type: "Debit",
+      };
+
+      let passengerWalletHistoryDetailsResult = await addNewHistory(
+        passengerWalletHistoryDetails
+      );
+
+      if (!passengerWalletHistoryDetailsResult)
+        console.log(
+          "Error in passenger set wallet history",
+          passengerWalletHistoryDetailsResult
+        );
+
+      // deduct amount from passenger's Used credit
+      let updateUsedCreditResult = await updateUsedCredit(
+        TripRideObj.PassengerId._id,
+        TripRideObj.amount - TripRideObj.amount
+      );
+      //add default rating for completed ride once rider click on end trip
+     
     }
-
-    let riderWalletHistoryDetailsResult= await addNewHistory(riderWalletHistoryDetails);
-
-    if(!riderWalletHistoryDetailsResult)
-    console.log("Error in rider set wallet history",riderWalletHistoryDetailsResult);
-
-    // deduct trip amount from passenger's wallet
-    let updatePassengerWallet = await updateWallet(
-      TripRideObj.PassengerId._id,
-      TripRideObj.amount * -1
-    );
-
-    //call to updateWallet history for passenger
-    let passengerWalletHistoryDetails={
-      User:TripRideObj.PassengerId._id,
-      amount:tripAmount,
-      message:`Completed trip from ${sourceName} to ${sourceName}`,
-      date:TripRideObj.date,
-      type:"Debit"
-    }
-
-    let passengerWalletHistoryDetailsResult= await addNewHistory(passengerWalletHistoryDetails);
-
-    if(!passengerWalletHistoryDetailsResult)
-    console.log("Error in passenger set wallet history",passengerWalletHistoryDetailsResult);
-
-
-
-
-    // deduct amount from passenger's Used credit
-    let updateUsedCreditResult = await updateUsedCredit(
-      TripRideObj.PassengerId._id,
-      TripRideObj.amount - TripRideObj.amount
-    );
-    //add default rating for completed ride once rider click on end trip
     let ratingResult = setRating(TripRideObj._id, 3);
     if (!ratingResult)
       console.log(
