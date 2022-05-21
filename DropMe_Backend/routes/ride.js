@@ -32,6 +32,7 @@ const {
 const { Trip } = require("../models/trip");
 const { updateUsedCredit, addPenalty } = require("../services/wallet");
 const { createNotification } = require("../services/notification");
+const { Wallet } = require("../models/wallet");
 router.use(express.json());
 
 //ride creat route
@@ -130,8 +131,20 @@ router.get("/getTripRequestList/:rid", auth, async (req, res) => {
   let requestedTripList = [];
   for (element of tripList.requestedTripList) {
     let result = await getTripDetails(element);
-    // Send those requests which requested seats is less then available seats
-    if (rideObj.availableSeats >= result.seatRequest)
+    // Send those requests which requested seats is less then available seats and
+    //passenger's user credit point is less than ride object.
+
+    // let passengerObj = await User.findOne({ _id: result.User });
+    // if (!passengerObj)
+    //   console.log("Error in get rider trip request of passenger");
+    let walletObj = await Wallet.findOne({ User: result.User });
+    if (!walletObj)
+      console.log("Error in get wallet details in get rider trip request");
+
+    if (
+      rideObj.availableSeats >= result.seatRequest &&
+      rideObj.amount <= walletObj.creditPoint - walletObj.usedCreditPoint
+    )
       requestedTripList.push(result);
   }
   //console.log(requestedTripList);
