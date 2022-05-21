@@ -104,7 +104,8 @@ router.post("/login", async (req, res) => {
     req.body.password,
     user.password
   );
-  if (!validPassword) return res.status(400).send("Invalid email or password");
+  if (!validPassword)
+    return res.status(400).send("Invalid mobile number or password");
 
   console.log("User details:" + user);
   const token = jwt.sign(
