@@ -86,7 +86,7 @@ async function deleteRide(rideId) {
   });
 }
 
-// to get list of all trip who has reuqested for perticular ride
+// to get list of all trip who has requested for particular ride
 async function getTripRequestList(rid) {
   return await Ride.findOne({ _id: rid }, { _id: 1, requestedTripList: 1 });
 }
