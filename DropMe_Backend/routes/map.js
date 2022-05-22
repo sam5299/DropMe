@@ -25,7 +25,7 @@ router.get("/api/search", async (req, res) => {
 
 //route for reverse geocoding and get whole latitude, longitude
 router.get("/api/reverseCoding/:latitude/:longitude", async (req, res) => {
-  console.log("route called");
+  console.log("Getting Lat and Lon");
   let apiKey = "pk.6d364145872ca7f6b7329a6eff785cbe";
   let latitude = req.params.latitude;
   let longitude = req.params.longitude;
@@ -47,7 +47,7 @@ router.get("/api/reverseCoding/:latitude/:longitude", async (req, res) => {
 
 //route to get distance between two latitude and longitude
 router.get("/api/directionApi/:lon1/:lat1/:lon2/:lat2", async (req, res) => {
-  console.log("route called3");
+  console.log("Getting distance ");
   let apiKey = "pk.6d364145872ca7f6b7329a6eff785cbe";
   let lon1 = req.params.lon1;
   let lat1 = req.params.lat1;

@@ -161,6 +161,7 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
 
   // console.log(TripRideObj.PassengerId);
   // return;
+  let tripObj = await Trip.findOne({ _id: tripId });
 
   TripRideObj.status = status;
   let currentDate = new Date();
@@ -277,6 +278,23 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
     toUserId = TripRideObj.PassengerId._id;
     (messageContent = `Your trip from ${TripRideObj.rideId.source} to ${TripRideObj.rideId.destination} is cancelled by rider.`),
       (notificationTypeName = "Trip");
+
+    //update usedCredit point of passenger and add into main wallet as rider cancelled the ride
+    let result = await updateUsedCredit(
+      TripRideObj.PassengerId._id,
+      TripRideObj.amount * -1
+    );
+    if (!result) console.log("failed to update passengers used credit point");
+
+    // Update ride seat capacity after cancelling the ride
+    let rideObj = await Ride.findOne({ _id: TripRideObj.rideId._id });
+    rideObj.availableSeats = rideObj.availableSeats + tripObj.seatRequest;
+
+    let saveResult = await rideObj.save();
+    if (!saveResult)
+      console.log(
+        "Error in updating ride capacity after cancellation trip ride"
+      );
   }
 
   //create notification and send it to passenger

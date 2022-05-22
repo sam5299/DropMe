@@ -51,7 +51,7 @@ async function isUserExists(mobileNo) {
 
 //function to get all Users
 async function getUser(id) {
-  console.log("called getUser");
+  //console.log("called getUser");
   try {
     let user = await User.findOne({ _id: id }, { userId: 0, __v: 0 });
     if (user.length === 0) return "Users not found";

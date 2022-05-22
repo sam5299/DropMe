@@ -14,7 +14,7 @@ const {
 //router to add new wallet history into collection
 router.post("/addHistory", auth, async (req, res) => {
   try {
-    console.log("addHistorY:", req.body);
+    console.log("In add history");
     req.body.amount = parseFloat(req.body.amount);
     req.body.type = "Credit";
     delete req.body.userId;
@@ -28,13 +28,13 @@ router.post("/addHistory", auth, async (req, res) => {
     //add into wallet history
     let newHistory = new WalletHistory(req.body);
     let result = await newHistory.save();
-    console.log(result);
+    // console.log(result);
     if (!result)
       return res
         .status(400)
         .send("something failed while adding history in wallet");
 
-    console.log("addHistorY done.");
+    console.log("Add History done.");
     return res.status(200).send("Add wallet history done");
   } catch (exception) {
     console.log("in catch block walletHistory route addHistory route");
@@ -48,7 +48,7 @@ router.get("/getWalletHistory", auth, async (req, res) => {
   try {
     let result = await getUserWalletHistory(req.body.User);
     if (!result) return res.status(400).send("Failed to get history..");
-    
+
     if (result.length == 0) return res.status(400).send("No wallet history..");
 
     return res.status(200).send(result);

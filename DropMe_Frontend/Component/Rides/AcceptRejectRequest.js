@@ -8,11 +8,7 @@ import {
   Image,
   Button,
   ScrollView,
-  Alert,
-  VStack,
-  HStack,
-  IconButton,
-  CloseIcon,
+  useToast,
   Spinner,
 } from "native-base";
 
@@ -24,33 +20,11 @@ const AcceptRejectRequest = ({ route, navigation }) => {
   const [tripRequestList, setTripRequestList] = useState([]);
   const [isLoading, setLoading] = useState(true);
 
-  //alert box states
-  const [status, setStatus] = useState({ status: "", title: "" });
-  const [showAlert, setShowAlert] = useState(false);
+  //button disable true false field
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
-  let AlertField = (
-    <Box>
-      <Alert w="100%" status={status.status}>
-        <VStack space={2} flexShrink={1} w="100%">
-          <HStack flexShrink={1} space={2} justifyContent="space-between">
-            <HStack space={2} flexShrink={1}>
-              <Alert.Icon mt="1" />
-              <Text fontSize="md" color="coolGray.800">
-                {status.title}
-              </Text>
-            </HStack>
-            <IconButton
-              variant="unstyled"
-              _focus={{
-                borderWidth: 0,
-              }}
-              icon={<CloseIcon size="3" color="coolGray.600" />}
-            />
-          </HStack>
-        </VStack>
-      </Alert>
-    </Box>
-  );
+  //toast field
+  const toast = useToast();
 
   useEffect(() => {
     let mounted = true;
@@ -88,40 +62,50 @@ const AcceptRejectRequest = ({ route, navigation }) => {
     vehicleNumber
   ) => {
     try {
+      setButtonDisabled(true);
       const result = await axios.post(
         url + "/ride/acceptTripRequest",
         { tripId, rideId, raiderName, amount, vehicleNumber },
         { headers: { "x-auth-token": token } }
       );
-      setStatus({
-        status: "success",
-        title: "Trip request accepted!",
+      {
+        console.log("showing toast");
+      }
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="green.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>Trip request accepted!</Text>
+            </Box>
+          );
+        },
+        placement: "top",
       });
-      console.log("result:", result);
-      setShowAlert(true);
-      setTimeout(() => {
-        let newTripRequestList = [];
-        tripRequestList.forEach((tripObj) => {
-          if (
-            tripObj._id != tripId &&
-            tripObj.seatRequest <= result.data.remainingSeat
-          ) {
-            newTripRequestList.push(tripObj);
-          }
-        });
-        setTripRequestList(newTripRequestList);
-        setShowAlert(false);
-      }, 2000);
+      let newTripRequestList = [];
+      tripRequestList.forEach((tripObj) => {
+        if (
+          tripObj._id != tripId &&
+          tripObj.seatRequest <= result.data.remainingSeat
+        ) {
+          newTripRequestList.push(tripObj);
+        }
+      });
+      setTripRequestList(newTripRequestList);
+
+      setButtonDisabled(false);
     } catch (error) {
       console.log("Accept Request: ", error.response.data);
-      setStatus({
-        status: "error",
-        title: "Error while accepting trip!",
+
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>Error while accepting trip!</Text>
+            </Box>
+          );
+        },
+        placement: "top",
       });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
     }
   };
 
@@ -134,6 +118,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
     passengerId
   ) => {
     try {
+      setButtonDisabled(true);
       const result = await axios.put(
         url + "/ride/rejectTripRequest",
         {
@@ -147,32 +132,37 @@ const AcceptRejectRequest = ({ route, navigation }) => {
         },
         { headers: { "x-auth-token": token } }
       );
-      console.log(result.data);
-      setStatus({
-        status: "error",
-        title: "Trip request rejected!",
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>Trip request rejected!..!</Text>
+            </Box>
+          );
+        },
+        placement: "top",
       });
-      setShowAlert(true);
-      setTimeout(() => {
-        //add logic to remove that trip from ui
-        let newTripRequestList = [];
-        tripRequestList.forEach((tripObj) => {
-          if (tripObj._id != tripId) {
-            newTripRequestList.push(tripObj);
-          }
-        });
-        setTripRequestList(newTripRequestList);
-        setShowAlert(false);
-      }, 2000);
+
+      let newTripRequestList = [];
+      tripRequestList.forEach((tripObj) => {
+        if (tripObj._id != tripId) {
+          newTripRequestList.push(tripObj);
+        }
+      });
+      setTripRequestList(newTripRequestList);
+      setButtonDisabled(false);
     } catch (error) {
-      setStatus({
-        status: "error",
-        title: error.response.data,
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>{error.response.data}</Text>
+            </Box>
+          );
+        },
+        placement: "top",
       });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
+      setButtonDisabled(false);
       console.log("Reject Request: ", error.response.data);
     }
   };
@@ -180,7 +170,6 @@ const AcceptRejectRequest = ({ route, navigation }) => {
   function viewRequest() {
     return (
       <ScrollView>
-        {showAlert ? AlertField : null}
         {tripRequestList.map((list) => (
           <Box
             key={list._id}
@@ -244,6 +233,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                   _text={{
                     color: "white",
                   }}
+                  isDisabled={buttonDisabled}
                   onPress={() =>
                     acceptRequest(list._id, rideId, name, amount, vehicleNumber)
                   }
@@ -253,6 +243,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                 </Button>
                 <Button
                   colorScheme="secondary"
+                  isDisabled={buttonDisabled}
                   onPress={() =>
                     rejectRequest(
                       list._id,
