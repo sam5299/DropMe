@@ -137,9 +137,11 @@ router.get("/getTripRequestList/:rid", auth, async (req, res) => {
     // let passengerObj = await User.findOne({ _id: result.User });
     // if (!passengerObj)
     //   console.log("Error in get rider trip request of passenger");
-    let walletObj = await Wallet.findOne({ User: result.User });
+    let walletObj = await Wallet.findOne({ User: result.User._id });
     if (!walletObj)
       console.log("Error in get wallet details in get rider trip request");
+
+    console.log("@@@", walletObj);
 
     if (
       rideObj.availableSeats >= result.seatRequest &&
@@ -187,8 +189,8 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
   req.body.amount = 0;
 
   if (Ride.amount) {
-    amount = await calculateTripAmount(vehicle.Vehicle, trip.distance);
-    req.body.amount = amount;
+    // amount = await calculateTripAmount(vehicle.Vehicle, trip.distance);
+    req.body.amount = Ride.amount;
   }
   req.body.date = trip.date;
   //adding RaiderId and PassengerId to req.body
