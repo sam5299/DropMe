@@ -264,8 +264,8 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
   );
 
   let licenseImageInput = (
-    <Box>
-      <Box w={"95%"}>
+    <Box alignItems={"center"} mb={5}>
+      <Box ml={3} w={"95%"} flexDir={"row"}>
         <Box mt="5" w={"95%"} flexDir={"row"} alignItems="center">
           <Avatar
             bg="green.500"

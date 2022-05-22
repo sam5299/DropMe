@@ -39,7 +39,7 @@ if (!config.get("jwtPrivateKey")) {
 
 //connecting to database
 mongoose
-  .connect("mongodb+srv://DropMe:Project4@cluster0.psfti.mongodb.net/test2")
+  .connect("mongodb+srv://DropMe:Project4@cluster0.psfti.mongodb.net/test3")
   .then(() => console.log("Connected to dropme_sample"))
   .catch((err) => console.log("error connecting to database:", err));
 

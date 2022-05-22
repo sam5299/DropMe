@@ -251,12 +251,6 @@ const CreateRide = ({ navigation }) => {
           },
           placement: "top",
         });
-        // setAlertField({ status: "success", title: "Ride created!" });
-        // setShowAlert(true);
-
-        // setTimeout(() => {
-        //   setShowAlert(false);
-        // }, 3000);
       } catch (error) {
         setLoading(false);
         setAlertField({ status: "error", title: error.response.data });

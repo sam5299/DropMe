@@ -32,12 +32,12 @@ async function getCreatedRides(
   //   TripRide.find({rideId:rid, status:status}).populate("tripId","-_id User",Trip);
   // }
 
-  console.log("User id:" + userId);
-  console.log("Source:" + Source);
-  console.log("Destination:" + Destination);
-  console.log("Date:" + Date);
-  console.log("Seats:" + seats);
-  console.log("Gender:" + gender);
+  // console.log("User id:" + userId);
+  // console.log("Source:" + Source);
+  // console.log("Destination:" + Destination);
+  // console.log("Date:" + Date);
+  // console.log("Seats:" + seats);
+  // console.log("Gender:" + gender);
 
   return await Ride.find({
     source: Source,
@@ -54,7 +54,11 @@ async function getCreatedRides(
       "_id profile name sumOfRating totalNumberOfRatedRides",
       User
     )
-    .populate("Vehicle", "_id vehicleNumber vehicleName vehicleImage vehicleClass", Vehicle)
+    .populate(
+      "Vehicle",
+      "_id vehicleNumber vehicleName vehicleImage vehicleClass",
+      Vehicle
+    )
     .find({ $or: [{ rideFor: gender }, { rideFor: "Both" }] });
   // .find({ $not: [{ User: userId }] });
 }
@@ -93,9 +97,11 @@ async function getTripRequestList(rid) {
 
 // reduce availableSeat of ride after successfully accepting ride
 async function reduceAvailableSeats(rid, seatCount) {
+  console.log("Ride id", rid);
   let ride = await Ride.findOne({ _id: rid });
   ride.availableSeats = ride.availableSeats - seatCount;
-  return ride.save();
+  // console.log("Update seats function", ride.availableSeats);
+  return await ride.save();
 }
 
 //remove trip id from requestList array of Ride
@@ -107,7 +113,7 @@ async function removeTripId(rideId, tripId) {
   let index = rideObj.requestedTripList.indexOf(tripId);
   rideObj.requestedTripList.splice(index, 1);
   rideObj.requestedUserList.splice(index, 1);
-  rideObj.availableSeats+=tripObj.seatRequest;
+  // rideObj.availableSeats += tripObj.seatRequest;
   return rideObj.save();
 }
 
