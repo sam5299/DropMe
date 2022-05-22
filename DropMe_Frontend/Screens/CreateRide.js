@@ -207,7 +207,7 @@ const CreateRide = ({ navigation }) => {
       Vehicle: { required: true },
     });
     if (isTrue) {
-      console.log(state);
+      // console.log(state);
       let distance = null;
       try {
         //call api to get exact latitude longitude of source,destination lat,log
