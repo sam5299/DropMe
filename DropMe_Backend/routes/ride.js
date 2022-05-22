@@ -13,6 +13,7 @@ const {
   reduceAvailableSeats,
   getRideDetails,
   getTimeDifference,
+  convertToDate,
 } = require("../services/ride");
 
 const {
@@ -47,6 +48,8 @@ router.post("/createRide", auth, async (req, res) => {
   req.body.amount = parseInt(amount);
   let distance = parseFloat(req.body.distance).toPrecision(3);
   req.body.distance = distance;
+  req.body.rideDate = convertToDate(req.body.date);
+
   // console.log("body:", req.body);
   let { error } = validateRideDetails(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -54,6 +57,8 @@ router.post("/createRide", auth, async (req, res) => {
     let newRide = await createRide(req.body);
     if (!newRide)
       return res.status(400).send("Something went wrong try again latter.");
+
+    console.log("New ride obj", newRide);
     // After that save the ipc of created ride vehicle
     // savePicture(`${newRide.vehicleNumber}_${userId}`);
     return res.status(200).send(newRide);
@@ -112,7 +117,10 @@ router.get("/getUserRides", auth, async (req, res) => {
   let id = req.body.User;
   try {
     let rideData = await getUserRides(id);
-    console.log(rideData);
+    //console.log(rideData);
+    rideData.map(ride=>{
+      console.log(ride.rideDate);
+    })
     if (rideData.length == 0) return res.status(400).send("No rides found");
     return res.status(200).send(rideData);
   } catch (ex) {

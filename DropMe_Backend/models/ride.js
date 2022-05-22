@@ -41,6 +41,10 @@ const rideSchema = new mongoose.Schema({
     ref: "vehicle",
     required: true,
   },
+  rideDate:{
+    type:Date,
+    required:true,
+  }
 });
 
 const Ride = mongoose.model("ride", rideSchema);
@@ -72,6 +76,7 @@ function validateRideDetails(rideData) {
       }),
     User: Joi.string().required(),
     Vehicle: Joi.string().required(),
+    rideDate:Joi.date().required(),
   });
   return joiRideSchema.validate(rideData);
 }
