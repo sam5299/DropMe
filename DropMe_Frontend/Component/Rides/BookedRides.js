@@ -8,12 +8,8 @@ import {
   ScrollView,
   Divider,
   Input,
-  Alert,
-  VStack,
-  HStack,
-  IconButton,
-  CloseIcon,
   Spinner,
+  useToast,
 } from "native-base";
 import { Alert as NewAlert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -26,38 +22,16 @@ const BookedRides = ({ navigation }) => {
   const [userToken, setToken] = useState(null);
   const [passengerToken, setPassengerToken] = useState("");
   const [isTripStarted, setStarted] = useState("No");
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertField, setAlertField] = useState({
-    status: "success",
-    title: "",
-  });
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
-  let AlertField = (
-    <Alert w="100%" status={alertField.status}>
-      <VStack space={2} flexShrink={1} w="100%">
-        <HStack flexShrink={1} space={2} justifyContent="space-between">
-          <HStack space={2} flexShrink={1}>
-            <Alert.Icon mt="1" />
-            <Text fontSize="md" color="coolGray.800">
-              {alertField.title}
-            </Text>
-          </HStack>
-          <IconButton
-            variant="unstyled"
-            _focus={{
-              borderWidth: 0,
-            }}
-            icon={<CloseIcon size="3" color="coolGray.600" />}
-          />
-        </HStack>
-      </VStack>
-    </Alert>
-  );
+  //toast field
+  const toast = useToast();
 
   useEffect(() => {
     let mounted = true;
+    console.log("in booked ride page");
     const getUserRides = async () => {
       try {
         const User = await AsyncStorage.getItem("User");
@@ -73,6 +47,20 @@ const BookedRides = ({ navigation }) => {
         setShowRides(false);
       } catch (error) {
         console.log("Booked Rides Exception: ", error.response.data);
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="red.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>
+                  {error.name === "AxiosError"
+                    ? "Sorry cannot reach to server!"
+                    : error.response.data}
+                </Text>
+              </Box>
+            );
+          },
+          placement: "top",
+        });
         setShowRides(false);
       }
     };
@@ -85,63 +73,87 @@ const BookedRides = ({ navigation }) => {
   const startTrip = async (tripRideId, tripId, status, token) => {
     if (passengerToken === "" || passengerToken != token) {
       console.log(passengerToken);
-      // setError(true);
-      // setTimeout(() => setError(false), 3000);
-      // alert("Invalid token");
-      setAlertField({ status: "error", title: "Invalid trip token!" });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 5000);
-      //add alert field wala part
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>{"Invalid trip token!"}</Text>
+            </Box>
+          );
+        },
+        placement: "top",
+      });
       return;
     }
     try {
+      setIsButtonDisabled(true);
       const result = await axios.put(
         url + "/trip/updateTripStatus",
         { tripRideId, tripId, status, token },
         { headers: { "x-auth-token": userToken } }
       );
-      //alert(result.data);
-      setAlertField({ status: "success", title: "Trip Initiated!" });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-        setStarted("Accepted");
-      }, 5000);
+
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="green.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>Trip initiated!</Text>
+            </Box>
+          );
+        },
+        placement: "top",
+      });
+      setStarted("Accepted");
+      setIsButtonDisabled(false);
     } catch (error) {
-      setAlertField({ status: "error", title: error.response.data });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 5000);
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>{error.response.data}</Text>
+            </Box>
+          );
+        },
+        placement: "top",
+      });
+      setIsButtonDisabled(false);
       console.log("Booked Rides: ", error.response.data);
     }
   };
 
   const endTrip = async (tripRideId, tripId, status, token) => {
     try {
+      setIsButtonDisabled(true);
       const result = await axios.put(
         url + "/trip/updateTripStatus",
         { tripRideId, tripId, status, token },
         { headers: { "x-auth-token": userToken } }
       );
-      //alert(result.data);
-      setAlertField({
-        status: "success",
-        title: "Trip successfully completed!",
+
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="green.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>Trip successfully completed!</Text>
+            </Box>
+          );
+        },
+        placement: "top",
       });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-        setStarted("Ended");
-      }, 3000);
+      setStarted("Ended");
+      setIsButtonDisabled(false);
     } catch (error) {
-      etAlertField({ status: "error", title: error.response.data });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>{error.response.data}</Text>
+            </Box>
+          );
+        },
+        placement: "top",
+      });
+      setIsButtonDisabled(false);
       console.log("Booked Rides: ", error);
     }
   };
@@ -177,17 +189,29 @@ const BookedRides = ({ navigation }) => {
         { tripRideId, tripId, status },
         { headers: { "x-auth-token": userToken } }
       );
-      // alert(result.data);
-      setAlertField({
-        status: "success",
-        title: "Trip cancelled successfully!",
+
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>Trip cancelled successfully!</Text>
+            </Box>
+          );
+        },
+        placement: "top",
       });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 2000);
       setStarted("Ended");
     } catch (error) {
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>{error.response.data}</Text>
+            </Box>
+          );
+        },
+        placement: "top",
+      });
       console.log("Cancel Rides: ", error.response.data);
     }
   };
@@ -267,6 +291,7 @@ const BookedRides = ({ navigation }) => {
               {ride.status === "Booked" ? (
                 <Stack direction={"row"} space={5} mt={2}>
                   <Button
+                    isDisabled={isButtonDisabled}
                     onPress={() =>
                       startTrip(
                         ride._id,
@@ -281,6 +306,7 @@ const BookedRides = ({ navigation }) => {
                   </Button>
                   <Button
                     colorScheme="secondary"
+                    isDisabled={isButtonDisabled}
                     onPress={() =>
                       showConfirmDialog(
                         ride._id,
@@ -324,7 +350,6 @@ const BookedRides = ({ navigation }) => {
   } else {
     return (
       <Box flex={1} alignItems={"center"} pb={"5"} bg={"#F0F8FF"}>
-        {showAlert ? AlertField : null}
         <Box mt={2}>
           {bookedRides.length ? (
             allUserRides()

@@ -12,11 +12,7 @@ import {
   ScrollView,
   Text,
   WarningOutlineIcon,
-  HStack,
-  Alert,
-  VStack,
-  IconButton,
-  CloseIcon,
+  useToast,
   Spinner,
 } from "native-base";
 import * as ImagePicker from "expo-image-picker";
@@ -31,15 +27,18 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
   let [licenseImage, setLicenseImage] = useState(null);
   let [rcBookImage, setRcBookImage] = useState(null);
   let [pucImage, setPucImage] = useState(null);
-  const [showAlert, setShowAlert] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus] = useState({ status: "", title: "" });
+
   const [userToken, setToken] = useState(null);
   const [rcError, setRcError] = useState(false);
   const [pucError, setPucError] = useState(false);
   const [licenseNumberError, setLicenseNumberError] = useState(false);
   const [licenseImageError, setLicenseImageError] = useState(false);
   let [isPageLoading, setIsPageLoading] = useState(false);
+
+  //toast field
+  const toast = useToast();
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
@@ -76,15 +75,23 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
           setIsPageLoading(false);
         }
       } catch (ex) {
-        console.log("Exception:", ex.response.data);
-        if (true) {
-          setStatus({ status: "error", title: ex.response.data });
-          setShowAlert(true);
-          setTimeout(() => {
-            setShowAlert(false);
-            setIsPageLoading(false);
-          }, 2000);
-        }
+        console.log("Exception:", ex);
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="red.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>
+                  {error.name === "AxiosError"
+                    ? "Sorry cannot reach to server!"
+                    : error.response.data}
+                </Text>
+              </Box>
+            );
+          },
+          placement: "top",
+        });
+        setIsPageLoading(false);
+
         // console.log(ex.response.data);
       }
     }
@@ -189,50 +196,40 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
           },
         });
         setIsLoading(false);
-        setStatus({
-          status: "success",
-          title: "Vehicle Added.",
+
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="green.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>Vehicle Added.!</Text>
+              </Box>
+            );
+          },
+          placement: "top",
         });
-        setShowAlert(true);
-        console.log("Add vehicle done..");
         setTimeout(() => {
           navigation.navigate("AddVehicle", { isChanged: true });
         }, 3000);
       } catch (ex) {
         setIsLoading(false);
-        setStatus({ status: "error", title: ex.response.data });
-        setShowAlert(true);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 4000);
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="red.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>
+                  {error.name === "AxiosError"
+                    ? "Sorry cannot reach to server!"
+                    : error.response.data}
+                </Text>
+              </Box>
+            );
+          },
+          placement: "top",
+        });
         console.log("exception:" + ex.response.data);
       }
     }
   };
-
-  let AlertField = (
-    <Box>
-      <Alert w="100%" status={status.status}>
-        <VStack space={2} flexShrink={1} w="100%">
-          <HStack flexShrink={1} space={2} justifyContent="space-between">
-            <HStack space={2} flexShrink={1}>
-              <Alert.Icon mt="1" />
-              <Text fontSize="md" color="coolGray.800">
-                {status.title}
-              </Text>
-            </HStack>
-            <IconButton
-              variant="unstyled"
-              _focus={{
-                borderWidth: 0,
-              }}
-              icon={<CloseIcon size="3" color="coolGray.600" />}
-            />
-          </HStack>
-        </VStack>
-      </Alert>
-    </Box>
-  );
 
   let licenseNumberInput = (
     <Box>
@@ -333,7 +330,6 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
               backgroundColor: "gray.50",
             }}
           >
-            {showAlert ? AlertField : ""}
             <FormControl justifyContent="center" alignItems={"center"}>
               <Text color="rgba(6,182,212,1.00)" fontSize="xl">
                 {"Add Vehicle Details"}
