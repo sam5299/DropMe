@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
-import { Box, Stack, Text, Image } from "native-base";
+import { Box, Stack, Text, Image, Spinner } from "native-base";
 import axios from "axios";
 import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -36,7 +36,7 @@ const ViewProfile = () => {
   if (pageLoading) {
     return (
       <Box flex={1} justifyContent="center" alignItems={"center"} bg="#F0F8FF">
-        <Text>Loading...</Text>
+        <Spinner size="lg" />
       </Box>
     );
   } else {

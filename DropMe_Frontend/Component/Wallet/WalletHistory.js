@@ -1,4 +1,4 @@
-import { Text, Box, ScrollView } from "native-base";
+import { Text, Box, ScrollView, Spinner } from "native-base";
 import React, { useEffect, useState, useContext } from "react";
 import { MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 import axios from "axios";
@@ -98,7 +98,7 @@ const WalletHistory = () => {
   if (isLoaded)
     return (
       <Box flex={1} justifyContent="center" alignItems={"center"} bg="#F0F8FF">
-        <Text>Loading...!</Text>
+        <Spinner size="lg" />
       </Box>
     );
   else

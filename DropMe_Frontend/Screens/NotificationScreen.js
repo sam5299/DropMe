@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Text, Stack, ScrollView, Button } from "native-base";
+import { Box, Text, Stack, ScrollView, Button, Spinner } from "native-base";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { AuthContext } from "../Component/Context";
@@ -149,7 +149,7 @@ const NotificationScreen = ({ navigation }) => {
   if (isLoading) {
     return (
       <Box flex={1} justifyContent="center" alignItems={"center"}>
-        <Text>Loading...!</Text>
+        <Spinner size="lg" />
       </Box>
     );
   } else {

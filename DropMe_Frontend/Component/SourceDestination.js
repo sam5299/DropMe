@@ -1,14 +1,8 @@
-import {
-  Text,
-  View,
-  Pressable,
-  FlatList,
-  TextInput,
-  ScrollView,
-} from "react-native";
+import { Text, View, Pressable, FlatList, ScrollView } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
-import { Input, Box, Stack } from "native-base";
+import { Input, Box, Stack, Icon } from "native-base";
 import { AuthContext } from "./Context";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 // import { Location } from "./location";
 
@@ -124,6 +118,15 @@ const SourceDestination = ({ dispatch }) => {
         value={startLocation}
         w="95%"
         onChangeText={(item) => onChangeText(item, "startLocation")}
+        InputRightElement={
+          <Icon
+            as={<MaterialCommunityIcons name="close-circle" />}
+            size={5}
+            mr="2"
+            color="rgba(6,182,212,1.00)"
+            onPress={() => setStartLocation(null)}
+          />
+        }
       />
       {showFlatList ? (startOrEnd === 0 ? flatList : null) : null}
       <Input
@@ -133,6 +136,15 @@ const SourceDestination = ({ dispatch }) => {
         value={endLocation}
         w="95%"
         onChangeText={(item) => onChangeText(item, "endLocation")}
+        InputRightElement={
+          <Icon
+            as={<MaterialCommunityIcons name="close-circle" />}
+            size={5}
+            mr="2"
+            color="rgba(6,182,212,1.00)"
+            onPress={() => setEndLocation(null)}
+          />
+        }
       />
       {showFlatList ? (startOrEnd === 1 ? flatList : null) : null}
     </Box>
