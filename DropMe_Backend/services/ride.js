@@ -61,8 +61,7 @@ async function getCreatedRides(
       "_id vehicleNumber vehicleName vehicleImage vehicleClass",
       Vehicle
     )
-    .find({ $or: [{ rideFor: gender }, { rideFor: "Both" }] })
-    .find({$ge:[{rideDate:Date.now}]});
+    .find({ $or: [{ rideFor: gender }, { rideFor: "Both" }] });
   // .find({ $not: [{ User: userId }] });
 }
 // Add trip request
@@ -84,6 +83,9 @@ async function getUserRides(userId) {
     .populate("Vehicle", "_id  vehicleImage ", Vehicle)
     .populate("User", "_id name", User)
     .sort({ _id: -1 });
+    //.where({rideDate:{$gte:Date.now}});
+    //.find({$gte:[{rideDate:Date.now}]});
+    
 }
 
 // delete a ride by its id
