@@ -38,7 +38,7 @@ router.use(express.json());
 
 //ride creat route
 router.post("/createRide", auth, async (req, res) => {
-  console.log("create ride request body:", req.body);
+  console.log("create ride called");
   let userId = req.body.userId;
   delete req.body.userId;
   let amount = 0;
@@ -73,7 +73,7 @@ router.get(
   auth,
   async (req, res) => {
     let body = req.params;
-    console.log("in search ride backend", body);
+    console.log("Search a ride is called");
     if (
       !(
         "source" in body &&
@@ -102,7 +102,7 @@ router.get(
         seats,
         gender
       );
-      console.log(rides);
+      //console.log(rides);
       if (rides.length == 0) return res.status(400).send("No rides found");
 
       return res.status(200).send(rides);
@@ -114,6 +114,7 @@ router.get(
 
 //   get Rides of the particular Rider
 router.get("/getUserRides", auth, async (req, res) => {
+  console.log("Get user rides is called...");
   let id = req.body.User;
   try {
     let rideData = await getUserRides(id);
@@ -133,7 +134,7 @@ router.get("/getTripRequestList/:rid", auth, async (req, res) => {
   let rideId = req.params.rid;
   let rideObj = await Ride.findOne({ _id: rideId });
   let tripList = await getTripRequestList(rideId);
-  //console.log("trip requested list:", tripList);
+  console.log("Get trip requested list is called");
   if (!tripList)
     return res.status(404).send("No requested trip for given ride.");
   let requestedTripList = [];
@@ -145,9 +146,11 @@ router.get("/getTripRequestList/:rid", auth, async (req, res) => {
     // let passengerObj = await User.findOne({ _id: result.User });
     // if (!passengerObj)
     //   console.log("Error in get rider trip request of passenger");
-    let walletObj = await Wallet.findOne({ User: result.User });
+    let walletObj = await Wallet.findOne({ User: result.User._id });
     if (!walletObj)
       console.log("Error in get wallet details in get rider trip request");
+
+    //console.log("@@@", walletObj);
 
     if (
       rideObj.availableSeats >= result.seatRequest &&
@@ -176,7 +179,7 @@ router.get("/getTripRequestList/:rid", auth, async (req, res) => {
 //route to accept trip request
 router.post("/acceptTripRequest", auth, async (req, res) => {
   //console.log("@@@", req.body);
-
+  console.log("Accept trip request is called");
   req.body.status = "Booked";
   req.body.token = generateTripToken();
   delete req.body.userId;
@@ -194,9 +197,9 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
   //calculate trip cost
   req.body.amount = 0;
 
-  if (Ride.amount) {
-    amount = await calculateTripAmount(vehicle.Vehicle, trip.distance);
-    req.body.amount = amount;
+  if (vehicle.amount) {
+    // amount = await calculateTripAmount(vehicle.Vehicle, trip.distance);
+    req.body.amount = vehicle.amount;
   }
   req.body.date = trip.date;
   //adding RaiderId and PassengerId to req.body
@@ -234,10 +237,12 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
   }
 
   //update the availableSeats and reduce number of seats for accepted trip
+  //console.log("trip seat request:", trip.seatRequest);
   let updatedAvailableSeatResult = await reduceAvailableSeats(
     req.body.rideId,
     trip.seatRequest
   );
+  //console.log("updatedSeats:", updatedAvailableSeatResult);
   if (!updatedAvailableSeatResult) {
     console.log("failed to reduce available seats of ride.");
     return res.status(400).send("failed to updated balance");

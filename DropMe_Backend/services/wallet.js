@@ -20,7 +20,7 @@ async function getWallet(userId) {
 
 //  Update balance by +/-number
 async function updateWallet(userId, amount) {
-  console.log("in updatewallet", userId);
+  //console.log("in updatewallet", userId);
   let walletObj = await Wallet.findOne({ User: userId });
   //console.log(walletObj);
   walletObj.creditPoint = walletObj.creditPoint + parseInt(amount);

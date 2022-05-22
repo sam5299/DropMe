@@ -79,7 +79,7 @@ router.post("/register", async (req, res) => {
       if (!notificationResult)
         console.log("error while creating welcome notification");
 
-      return res.status(200).send("User added:" + user);
+      return res.status(200).send("Registration successfull!");
     } catch (ex) {
       if (ex.name === "ValidationError") {
         console.error(Object.values(ex.errors).map((val) => val.message));
@@ -104,9 +104,10 @@ router.post("/login", async (req, res) => {
     req.body.password,
     user.password
   );
-  if (!validPassword) return res.status(400).send("Invalid email or password");
+  if (!validPassword)
+    return res.status(400).send("Invalid mobile number or password");
 
-  console.log("User details:" + user);
+  console.log("Login successfull!");
   const token = jwt.sign(
     { userId: user.userId, User: user._id },
     config.get("jwtPrivateKey")

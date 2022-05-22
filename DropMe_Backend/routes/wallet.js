@@ -63,7 +63,7 @@ router.get("/getWalletDetails", auth, async (req, res) => {
   try {
     let result = await getWallet(req.body.User);
     if (!result) res.status(400).send("error while loading wallet details");
-    console.log(result);
+    console.log("Get wallet called");
     return res.status(200).send(result);
   } catch (ex) {
     console.log("In wallet routes, getWalletDetails " + ex.message);

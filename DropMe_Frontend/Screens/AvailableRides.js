@@ -12,6 +12,7 @@ import {
   IconButton,
   CloseIcon,
   Alert,
+  Spinner,
 } from "native-base";
 import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
@@ -256,7 +257,7 @@ const AvailableRides = ({ route, navigation }) => {
   if (isLoading) {
     return (
       <Box flex={1} justifyContent="center" alignItems={"center"}>
-        <Text>Loading...!</Text>
+        <Spinner size="lg" />
       </Box>
     );
   } else {

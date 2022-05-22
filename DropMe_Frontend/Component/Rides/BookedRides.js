@@ -13,6 +13,7 @@ import {
   HStack,
   IconButton,
   CloseIcon,
+  Spinner,
 } from "native-base";
 import { Alert as NewAlert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -317,7 +318,7 @@ const BookedRides = ({ navigation }) => {
         alignItems={"center"}
         bg={"#F0F8FF"}
       >
-        <Text>Loading...!</Text>
+        <Spinner size="lg" />
       </Box>
     );
   } else {

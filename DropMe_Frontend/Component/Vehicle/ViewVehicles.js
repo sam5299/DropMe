@@ -14,6 +14,7 @@ import {
   IconButton,
   CloseIcon,
   Fab,
+  Spinner,
 } from "native-base";
 import axios from "axios";
 import { AuthContext } from "../Context";
@@ -208,7 +209,7 @@ const ViewVehicles = () => {
         alignItems={"center"}
         bg="#F0F8FF"
       >
-        <Text>Loading...!</Text>
+        <Spinner size="lg" />
       </Box>
     );
   } else {

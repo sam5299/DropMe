@@ -17,6 +17,7 @@ import {
   VStack,
   IconButton,
   CloseIcon,
+  Spinner,
 } from "native-base";
 import * as ImagePicker from "expo-image-picker";
 import { useValidation } from "react-native-form-validator";
@@ -264,8 +265,8 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
   );
 
   let licenseImageInput = (
-    <Box>
-      <Box w={"95%"}>
+    <Box alignItems={"center"} mb={5}>
+      <Box ml={3} w={"95%"} flexDir={"row"}>
         <Box mt="5" w={"95%"} flexDir={"row"} alignItems="center">
           <Avatar
             bg="green.500"
@@ -303,7 +304,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
   if (isPageLoading) {
     return (
       <Box flex={1} justifyContent="center" alignItems={"center"}>
-        <Text>Loading...</Text>
+        <Spinner size="lg" />
       </Box>
     );
   } else {

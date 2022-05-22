@@ -43,16 +43,16 @@ router.post("/requestRide", auth, async (req, res) => {
   delete req.body.userId;
   let rideId = req.body.rideId;
   delete req.body.rideId;
-  console.log("body for request ride:", req.body);
-
+  // console.log("body for request ride:", req.body);
+  console.log("Sending trip request..");
   let { error } = validateTrip(req.body);
   if (error) return res.status(400).send(error.details[0].message);
-  console.log("USER:" + req.body.User);
+  //console.log("USER:" + req.body.User);
 
   //check if passenger has sufficent balance for booking ride.
   let balance = await getWallet(req.body.User);
-  console.log("balance:" + balance);
-  console.log("ride amount:" + req.body.amount);
+  // console.log("balance:" + balance);
+  // console.log("ride amount:" + req.body.amount);
   //return res.status(400).send("testing error");
   if (balance.creditPoint < req.body.amount + balance.usedCreditPoint)
     return res
@@ -68,11 +68,11 @@ router.post("/requestRide", auth, async (req, res) => {
   //send notification to rider for trip request
   //step1. get userId of rider from rid
   let rideDetails = await Ride.findOne({ _id: rideId });
-  console.log("ride detail's:", rideDetails);
+  // console.log("ride detail's:", rideDetails);
 
   //step2: get user detail's
   let user = await getUser(req.body.User);
-  console.log("user detail's:" + user);
+  // console.log("user detail's:" + user);
 
   //step3. crate object
   let notificationObj = {
@@ -83,7 +83,7 @@ router.post("/requestRide", auth, async (req, res) => {
   };
 
   let notificationResult = await createNotification(notificationObj);
-  console.log("notification result:", notificationResult);
+  console.log("Sending notification to rider for the request...");
 
   return res.status(200).send(requestedRide);
 });
