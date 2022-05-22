@@ -195,7 +195,7 @@ router.get("/getUser", auth, async (req, res) => {
       "licenseNumber",
       "licenseImage",
     ]);
-    console.log(user);
+    console.log("getUser called..");
     if (!user) return res.status(404).send("No users present!!");
     return res.status(200).send(user);
   } catch (ex) {

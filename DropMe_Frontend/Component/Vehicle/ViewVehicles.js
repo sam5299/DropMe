@@ -1,5 +1,6 @@
 //import { View,Alert } from "react-native";
 import { React, useState, useEffect, useContext } from "react";
+import { Alert as NewAlert } from "react-native";
 import {
   Box,
   Stack,
@@ -8,13 +9,14 @@ import {
   Icon,
   Button,
   ScrollView,
-  Alert,
+  // Alert,
   VStack,
   HStack,
   IconButton,
   CloseIcon,
   Fab,
   Spinner,
+  useToast,
 } from "native-base";
 import axios from "axios";
 import { AuthContext } from "../Context";
@@ -31,6 +33,9 @@ const ViewVehicles = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [status, setStatus] = useState({ status: "", title: "" });
   const [fetching, setFetching] = useState(true);
+
+  //toast field
+  const toast = useToast();
 
   useEffect(() => {
     let mounted = true;
@@ -51,6 +56,20 @@ const ViewVehicles = () => {
           setFetching(false);
         }
       } catch (ex) {
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="red.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>
+                  {error.name === "AxiosError"
+                    ? "Sorry cannot reach to server!"
+                    : error.response.data}
+                </Text>
+              </Box>
+            );
+          },
+          placement: "top",
+        });
         console.log("Exception", ex.response.data);
         setFetching(false);
       }
@@ -60,32 +79,32 @@ const ViewVehicles = () => {
     return () => (mounted = false);
   }, []);
 
-  let AlertField = (
-    <Alert w="100%" status={status.status}>
-      <VStack space={2} flexShrink={1} w="100%">
-        <HStack flexShrink={1} space={2} justifyContent="space-between">
-          <HStack space={2} flexShrink={1}>
-            <Alert.Icon mt="1" />
-            <Text fontSize="md" color="coolGray.800">
-              {status.title}
-            </Text>
-          </HStack>
-          <IconButton
-            variant="unstyled"
-            _focus={{
-              borderWidth: 0,
-            }}
-            icon={<CloseIcon size="3" color="coolGray.600" />}
-          />
-        </HStack>
-      </VStack>
-    </Alert>
-  );
+  // let AlertField = (
+  //   <Alert w="100%" status={status.status}>
+  //     <VStack space={2} flexShrink={1} w="100%">
+  //       <HStack flexShrink={1} space={2} justifyContent="space-between">
+  //         <HStack space={2} flexShrink={1}>
+  //           <Alert.Icon mt="1" />
+  //           <Text fontSize="md" color="coolGray.800">
+  //             {status.title}
+  //           </Text>
+  //         </HStack>
+  //         <IconButton
+  //           variant="unstyled"
+  //           _focus={{
+  //             borderWidth: 0,
+  //           }}
+  //           icon={<CloseIcon size="3" color="coolGray.600" />}
+  //         />
+  //       </HStack>
+  //     </VStack>
+  //   </Alert>
+  // );
 
   const showConfirmDialog = (vehicle) => {
-    return Alert.alert(
+    return NewAlert.alert(
       "Are your sure?",
-      `Do you really want to remove vehicle`,
+      `Do you really want to remove vehicle?`,
       [
         // The "Yes" button
         {
@@ -114,25 +133,51 @@ const ViewVehicles = () => {
         }
       );
       // setVehicle(newVehicle);
-      setStatus({ status: "success", title: result.data });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-        let newVehicle = vehicleDetails.filter(
-          (vehicleObj) => vehicleObj._id != vehicle._id
-        );
-        setVehicle(newVehicle);
-      }, 2000);
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="green.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>{result.data}</Text>
+            </Box>
+          );
+        },
+        placement: "top",
+      });
+
+      // setStatus({ status: "success", title: result.data });
+      // setShowAlert(true);
+      // setTimeout(() => {
+      //setShowAlert(false);
+      let newVehicle = vehicleDetails.filter(
+        (vehicleObj) => vehicleObj._id != vehicle._id
+      );
+      setVehicle(newVehicle);
+      // }, 2000);
 
       setIsLoading(false);
     } catch (ex) {
-      setStatus({ status: "error", title: ex.response.data });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 2000);
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>
+                {error.name === "AxiosError"
+                  ? "Sorry cannot reach to server!"
+                  : ex.response.data}
+              </Text>
+            </Box>
+          );
+        },
+        placement: "top",
+      });
       console.log(ex.response.data);
       setIsLoading(false);
+
+      // setStatus({ status: "error", title: ex.response.data });
+      // setShowAlert(true);
+      // setTimeout(() => {
+      //   setShowAlert(false);
+      // }, 2000);
     }
   }
 
@@ -186,8 +231,8 @@ const ViewVehicles = () => {
                 onPress={() => {
                   // setStatus({ status: "error", title: "Remvoing vehicle.." });
                   // setShowAlert(true);
-                  //showConfirmDialog(vehicle);
-                  removeVehicle(vehicle);
+                  showConfirmDialog(vehicle);
+                  //removeVehicle(vehicle);
                 }}
               >
                 <Text fontSize={"lg"} color="white">
