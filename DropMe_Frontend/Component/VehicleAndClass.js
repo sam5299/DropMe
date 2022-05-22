@@ -2,7 +2,7 @@
 
 import { View, Text } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Select, Slider } from "native-base";
+import { Box, CheckIcon, Select, Slider } from "native-base";
 import axios from "axios";
 import { AuthContext } from "./Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -50,8 +50,14 @@ const VehicleAndClass = ({ dispatch }) => {
         <Select
           mr="1"
           w="100%"
-          accessibilityLabel="Select Vehicle"
-          placeholder={vehicle === "" ? "Select Vehicle" : vehicle}
+          selectedValue={vehicle}
+          placeholder={
+            vehicles.length
+              ? vehicle == ""
+                ? "Select Vehicle"
+                : vehicle
+              : "Please Add Vehicle"
+          }
           onValueChange={(itemValue) => {
             setVehicle(itemValue.vehicleName);
             setVehicleClass(itemValue.vehicleClass);
@@ -66,7 +72,7 @@ const VehicleAndClass = ({ dispatch }) => {
             });
           }}
         >
-          <Select.Item shadow={2} label="Select Vehicle" disabled={true} />
+          <Select.Item label="Select Vehicle" disabled={true} />
           {vehicles.map((item) => (
             <Select.Item
               shadow={2}

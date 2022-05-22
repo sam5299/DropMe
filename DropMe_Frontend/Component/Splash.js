@@ -1,6 +1,6 @@
 import { View, Text, ImageBackground, StyleSheet } from "react-native";
 import React from "react";
-import { Spinner } from "native-base";
+import dropme from "../assets/dropme.jpg";
 
 const Splash = () => {
   const image = {
@@ -9,8 +9,7 @@ const Splash = () => {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={image}
-        resizeMode="cover"
+        source={dropme}
         style={styles.image}
         imageStyle={{ opacity: 0.8 }}
       >

@@ -35,10 +35,9 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case "source":
-      let sourceLower = action.payload.toLowerCase();
       return {
         ...state,
-        source: sourceLower,
+        source: action.payload,
       };
     case "s_lat":
       return {
@@ -51,10 +50,9 @@ const reducer = (state, action) => {
         s_lon: action.payload,
       };
     case "destination":
-      let destinationLower = action.payload.toLowerCase();
       return {
         ...state,
-        destination: destinationLower,
+        destination: action.payload,
       };
     case "d_lat":
       return {

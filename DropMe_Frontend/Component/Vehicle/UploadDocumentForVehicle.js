@@ -258,7 +258,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
           isInvalid={true}
           leftIcon={<WarningOutlineIcon size="xs" />}
         >
-          Invalid License Number.
+          Please type valid Number Ex. MH20 20220007722
         </FormControl.ErrorMessage>
       )}
     </Box>
@@ -336,7 +336,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
             {showAlert ? AlertField : ""}
             <FormControl justifyContent="center" alignItems={"center"}>
               <Text color="rgba(6,182,212,1.00)" fontSize="xl">
-                {"Add Vehicle Detail's"}
+                {"Add Vehicle Details"}
               </Text>
               {userData.licenseNumber === null ? licenseNumberInput : ""}
               {userData.licenseImage === null ? licenseImageInput : ""}
