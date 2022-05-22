@@ -9,6 +9,7 @@ import {
   HStack,
   IconButton,
   CloseIcon,
+  Spinner,
 } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
@@ -22,7 +23,6 @@ const Balance = ({ route, navigation }) => {
   const [wallet, setBalance] = useState({});
   const [showAlert, setShowAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [visible, setVisible] = useState(false); //alert field
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
@@ -153,7 +153,7 @@ const Balance = ({ route, navigation }) => {
         alignItems={"center"}
         bg="#F0F8FF"
       >
-        <Text>Loading...!</Text>
+        <Spinner size="lg" />
       </Box>
     );
   } else {

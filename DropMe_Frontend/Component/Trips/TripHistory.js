@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Text, Stack, Image, ScrollView } from "native-base";
+import { Box, Text, Stack, Image, ScrollView, Spinner } from "native-base";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { Rating, AirbnbRating } from "react-native-ratings";
 import axios from "axios";
@@ -156,7 +156,7 @@ const TripHistory = () => {
     <Box flex={1} bg={"#F0F8FF"}>
       {isHistoryFetchingDone ? (
         <Box flex={1} justifyContent="center" alignItems={"center"}>
-          <Text>Loading...!</Text>
+          <Spinner size="lg" />
         </Box>
       ) : passengerHistory.length ? (
         getHistory()

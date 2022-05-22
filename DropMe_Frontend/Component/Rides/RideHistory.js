@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Text, Stack, Image, ScrollView } from "native-base";
+import { Box, Text, Stack, Image, ScrollView, Spinner } from "native-base";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { Rating, AirbnbRating } from "react-native-ratings";
 import axios from "axios";
@@ -152,7 +152,7 @@ const RideHistory = () => {
         alignItems={"center"}
         bg={"#F0F8FF"}
       >
-        Loading...!
+        <Spinner size="lg" />
       </Box>
     );
   } else {

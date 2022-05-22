@@ -13,6 +13,7 @@ import {
   HStack,
   IconButton,
   CloseIcon,
+  Spinner,
 } from "native-base";
 
 import axios from "axios";
@@ -229,7 +230,7 @@ function TripBooked() {
       {showAlert ? AlertField : null}
       {isBookedTripFetchingDone ? (
         <Box flex={1} justifyContent="center" alignItems={"center"}>
-          <Text>Loading...!</Text>
+          <Spinner size="lg" />
         </Box>
       ) : bookedTripList.length ? (
         getBookedTrips()

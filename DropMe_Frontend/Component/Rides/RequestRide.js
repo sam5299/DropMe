@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Text, Stack, Image, Button, ScrollView } from "native-base";
+import {
+  Box,
+  Text,
+  Stack,
+  Image,
+  Button,
+  ScrollView,
+  Spinner,
+} from "native-base";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -147,7 +155,7 @@ const RequestRides = ({ navigation }) => {
         alignItems={"center"}
         bg={"#F0F8FF"}
       >
-        <Text>Loading...!</Text>
+        <Spinner size="lg" />
       </Box>
     );
   } else {

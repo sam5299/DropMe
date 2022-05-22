@@ -1,4 +1,3 @@
-import { View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../Context";
@@ -10,6 +9,7 @@ import {
   Button,
   ScrollView,
   useToast,
+  Spinner,
 } from "native-base";
 
 const AcceptRejectRequest = ({ route, navigation }) => {
@@ -269,7 +269,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
   if (isLoading) {
     return (
       <Box flex={1} justifyContent={"center"} alignItems={"center"}>
-        Loading...!
+        <Spinner size="lg" />
       </Box>
     );
   } else {
