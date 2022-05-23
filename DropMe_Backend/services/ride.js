@@ -24,7 +24,7 @@ async function getCreatedRides(
   userId,
   Source,
   Destination,
-  Date,
+  date,
   Time,
   seats,
   gender
@@ -39,10 +39,12 @@ async function getCreatedRides(
   // console.log("Seats:" + seats);
   // console.log("Gender:" + gender);
 
+ // let dateObj=convertToDate(date);
+  
+
   return await Ride.find({
     source: Source,
     destination: Destination,
-    date: Date,
     // time: Time,
     availableSeats: { $gte: seats },
     User: { $ne: userId },
@@ -81,6 +83,9 @@ async function getUserRides(userId) {
     .populate("Vehicle", "_id  vehicleImage ", Vehicle)
     .populate("User", "_id name", User)
     .sort({ _id: -1 });
+    //.where({rideDate:{$gte:Date.now}});
+    //.find({$gte:[{rideDate:Date.now}]});
+    
 }
 
 // delete a ride by its id
@@ -128,6 +133,55 @@ function getTimeDifference(rideDate) {
   return hrs;
 }
 
+//function which return date object of date string
+function convertToDate(dateString) {
+  let splitResult = dateString.split(" ");
+  // console.log(splitResult);
+  let Day = parseInt(splitResult[2]);
+  let Year = parseInt(splitResult[3]);
+  let Month;
+  switch (splitResult[1]) {
+    case "Jan":
+      Month = 1;
+      break;
+    case "Feb":
+      Month = 2;
+      break;
+    case "Mar":
+      Month = 3;
+      break;
+    case "Apr":
+      Month = 4;
+      break;
+    case "May":
+      Month = 5;
+      break;
+    case "Jun":
+      Month = 6;
+      break;
+    case "Jul":
+      Month = 7;
+      break;
+    case "Aug":
+      Month = 8;
+      break;
+    case "Sep":
+      Month = 9;
+      break;
+    case "Oct":
+      Month = 10;
+      break;
+    case "Nov":
+      Month = 11;
+      break;
+    case "Dec":
+      Month = 12;
+      break;
+  }
+  //console.log(Year,Month,Day);
+  return new Date(Year, Month - 1, Day + 1);
+}
+
 // To save image of vehicle after creating ride
 function savePicture(fileName) {}
 
@@ -143,4 +197,5 @@ module.exports = {
   reduceAvailableSeats,
   removeTripId,
   getTimeDifference,
+  convertToDate,
 };

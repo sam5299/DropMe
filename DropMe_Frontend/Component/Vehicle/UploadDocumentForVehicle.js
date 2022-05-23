@@ -68,11 +68,11 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
             "x-auth-token": parseUser.userToken,
           },
         });
-        console.log("Upload Document Vehicle:", result.data);
         if (mounted) {
           setToken(parseUser.userToken);
           setUserData(result.data);
           setIsPageLoading(false);
+          console.log("Upload Vehicle Documents");
         }
       } catch (ex) {
         console.log("Exception:", ex);
@@ -255,7 +255,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
           isInvalid={true}
           leftIcon={<WarningOutlineIcon size="xs" />}
         >
-          Invalid License Number.
+          Please type valid Number Ex. MH20 20220007722
         </FormControl.ErrorMessage>
       )}
     </Box>
@@ -332,7 +332,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
           >
             <FormControl justifyContent="center" alignItems={"center"}>
               <Text color="rgba(6,182,212,1.00)" fontSize="xl">
-                {"Add Vehicle Detail's"}
+                {"Add Vehicle Details"}
               </Text>
               {userData.licenseNumber === null ? licenseNumberInput : ""}
               {userData.licenseImage === null ? licenseImageInput : ""}

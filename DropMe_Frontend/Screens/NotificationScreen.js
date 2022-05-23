@@ -1,17 +1,29 @@
 import { View } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Text, Stack, ScrollView, Button, Spinner } from "native-base";
+import {
+  Box,
+  Text,
+  Stack,
+  ScrollView,
+  Button,
+  Spinner,
+  Modal,
+} from "native-base";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { AuthContext } from "../Component/Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AcceptRating from "./AcceptRating";
 
 const NotificationScreen = ({ navigation }) => {
   const [notificationList, setNotification] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [isUpdated, setUpdated] = useState(false);
+  const [tripRideId,setTripRideId] = useState(null)
+  const [modalVisible, setModalVisible] = useState(false);
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
+  const [markReadNotificationObject, setMarkReadNotificationObject] = useState(null);
 
   async function markAllRead() {
     try {
@@ -50,7 +62,7 @@ const NotificationScreen = ({ navigation }) => {
           },
         }
       );
-      console.log(result.data);
+     // console.log(result.data);
       setUpdated(true);
     } catch (ex) {
       console.log("Exception in mark notification", ex.response);
@@ -58,7 +70,9 @@ const NotificationScreen = ({ navigation }) => {
     }
   }
 
-  const redirectToPage = (notificationType) => {
+  const redirectToPage = (notificationObj) => {
+    let notificationType=notificationObj.notificationType;
+    // alert(notificationType);
     switch (notificationType) {
       case "Wallet":
         navigation.navigate("WalletStack");
@@ -68,6 +82,12 @@ const NotificationScreen = ({ navigation }) => {
         return;
       case "Trip":
         navigation.navigate("TripsStack");
+        return;
+      case "Trip Completed":
+        setTripRideId(notificationObj.tripRideId);
+        setMarkReadNotificationObject(notificationObj._id);
+        console.log(notificationObj.tripRideId);
+        setModalVisible(true);
         return;
       default:
         return;
@@ -108,11 +128,25 @@ const NotificationScreen = ({ navigation }) => {
   function getNotification() {
     return (
       <ScrollView w={"100%"}>
+        <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
+          <Modal.Content maxWidth="100%">
+            <Modal.CloseButton />
+            <Modal.Header>
+              <Text fontWeight={"bold"}>How was the ride?</Text>
+            </Modal.Header>
+            <Modal.Body>
+              <AcceptRating tripRideId={tripRideId} 
+              setModalVisible={setModalVisible} 
+              notificationObject={markReadNotificationObject}
+              markReadNotification={markReadNotification}
+                />
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+
         {notificationList.map((msg) => (
           <Stack
             key={msg._id}
-            //display={"flex"}
-            //flexDirection={"column"}
             direction="row"
             p={3}
             m={2}
@@ -128,7 +162,7 @@ const NotificationScreen = ({ navigation }) => {
             >
               <Text
                 fontSize={15}
-                onPress={() => redirectToPage(msg.notificationType)}
+                onPress={() => redirectToPage(msg)}
               >
                 {msg.message}
               </Text>

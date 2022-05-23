@@ -39,7 +39,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
           }
         );
         if (mounted) {
-          console.log(requestList.data);
+          console.log("Accept or Reject Request");
           setTripRequestList(requestList.data);
           setLoading(false);
         }

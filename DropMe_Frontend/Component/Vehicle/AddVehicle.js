@@ -332,7 +332,7 @@ const AddVehicle = ({ route, navigation }) => {
                     isInvalid={true}
                     leftIcon={<WarningOutlineIcon size="xs" />}
                   >
-                    Please add valid number Ex. MH 16 HT 7221
+                    Please type valid number Ex. MH 16 HT 7221
                   </FormControl.ErrorMessage>
                 )}
               </Box>

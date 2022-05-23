@@ -33,16 +33,14 @@ const initialState = {
   availableSeats: "1",
   rideFor: "Both",
   rideType: "Paid",
-  // distance: null,
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case "source":
-      let sourceLower = action.payload.toLowerCase();
       return {
         ...state,
-        source: sourceLower,
+        source: action.payload,
       };
     case "s_lat":
       return {
@@ -55,10 +53,9 @@ const reducer = (state, action) => {
         s_lon: action.payload,
       };
     case "destination":
-      let destinationLower = action.payload.toLowerCase();
       return {
         ...state,
-        destination: destinationLower,
+        destination: action.payload,
       };
     case "d_lat":
       return {
@@ -105,12 +102,6 @@ const reducer = (state, action) => {
         ...state,
         rideType: action.payload,
       };
-    // case "distance":
-    //   alert(action.payload);
-    //   return {
-    //     ...state,
-    //     distance: action.payload,
-    //   };
     default:
       return {
         source: "",
@@ -122,7 +113,6 @@ const reducer = (state, action) => {
         availableSeats: "1",
         rideFor: "Both",
         rideType: "Paid",
-        // distance: null,
       };
   }
 };
@@ -133,10 +123,15 @@ const CreateRide = ({ navigation }) => {
   const [userToken, setToken] = useState(null);
   const [isLoading, setLoading] = useState(false);
 
+  const todaysDate = new Date();
+  const hourse = todaysDate.getHours();
+  const min = todaysDate.getMinutes();
+  const currentTime = `${hourse}:${min}`;
+
   const toast = useToast();
-  const { source, destination, date, time, Vehicle } = state;
+  const { source, destination, Vehicle } = state;
   const { validate, isFieldInError } = useValidation({
-    state: { source, destination, date, time, Vehicle },
+    state: { source, destination, Vehicle },
   });
 
   const { getUrl } = useContext(AuthContext);
@@ -144,21 +139,19 @@ const CreateRide = ({ navigation }) => {
 
   useEffect(() => {
     let mounted = true;
-    //console.log("rendered");
     const createRide = async () => {
       try {
         const User = await AsyncStorage.getItem("User");
         const userDetails = JSON.parse(User);
-        // console.log("UserDetails:", userDetails);
-        // console.log(userDetails);
         if (mounted) {
           setToken(userDetails.userToken);
           setGender(userDetails.gender);
+          dispatch({ type: "date", payload: todaysDate.toDateString() });
+          dispatch({ type: "time", payload: currentTime });
         }
       } catch (error) {
         console.log("in catch of createRide");
         console.log(error);
-        // console.log(error.response.data);
       }
     };
     createRide();
@@ -170,12 +163,10 @@ const CreateRide = ({ navigation }) => {
     let isTrue = validate({
       source: { required: true },
       destination: { required: true },
-      date: { required: true },
-      time: { required: true },
       Vehicle: { required: true },
     });
     if (isTrue) {
-      console.log(state);
+      // console.log(state);
       let distance = null;
       try {
         //call api to get exact latitude longitude of source,destination lat,log
@@ -266,24 +257,6 @@ const CreateRide = ({ navigation }) => {
             )}
           </Box>
           <DateTime dispatch={dispatch} />
-          <Box ml="5" flexDirection={"row"} justifyContent="space-between">
-            {isFieldInError("date") && (
-              <FormControl.ErrorMessage
-                isInvalid={true}
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                Please Enter Date
-              </FormControl.ErrorMessage>
-            )}
-            {isFieldInError("time") && (
-              <FormControl.ErrorMessage
-                isInvalid={true}
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                Please Enter Time
-              </FormControl.ErrorMessage>
-            )}
-          </Box>
           <VehicleAndClass dispatch={dispatch} />
           <Box ml={5}>
             {isFieldInError("Vehicle") && (

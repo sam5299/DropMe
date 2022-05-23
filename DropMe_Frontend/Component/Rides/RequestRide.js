@@ -35,7 +35,7 @@ const RequestRides = ({ navigation }) => {
         });
         if (mounted) {
           setUserRides(allRides.data);
-          //console.log("Ride Details:", allRides.data);
+          console.log("Available Rides");
           setShowRides(false);
         }
       } catch (error) {

@@ -33,7 +33,6 @@ const BookedRides = ({ navigation }) => {
 
   useEffect(() => {
     let mounted = true;
-    // console.log("in booked ride page");
     const getUserRides = async () => {
       try {
         const User = await AsyncStorage.getItem("User");
@@ -44,9 +43,11 @@ const BookedRides = ({ navigation }) => {
             "x-auth-token": userDetails.userToken,
           },
         });
-        setbookedRides(allRides.data);
-        // console.log("@@@", allRides.data);
-        setShowRides(false);
+        if (mounted) {
+          setbookedRides(allRides.data);
+          console.log("Booked Rides");
+          setShowRides(false);
+        }
       } catch (error) {
         console.log("Booked Rides Exception: ", error.response.data);
         toast.show({
@@ -367,8 +368,13 @@ const BookedRides = ({ navigation }) => {
           {bookedRides.length ? (
             allUserRides()
           ) : (
-            <Box flex={1} justifyContent="center" alignItems={"center"}>
-              <Text>No Rides!!!</Text>
+            <Box
+              flex={1}
+              justifyContent="center"
+              alignItems={"center"}
+              bg={"#F0F8FF"}
+            >
+              <Text>No Booked Rides</Text>
             </Box>
           )}
         </Box>
