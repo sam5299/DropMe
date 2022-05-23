@@ -1,4 +1,3 @@
-import { View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
@@ -9,11 +8,7 @@ import {
   Stack,
   Text,
   WarningOutlineIcon,
-  Alert,
-  VStack,
-  HStack,
-  IconButton,
-  CloseIcon,
+  useToast,
 } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useValidation } from "react-native-form-validator";
@@ -27,40 +22,17 @@ const PaymentInterface = ({ navigation }) => {
   const [cardCvv, setCardCvv] = useState("");
   const [amount, setAmount] = useState("");
   const [userToken, setToken] = useState(null);
-  const [status, setStatus] = useState({ status: "", title: "" });
   const [error, setError] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
+  // Toast to show any success or error message
+  const toast = useToast();
+
   const { validate, isFieldInError } = useValidation({
     state: { cardHolderName, cardCvv, cardNumber, amount },
   });
-
-  let AlertField = (
-    <Box>
-      <Alert w="100%" status={status.status}>
-        <VStack space={2} flexShrink={1} w="100%">
-          <HStack flexShrink={1} space={2} justifyContent="space-between">
-            <HStack space={2} flexShrink={1}>
-              <Alert.Icon mt="1" />
-              <Text fontSize="md" color="coolGray.800">
-                {status.title}
-              </Text>
-            </HStack>
-            <IconButton
-              variant="unstyled"
-              _focus={{
-                borderWidth: 0,
-              }}
-              icon={<CloseIcon size="3" color="coolGray.600" />}
-            />
-          </HStack>
-        </VStack>
-      </Alert>
-    </Box>
-  );
 
   useEffect(() => {
     let mounted = true;
@@ -68,7 +40,9 @@ const PaymentInterface = ({ navigation }) => {
       const User = await AsyncStorage.getItem("User");
       const parseUser = JSON.parse(User);
       //console.log("parseUser@@@:", parseUser.userToken.trim());
-      setToken(parseUser.userToken);
+      if (mounted) {
+        setToken(parseUser.userToken);
+      }
     }
     fetchUserData();
     return () => (mounted = false);
@@ -87,25 +61,30 @@ const PaymentInterface = ({ navigation }) => {
       let namePattern = / \w*/; // /{\w+' '}+/;
       if (!pattern.test(cardNumber)) {
         console.log("card number is not right");
-        setStatus({
-          status: "error",
-          title: "Invalid card number!",
+
+        // pop up toast if card number is invalid
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="red.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>Invalid Card Number!</Text>
+              </Box>
+            );
+          },
+          placement: "top",
         });
-        setShowAlert(true);
-        setTimeout(() => {
-          setShowAlert(false);
-          return;
-        }, 5000);
       } else if (!namePattern.test(cardHolderName)) {
-        setStatus({
-          status: "error",
-          title: "Invalid card holder name!",
+        // pop up toast if card holder name is invalid
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="red.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>Invalid Card Holder Name!</Text>
+              </Box>
+            );
+          },
+          placement: "top",
         });
-        setShowAlert(true);
-        setTimeout(() => {
-          setShowAlert(false);
-          return;
-        }, 5000);
       } else {
         setIsLoading(true);
         try {
@@ -124,11 +103,18 @@ const PaymentInterface = ({ navigation }) => {
             }
           );
           setIsLoading(false);
-          setStatus({
-            status: "success",
-            title: "Credit added successfully!",
+
+          // pop up toast to show credit added message
+          toast.show({
+            render: () => {
+              return (
+                <Box bg="green.400" px="10" py="3" rounded="sm">
+                  <Text fontSize={"15"}>Credit Added Successfully!</Text>
+                </Box>
+              );
+            },
+            placement: "top",
           });
-          setShowAlert(true);
           console.log("Add balance done.");
           setTimeout(() => {
             navigation.navigate("Balance", { amount });
@@ -139,14 +125,18 @@ const PaymentInterface = ({ navigation }) => {
             exception.response.data
           );
           setIsLoading(false);
-          setStatus({
-            status: "error",
-            title: "Please add valid amount",
+
+          // pop up toast if amount is invalid
+          toast.show({
+            render: () => {
+              return (
+                <Box bg="red.400" px="10" py="3" rounded="sm">
+                  <Text fontSize={"15"}>Please Add Valid Amount!</Text>
+                </Box>
+              );
+            },
+            placement: "top",
           });
-          setShowAlert(true);
-          setTimeout(() => {
-            setShowAlert(false);
-          }, 5000);
         }
       }
     }
@@ -177,7 +167,6 @@ const PaymentInterface = ({ navigation }) => {
           backgroundColor: "gray.50",
         }}
       >
-        {showAlert ? AlertField : ""}
         <FormControl m="5" isInvalid={error}>
           <Text color="rgba(6,182,212,1.00)" fontSize={"lg"} mb="2">
             Add Credit points
@@ -299,7 +288,7 @@ const PaymentInterface = ({ navigation }) => {
                 onPress={handleAddCreditPoint}
               >
                 <Text fontSize={"lg"} color="white">
-                  Proceed to payment
+                  Proceed To Payment
                 </Text>
               </Button>
             </Box>

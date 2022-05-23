@@ -1,8 +1,8 @@
 // Vehicle, Vehicle Class and Vehicle Type
 
-import { View, Text } from "react-native";
+import { Text } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { Box, CheckIcon, Select, Slider } from "native-base";
+import { Box, Select, Slider } from "native-base";
 import axios from "axios";
 import { AuthContext } from "./Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -42,7 +42,7 @@ const VehicleAndClass = ({ dispatch }) => {
     };
     getVehicles();
     return () => (mounted = false);
-  }, []);
+  }, [vehicles.length]);
 
   return (
     <Box>

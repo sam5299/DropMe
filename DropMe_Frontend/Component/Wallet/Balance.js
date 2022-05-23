@@ -1,28 +1,13 @@
 import { React, useState, useEffect, useContext } from "react";
-import {
-  Box,
-  Stack,
-  Text,
-  Button,
-  Alert,
-  VStack,
-  HStack,
-  IconButton,
-  CloseIcon,
-  Spinner,
-  useToast,
-} from "native-base";
+import { Box, Stack, Text, Button, Spinner, useToast } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
 import axios from "axios";
-import { StyleSheet, View } from "react-native";
 
 const Balance = ({ route, navigation }) => {
-  const [status, setStatus] = useState({ status: "", title: "" });
   const [isPageLoading, setIspageLoading] = useState(false);
   const [userToken, setToken] = useState(null);
   const [wallet, setBalance] = useState({});
-  const [showAlert, setShowAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const { getUrl } = useContext(AuthContext);
@@ -120,7 +105,7 @@ const Balance = ({ route, navigation }) => {
             return (
               <Box bg="green.400" px="10" py="3" rounded="sm">
                 <Text fontSize={"15"}>
-                  Safety points redeemed successfully!
+                  Safety Points Redeemed Successfully!
                 </Text>
               </Box>
             );

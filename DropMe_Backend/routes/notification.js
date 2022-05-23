@@ -50,7 +50,6 @@ router.get("/getNotifications/", auth, async (req, res) => {
     if (!notificationList)
       return res.status(400).send(`Error in getting notification object`);
 
-      
     // notificationList.map(async (notification) => {
     // await markAsRead(notification._id);
     // });
@@ -60,21 +59,21 @@ router.get("/getNotifications/", auth, async (req, res) => {
   }
 });
 
-router.put("/markAsRead",auth,async (req,res)=>{
-  let notificationId=req.body.notificationId;
+router.put("/markAsRead", auth, async (req, res) => {
+  let notificationId = req.body.notificationId;
   console.log(notificationId);
   let result = await markAsRead(notificationId);
-  if(!result)
-  return res.status(400).send("Error in mark as read notification")
-  return res.status(200).send("Marked as read done")
-})
+  if (!result)
+    return res.status(400).send("Error in mark as read notification");
+  return res.status(200).send("Marked as read done");
+});
 
-router.put("/markAllRead",auth,async function(req,res){
-  let userId=req.body.User;
+router.put("/markAllRead", auth, async function (req, res) {
+  let userId = req.body.User;
   console.log(userId);
   let result = await markAllRead(userId);
-  if(!result)
-  return res.status(400).send("Error in mark all as read notification")
-  return res.status(200).send("All marked as read done")
-})
+  if (!result)
+    return res.status(400).send("Error in mark all as read notification");
+  return res.status(200).send("All marked as read done");
+});
 module.exports = router;
