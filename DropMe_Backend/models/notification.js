@@ -20,6 +20,10 @@ const notificationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  tripRideId: {
+    type: String,
+    default:null
+  }
 });
 
 const Notification = mongoose.model("Notification", notificationSchema);
@@ -29,7 +33,7 @@ function validateNotification(details) {
     fromUser: Joi.string().required(),
     toUser: Joi.string().required(),
     message: Joi.string().required(),
-    notifcationType: Joi.string().required(),
+    notificationType: Joi.string().required(),
   });
   return notificationSchema.validate(details);
 }

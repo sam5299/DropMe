@@ -3,7 +3,6 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RequestRide from "./RequestRide";
 import AcceptRejectRequest from "./AcceptRejectRequest";
-
 const rideStack = createNativeStackNavigator();
 
 const RideStack = ({ navigation }) => {
