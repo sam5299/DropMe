@@ -7,7 +7,6 @@ import TripBooked from "./TripBooked";
 import { Button, Icon } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import TripHistory from "./TripHistory";
-
 const SliderStack = createNativeStackNavigator();
 
 const TripsStack = ({ navigation }) => {
@@ -34,6 +33,7 @@ const TripsStack = ({ navigation }) => {
           component={TripHistory}
           options={{ headerShown: false }}
         />
+        
       </SliderStack.Navigator>
     </View>
   );

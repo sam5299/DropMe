@@ -137,6 +137,9 @@ router.put("/updateTripStatus", auth, async (req, res) => {
 
 // set rating to raider
 router.put("/setRating", auth, async (req, res) => {
+  console.log("setRating is called");
+  console.log("triprideid:",req.body.tripRideId);
+  console.log("rating:",req.body.rating);
   let tripRideId = req.body.tripRideId;
   let rating = req.body.rating;
   let addRatingResult = await setRating(tripRideId, rating);

@@ -175,6 +175,7 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
 
   //define variable according to condition for user notification
   let fromUserId, toUserId, messageContent, notificationTypeName;
+  let tripRideObjectId=null;
 
   if (status == "Initiated") {
     TripRideObj.startTime = currentTime;
@@ -188,8 +189,8 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
     fromUserId = TripRideObj.RaiderId._id;
     toUserId = TripRideObj.PassengerId._id;
     (messageContent = `Your trip from ${TripRideObj.rideId.source} to ${TripRideObj.rideId.destination} is completed.`),
-      (notificationTypeName = "Trip");
-
+      (notificationTypeName = "Trip Completed");
+      tripRideObjectId=TripRideObj._id;
     // add 90% amount to riders wallet and 10% commission will be given to DropMe.
 
     // let sourceArrary = TripRideObj.rideId.source.split(",");
@@ -259,12 +260,12 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
       );
       //add default rating for completed ride once rider click on end trip
     }
-    let ratingResult = setRating(TripRideObj._id, 3);
-    if (!ratingResult)
-      console.log(
-        "error while setting default rating in trip_ride:",
-        ratingResult
-      );
+    // let ratingResult = setRating(TripRideObj._id, 3);
+    // if (!ratingResult)
+    //   console.log(
+    //     "error while setting default rating in trip_ride:",
+    //     ratingResult
+    //   );
   } else {
     //console.log(status);
     // apply safety points penalty to rider
@@ -305,6 +306,8 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
     message: messageContent,
     notificationType: notificationTypeName,
   };
+  if(tripRideObjectId)
+  notificationBody.tripRideId=tripRideObjectId;
   let newNotification = new Notification(notificationBody);
   let notificationResult = await newNotification.save();
   if (!notificationResult)
