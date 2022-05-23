@@ -19,7 +19,6 @@ const RideHistory = () => {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-        console.log("getting history information.");
         let result = await axios.get(url + "/ride/getRaiderHistory", {
           headers: {
             "x-auth-token": parseUser.userToken,
@@ -30,7 +29,7 @@ const RideHistory = () => {
           setIsLoading(false);
           setRideHistory(result.data);
           setToken(parseUser.userToken);
-          console.log("Set done", result.data);
+          console.log("Ride History");
         }
       } catch (ex) {
         console.log("Exception", ex.response.data);

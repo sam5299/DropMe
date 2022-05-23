@@ -68,11 +68,11 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
             "x-auth-token": parseUser.userToken,
           },
         });
-        console.log("Upload Document Vehicle:", result.data);
         if (mounted) {
           setToken(parseUser.userToken);
           setUserData(result.data);
           setIsPageLoading(false);
+          console.log("Upload Vehicle Documents");
         }
       } catch (ex) {
         console.log("Exception:", ex);
