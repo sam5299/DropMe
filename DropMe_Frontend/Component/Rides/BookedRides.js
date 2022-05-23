@@ -355,8 +355,13 @@ const BookedRides = ({ navigation }) => {
           {bookedRides.length ? (
             allUserRides()
           ) : (
-            <Box flex={1} justifyContent="center" alignItems={"center"}>
-              <Text>No Rides!!!</Text>
+            <Box
+              flex={1}
+              justifyContent="center"
+              alignItems={"center"}
+              bg={"#F0F8FF"}
+            >
+              <Text>No Booked Rides</Text>
             </Box>
           )}
         </Box>

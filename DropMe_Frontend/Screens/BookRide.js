@@ -108,9 +108,14 @@ const BookRide = ({ navigation }) => {
   const [token, setToken] = useState("");
   const [isLoading, setLoading] = useState(false);
 
-  const { source, destination, date, time, pickupPoint } = state;
+  const todaysDate = new Date();
+  const hourse = todaysDate.getHours();
+  const min = todaysDate.getMinutes();
+  const currentTime = `${hourse}:${min}`;
+
+  const { source, destination, pickupPoint } = state;
   const { validate, isFieldInError } = useValidation({
-    state: { source, destination, date, time, pickupPoint },
+    state: { source, destination, pickupPoint },
   });
 
   useEffect(() => {
@@ -122,6 +127,8 @@ const BookRide = ({ navigation }) => {
         if (mounted) {
           setGender(userDetails.gender);
           setToken(userDetails.userToken);
+          dispatch({ type: "date", payload: todaysDate.toDateString() });
+          dispatch({ type: "time", payload: currentTime });
         }
       } catch (error) {
         console.log("BookRide: ", error.response.data);
@@ -138,8 +145,6 @@ const BookRide = ({ navigation }) => {
     let isTrue = validate({
       source: { required: true },
       destination: { required: true },
-      date: { required: true },
-      time: { required: true },
       pickupPoint: { required: true },
     });
     if (isTrue) {
@@ -202,24 +207,6 @@ const BookRide = ({ navigation }) => {
             )}
           </Box>
           <DateTime dispatch={dispatch} />
-          <Box flexDirection={"row"} justifyContent="space-around">
-            {isFieldInError("date") && (
-              <FormControl.ErrorMessage
-                isInvalid={true}
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                Please enter date
-              </FormControl.ErrorMessage>
-            )}
-            {isFieldInError("time") && (
-              <FormControl.ErrorMessage
-                isInvalid={true}
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                Please enter time
-              </FormControl.ErrorMessage>
-            )}
-          </Box>
           <PickupPoint dispatch={dispatch} />
           {isFieldInError("pickupPoint") && (
             <FormControl.ErrorMessage
