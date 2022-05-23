@@ -10,6 +10,7 @@ import {
   IconButton,
   CloseIcon,
   Spinner,
+  useToast,
 } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
@@ -27,29 +28,8 @@ const Balance = ({ route, navigation }) => {
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
-  let AlertField = (
-    <Box m={5}>
-      <Alert w="100%" status={status.status}>
-        <VStack space={2} flexShrink={1} w="100%">
-          <HStack flexShrink={1} space={2} justifyContent="space-between">
-            <HStack space={2} flexShrink={1}>
-              <Alert.Icon mt="1" />
-              <Text fontSize="md" color="coolGray.800">
-                {status.title}
-              </Text>
-            </HStack>
-            <IconButton
-              variant="unstyled"
-              _focus={{
-                borderWidth: 0,
-              }}
-              icon={<CloseIcon size="3" color="coolGray.600" />}
-            />
-          </HStack>
-        </VStack>
-      </Alert>
-    </Box>
-  );
+  const toast = useToast();
+
   if (route.params) {
     let { amount } = route.params;
     wallet.creditPoint = parseInt(wallet.creditPoint) + parseInt(amount);
@@ -63,7 +43,6 @@ const Balance = ({ route, navigation }) => {
         setIspageLoading(true);
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-        //console.log("parseUser@@@:", parseUser.userToken.trim());
         setToken(parseUser.userToken);
 
         let result = await axios.get(url + "/wallet/getWalletDetails", {
@@ -71,22 +50,28 @@ const Balance = ({ route, navigation }) => {
             "x-auth-token": parseUser.userToken,
           },
         });
-        console.log(result.data.creditPoint);
         if (mounted) {
+          console.log("View Balance");
           setToken(parseUser.userToken);
           setBalance(result.data);
           setIspageLoading(false);
         }
       } catch (ex) {
-        console.log(ex);
-        if (true) {
-          setStatus({ status: "error", title: "error" });
-          setShowAlert(true);
-          setTimeout(() => {
-            setShowAlert(false);
-          }, 2000);
-        }
-        // console.log(ex.response.data);
+        console.log("Exception in Balance: ", ex);
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="red.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>
+                  {error.name === "AxiosError"
+                    ? "Sorry cannot reach to server!"
+                    : error.response.data}
+                </Text>
+              </Box>
+            );
+          },
+          placement: "top",
+        });
       }
     }
     fetchUserData();
@@ -100,15 +85,20 @@ const Balance = ({ route, navigation }) => {
     //check if safety points greater than 0 to reedeem
     if (wallet.safetyPoint <= 0) {
       setIsLoading(false);
-      setStatus({
-        status: "error",
-        title: "Safety points must be greater than 0 to redeem!",
+
+      // pop up error message if safety points less than 0.
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>
+                Safety points must be greater than 0 to redeem!
+              </Text>
+            </Box>
+          );
+        },
+        placement: "top",
       });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-        return;
-      }, 3000);
     } else {
       try {
         setIsLoading(true);
@@ -121,25 +111,37 @@ const Balance = ({ route, navigation }) => {
             },
           }
         );
-        console.log(result.data);
         setBalance(result.data); //adding data into wallet to changed into ui
         setIsLoading(false);
-        setStatus({
-          status: "success",
-          title: "Safety point's redeemed successfully!",
+
+        //once safety points redeem, success message will be pop up.
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="green.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>
+                  Safety points redeemed successfully!
+                </Text>
+              </Box>
+            );
+          },
+          placement: "top",
         });
-        setShowAlert(true);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 3000);
       } catch (ex) {
         console.log("Exception:", ex);
         setIsLoading(false);
-        setStatus({ status: "error", title: ex.response.data });
-        setShowAlert(true);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 5000);
+
+        //pop up errro message if we get error from server
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="red.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>{error.response.data}</Text>
+              </Box>
+            );
+          },
+          placement: "top",
+        });
       }
     }
   };
@@ -159,7 +161,6 @@ const Balance = ({ route, navigation }) => {
   } else {
     return (
       <Box flex={1} alignItems={"center"} display={"flex"} bg={"#F0F8FF"}>
-        {showAlert ? AlertField : ""}
         <Box
           justifyContent={"center"}
           borderRadius={10}
@@ -264,12 +265,3 @@ const Balance = ({ route, navigation }) => {
 };
 
 export default Balance;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

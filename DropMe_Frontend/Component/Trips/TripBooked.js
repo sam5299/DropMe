@@ -103,7 +103,6 @@ function TripBooked() {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-        console.log("getting booked ride information.");
         let result = await axios.get(url + "/trip/getBookedTrips", {
           headers: {
             "x-auth-token": parseUser.userToken,
@@ -111,9 +110,9 @@ function TripBooked() {
         });
         // console.log("result:", result.data);
         if (mounted) {
+          console.log(" All Booked Trips");
           setBookedTripList(result.data);
           setToken(parseUser.userToken);
-          console.log("Setting history.", result.data);
           setIsBookedTripFetchDone(false);
         }
       } catch (ex) {

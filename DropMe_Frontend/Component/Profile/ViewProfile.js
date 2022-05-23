@@ -1,13 +1,9 @@
-import { View, StyleSheet } from "react-native";
-import React, { useEffect, useState, useContext } from "react";
+import { StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
 import { Box, Stack, Text, Image, Spinner } from "native-base";
-import axios from "axios";
-import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ViewProfile = () => {
-  const { getUrl } = useContext(AuthContext);
-  const url = getUrl();
   const [userDetails, setUserDetails] = useState(null);
   const [pageLoading, setPageLoading] = useState(true);
 
@@ -17,13 +13,11 @@ const ViewProfile = () => {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-        // console.log("In view profile data:", parseUser);
 
         if (mounted) {
           setUserDetails(parseUser);
           setPageLoading(false);
-          // setToken(parseUser.userToken);
-          console.log(parseUser.totalNumberOfRatedRides);
+          console.log("User Profile");
         }
       } catch (ex) {
         console.log("Exception in profile", ex.response.data);
@@ -80,6 +74,7 @@ const ViewProfile = () => {
               display={"flex"}
               flexDirection={"row"}
               justifyContent={"space-between"}
+              width="60%"
             >
               <Box
                 alignItems={"center"}
@@ -92,7 +87,6 @@ const ViewProfile = () => {
                 </Text>
                 <Text style={styles.details}>Total Rides</Text>
               </Box>
-
               <Box
                 alignItems={"center"}
                 justifyContent={"center"}

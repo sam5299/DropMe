@@ -43,7 +43,6 @@ const ViewVehicles = () => {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-        console.log("getting vehicle information.");
         let result = await axios.get(url + "/vehicle/getVehicleList", {
           headers: {
             "x-auth-token": parseUser.userToken,
@@ -52,7 +51,7 @@ const ViewVehicles = () => {
         if (mounted) {
           setVehicle(result.data);
           setToken(parseUser.userToken);
-          console.log("Setting vehicle done.");
+          console.log("Available Vehicles");
           setFetching(false);
         }
       } catch (ex) {

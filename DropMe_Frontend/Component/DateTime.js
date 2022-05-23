@@ -51,7 +51,7 @@ const DateTime = ({ dispatch }) => {
             as={<MaterialCommunityIcons name="calendar-arrow-left" />}
             size={6}
             color="rgba(6,182,212,1.00)"
-            ml={"48%"}
+            ml={"45%"}
           />
         }
         onPress={() => setShowModal(true)}
