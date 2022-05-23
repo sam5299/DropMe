@@ -15,6 +15,8 @@ import { Alert as NewAlert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { AuthContext } from "../Context";
+import io from "socket.io-client";
+const socket = io.connect("http://192.168.43.195:3100");
 
 const BookedRides = ({ navigation }) => {
   const [bookedRides, setbookedRides] = useState([]);
@@ -31,7 +33,7 @@ const BookedRides = ({ navigation }) => {
 
   useEffect(() => {
     let mounted = true;
-    console.log("in booked ride page");
+    // console.log("in booked ride page");
     const getUserRides = async () => {
       try {
         const User = await AsyncStorage.getItem("User");
@@ -93,6 +95,13 @@ const BookedRides = ({ navigation }) => {
         { headers: { "x-auth-token": userToken } }
       );
 
+      //write code to join room by trip_ride id and send passenger id
+      socket.emit("join_trip", tripRideId);
+      socket.emit("send_message", {
+        message: "Trip initated!",
+        tripRideObj: tripRideId,
+      });
+
       toast.show({
         render: () => {
           return (
@@ -142,6 +151,10 @@ const BookedRides = ({ navigation }) => {
       });
       setStarted("Ended");
       setIsButtonDisabled(false);
+      socket.emit("send_message", {
+        message: "Trip completed!",
+        tripRideObj: tripRideId,
+      });
     } catch (error) {
       toast.show({
         render: () => {
@@ -239,7 +252,7 @@ const BookedRides = ({ navigation }) => {
               backgroundColor: "gray.50",
             }}
           >
-            {console.log(ride.status, ride.token)}
+            {/* {console.log(ride.status, ride.token)} */}
             <Stack
               direction={"column"}
               alignItems="center"

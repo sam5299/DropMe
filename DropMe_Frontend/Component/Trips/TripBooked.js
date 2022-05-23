@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ShadowPropTypesIOS } from "react-native";
 import { Alert as NewAlert } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
 import {
@@ -14,17 +14,21 @@ import {
   IconButton,
   CloseIcon,
   Spinner,
+  useToast,
 } from "native-base";
-
+import io from "socket.io-client";
 import axios from "axios";
-import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../Context";
+const socket = io.connect("http://192.168.43.195:3100");
+
 function TripBooked() {
   const [bookedTripList, setBookedTripList] = useState([]);
   const [userToken, setToken] = useState(null);
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isBookedTripFetchingDone, setIsBookedTripFetchDone] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
@@ -33,6 +37,11 @@ function TripBooked() {
     title: "",
   });
   let [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  //toggle between button and otp
+  let [toggleButton, setToggleButton] = useState(true);
+  //toast field
+  const toast = useToast();
 
   const showConfirmDialog = (tripRideId, amount) => {
     return NewAlert.alert(
@@ -120,12 +129,36 @@ function TripBooked() {
         console.log("Exception", ex.response.data);
         setIsVehicleFetchDone(false);
       }
+
+      //showing socket message
+      socket.on("receive_message", (data) => {
+        console.log("data in tripboookedjs:", data.tripRideObj);
+        if (data.tripRideObj) {
+          console.log("End trip add rating wala thing here");
+        }
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="green.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>{data.message}</Text>
+              </Box>
+            );
+          },
+          placement: "top",
+        });
+      });
       return () => (mounted = false);
     }
 
     loadBookedList();
     return () => (mounted = false);
-  }, []);
+  }, [socket]);
+
+  let showOtp = (tripRideObj) => {
+    setToggleButton(false);
+    //code to add join group by tripRide id
+    socket.emit("join_trip", tripRideObj);
+  };
 
   let AlertField = (
     <Alert w="100%" status={alertField.status}>
@@ -203,7 +236,20 @@ function TripBooked() {
               <Text style={styles.details}>
                 Vehicle Number: {trip.vehicleNumber}
               </Text>
-              <Text style={styles.details}>OTP: {trip.token}</Text>
+              {trip.status === "Booked" ? (
+                toggleButton ? (
+                  <Button
+                    size={"lg"}
+                    px={10}
+                    disabled={isButtonDisabled}
+                    onPress={() => showOtp(trip._id)}
+                  >
+                    View Trip OTP
+                  </Button>
+                ) : (
+                  <Text style={styles.details}>OTP: {trip.token}</Text>
+                )
+              ) : null}
               {trip.status === "Booked" ? (
                 <Button
                   size={"lg"}

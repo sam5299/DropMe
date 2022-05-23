@@ -7,13 +7,17 @@ import {
   useWindowDimensions,
   Dimensions,
 } from "react-native";
+
+import { useToast } from "native-base";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Main from "./Component/Authentication/Main";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
 export default function App() {
   const [animating, setAnimating] = useState(false);
+  //toast field
+  const toast = useToast();
 
   return (
     <SafeAreaProvider>
