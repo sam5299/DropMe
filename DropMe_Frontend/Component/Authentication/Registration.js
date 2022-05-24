@@ -390,7 +390,8 @@ const Registration = ({ navigation }) => {
                     isInvalid={true}
                     leftIcon={<WarningOutlineIcon size="xs" />}
                   >
-                    Containe at least one upper,lower,special character & No.
+                    Contains at least one upper, lower, special character &
+                    number.
                   </FormControl.ErrorMessage>
                 </>
               )}
