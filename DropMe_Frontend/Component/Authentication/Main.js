@@ -11,7 +11,6 @@ import Forgot from "./Forgot";
 const Stack = createNativeStackNavigator();
 
 const Main = () => {
-  // setting URI for axios
   const url = "http://192.168.43.87:3100";
 
   const initialState = {
