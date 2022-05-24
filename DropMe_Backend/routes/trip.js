@@ -16,6 +16,7 @@ const {
   getTripRideByTripId,
   addRating,
   setRating,
+  updateTripStatus,
 } = require("../services/trip_ride");
 
 //endpoint to search riders who are travelling on route passenger searching for
@@ -125,7 +126,7 @@ router.put("/updateTripStatus", auth, async (req, res) => {
   let tripRideId = req.body.tripRideId;
   let tripId = req.body.tripId;
   let status = req.body.status;
-  let TripRideObj = await getTripRideByTripId(tripRideId, tripId, status);
+  let TripRideObj = await updateTripStatus(tripRideId, tripId, status);
 
   // let saveResult = await TripRideObj.save();
 
@@ -138,8 +139,8 @@ router.put("/updateTripStatus", auth, async (req, res) => {
 // set rating to raider
 router.put("/setRating", auth, async (req, res) => {
   console.log("setRating is called");
-  console.log("triprideid:",req.body.tripRideId);
-  console.log("rating:",req.body.rating);
+  console.log("triprideid:", req.body.tripRideId);
+  console.log("rating:", req.body.rating);
   let tripRideId = req.body.tripRideId;
   let rating = req.body.rating;
   let addRatingResult = await setRating(tripRideId, rating);
