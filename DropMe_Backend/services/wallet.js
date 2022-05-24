@@ -33,7 +33,7 @@ async function updateUsedCredit(userId, amount) {
   let walletObj = await Wallet.findOne({ User: userId });
   //console.log("@@@"+walletObj);
   //walletObj.usedCreditPoint = walletObj.usedCreditPoint + amount;
-  walletObj.usedCreditPoint += amount;
+  walletObj.usedCreditPoint = walletObj.usedCreditPoint + amount;
   return await walletObj.save();
 }
 

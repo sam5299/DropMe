@@ -7,7 +7,6 @@ import Splash from "../Splash";
 import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Forgot from "./Forgot";
-import axios from "axios";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,11 +18,6 @@ const Main = () => {
     userToken: null,
     animating: true,
   };
-
-  useEffect(() => {
-    let mounted = true;
-    return () => (mounted = false);
-  });
 
   const reducer = (state, action) => {
     switch (action.type) {
