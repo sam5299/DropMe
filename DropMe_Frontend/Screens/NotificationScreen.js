@@ -27,6 +27,7 @@ const NotificationScreen = ({ navigation }) => {
 
   async function markAllRead() {
     try {
+      console.log("Marking all notification's is called");
       const User = await AsyncStorage.getItem("User");
       const parseUser = JSON.parse(User);
       // alert("markAllRead");
@@ -39,7 +40,7 @@ const NotificationScreen = ({ navigation }) => {
           },
         }
       );
-      console.log(result.data);
+      //console.log(result.data);
       //alert("Done");
       setUpdated(true);
     } catch (ex) {
@@ -49,6 +50,7 @@ const NotificationScreen = ({ navigation }) => {
   }
   async function markReadNotification(notificationId) {
     try {
+      console.log("Mark a notification called..");
       const User = await AsyncStorage.getItem("User");
       const parseUser = JSON.parse(User);
       let result = await axios.put(

@@ -2,6 +2,7 @@ const config = require("config");
 const dotenv = require("dotenv");
 dotenv.config();
 const express = require("express");
+const PORT= process.env.PORT || 3100;
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
@@ -39,8 +40,8 @@ if (!config.get("jwtPrivateKey")) {
 
 //connecting to database
 mongoose
-  .connect("mongodb+srv://DropMe:Project4@cluster0.psfti.mongodb.net/test3")
-  .then(() => console.log("Connected to dropme_sample"))
+  .connect(process.env.MONGODB_URI || "mongodb+srv://DropMe:Project4@cluster0.psfti.mongodb.net/test3")
+  .then(() => console.log("Connected to dropMe_sample"))
   .catch((err) => console.log("error connecting to database:", err));
 
-app.listen(3100, () => console.log("connected to server"));
+app.listen(PORT, () => console.log(`Server is started at ${PORT}`));
