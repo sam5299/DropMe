@@ -97,6 +97,13 @@ const BookedRides = ({ navigation }) => {
         { headers: { "x-auth-token": userToken } }
       );
 
+      //write code to join room by trip_ride id and send passenger id
+      socket.emit("join_trip", tripRideId);
+      socket.emit("send_message", {
+        message: "Trip initated!",
+        tripRideObj: tripRideId,
+      });
+
       toast.show({
         render: () => {
           return (
@@ -146,6 +153,11 @@ const BookedRides = ({ navigation }) => {
       });
       setStarted("Ended");
       setIsButtonDisabled(false);
+      socket.emit("send_message", {
+        message: "Trip completed!",
+        tripRideObj: tripRideId,
+        isTripCompleted: true,
+      });
     } catch (error) {
       toast.show({
         render: () => {
@@ -246,7 +258,7 @@ const BookedRides = ({ navigation }) => {
               backgroundColor: "gray.50",
             }}
           >
-            {console.log(ride.status, ride.token)}
+            {/* {console.log(ride.status, ride.token)} */}
             <Stack
               direction={"column"}
               alignItems="center"

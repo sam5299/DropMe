@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import { Box, NativeBaseProvider } from "native-base";
+import { NativeBaseProvider } from "native-base";
 import {
   StyleSheet,
   Platform,
@@ -7,11 +7,13 @@ import {
   useWindowDimensions,
   Dimensions,
 } from "react-native";
+
+import { useToast } from "native-base";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Main from "./Component/Authentication/Main";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-
+// const socket = io.connect("http://192.168.43.195:3100");
 export default function App() {
   const [animating, setAnimating] = useState(false);
 
