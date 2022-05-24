@@ -35,16 +35,17 @@ const TripHistory = () => {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-        // console.log("getting history information.");
+        //console.log("getting history information.");
         let result = await axios.get(url + "/trip/getPassengerHistory", {
           headers: {
             "x-auth-token": parseUser.userToken,
           },
         });
         if (mounted) {
+          console.log("TripHistory object:", result.data);
           setPassengerHistory(result.data);
           setToken(parseUser.userToken);
-          console.log("Trip History");
+          console.log("Set done", result.data);
           setIsHistoryFetchDone(false);
         }
       } catch (ex) {
