@@ -33,7 +33,7 @@ const Registration = ({ navigation }) => {
     title: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-
+  const [mobileNumberError, setMobileNumberError] = useState(false);
   const initialState = {
     name: "",
     mobileNumber: "",
@@ -127,6 +127,11 @@ const Registration = ({ navigation }) => {
       },
     });
     if (isTrue) {
+      let pattern = /[7-9]{1}[0-9]{9}/;
+      if (!pattern.test(mobileNumber)) {
+        setMobileNumberError(true);
+        return;
+      } else setMobileNumberError(false);
       // make a call to backend and store user details
       setIsLoading(true);
       try {
@@ -276,6 +281,14 @@ const Registration = ({ navigation }) => {
                   leftIcon={<WarningOutlineIcon size="xs" />}
                 >
                   Mobile No must be 10 digit
+                </FormControl.ErrorMessage>
+              )}
+              {mobileNumberError && (
+                <FormControl.ErrorMessage
+                  isInvalid={true}
+                  leftIcon={<WarningOutlineIcon size="xs" />}
+                >
+                  Please type valid mobile number
                 </FormControl.ErrorMessage>
               )}
             </Box>
