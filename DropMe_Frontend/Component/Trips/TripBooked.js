@@ -8,18 +8,12 @@ import {
   ScrollView,
   Stack,
   Text,
-  Alert,
-  VStack,
-  HStack,
-  IconButton,
-  CloseIcon,
   Spinner,
   useToast,
 } from "native-base";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
-import RideCompleted from "../../Screens/RideCompletedForHome";
 
 function TripBooked() {
   const [bookedTripList, setBookedTripList] = useState([]);
@@ -28,13 +22,7 @@ function TripBooked() {
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
-  const [isLoading, setIsLoading] = useState(false);
   const [isBookedTripFetchingDone, setIsBookedTripFetchDone] = useState(true);
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertField, setAlertField] = useState({
-    status: "success",
-    title: "",
-  });
   let [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   //toast field
@@ -83,24 +71,29 @@ function TripBooked() {
           newBookedTripList.push(trip);
         }
       });
-      setAlertField({
-        status: "success",
-        title: "Cancelled trip successfully!",
+      setBookedTripList(newBookedTripList);
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="green.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>Trip Cancelled Successfully!</Text>
+            </Box>
+          );
+        },
+        placement: "top",
       });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-        setBookedTripList(newBookedTripList);
-        setIsButtonDisabled(false);
-      }, 2000);
     } catch (ex) {
-      setAlertField({ status: "error", title: ex.response.data });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-        setIsButtonDisabled(false);
-      }, 4000);
-      console.log("Exception in delete", ex.response.data);
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>Exception in Trip Booked</Text>
+            </Box>
+          );
+        },
+        placement: "top",
+      });
+      console.log("Exception in TripBooked", ex.response.data);
     }
   }
   useEffect(() => {
@@ -123,7 +116,7 @@ function TripBooked() {
         }
       } catch (ex) {
         console.log("Exception", ex.response.data);
-        setIsVehicleFetchDone(false);
+        setIsBookedTripFetchDone(false);
       }
       return () => (mounted = false);
     }
@@ -131,34 +124,6 @@ function TripBooked() {
     loadBookedList();
     return () => (mounted = false);
   }, []);
-
-  let showOtp = (tripRideObj) => {
-    setToggleButton(false);
-    //code to add join group by tripRide id
-    socket.emit("join_trip", tripRideObj);
-  };
-
-  let AlertField = (
-    <Alert w="100%" status={alertField.status}>
-      <VStack space={2} flexShrink={1} w="100%">
-        <HStack flexShrink={1} space={2} justifyContent="space-between">
-          <HStack space={2} flexShrink={1}>
-            <Alert.Icon mt="1" />
-            <Text fontSize="md" color="coolGray.800">
-              {alertField.title}
-            </Text>
-          </HStack>
-          <IconButton
-            variant="unstyled"
-            _focus={{
-              borderWidth: 0,
-            }}
-            icon={<CloseIcon size="3" color="coolGray.600" />}
-          />
-        </HStack>
-      </VStack>
-    </Alert>
-  );
 
   function getBookedTrips() {
     return (

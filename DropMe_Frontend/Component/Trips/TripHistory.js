@@ -7,26 +7,11 @@ import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TripHistory = () => {
-  const [passengerHistory, setPassengerHistory] = useState([
-    {
-      id: 4,
-      name: "John Doe",
-      profileImage: "https://wallpaperaccess.com/full/317501.jpg",
-      source: "Pune",
-      destination: "Mumbai",
-      pickupPoint: "Shivajinagar",
-      tripPrice: 32423,
-      tripCapacity: 4,
-      date: "22 May 2022",
-      starCount: 3,
-    },
-  ]);
-  const [vehicleDetails, setVehicle] = useState([]);
+  const [passengerHistory, setPassengerHistory] = useState([]);
   const [userToken, setToken] = useState(null);
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
-  const [isLoading, setIsLoading] = useState(false);
   const [isHistoryFetchingDone, setIsHistoryFetchDone] = useState(true);
 
   useEffect(() => {
@@ -42,10 +27,9 @@ const TripHistory = () => {
           },
         });
         if (mounted) {
-          console.log("TripHistory object:", result.data);
+          console.log("Trip History");
           setPassengerHistory(result.data);
           setToken(parseUser.userToken);
-          console.log("Set done", result.data);
           setIsHistoryFetchDone(false);
         }
       } catch (ex) {
@@ -96,13 +80,14 @@ const TripHistory = () => {
             />
             {trip.status === "Completed" ? (
               <AirbnbRating
-                count={trip.tripRating}
-                reviews={["OK", "Good", "Very Good", "Wow", "Amazing"]}
+                count={5}
+                reviews={["Average", "Good", "Very Good", "Wow", "Amazing"]}
                 readonly={true}
                 size={15}
                 reviewColor={"black"}
                 reviewSize={20}
                 isDisabled={true}
+                defaultRating={trip.tripRating}
               />
             ) : null}
 

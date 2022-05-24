@@ -4,9 +4,9 @@
     "slug": "DropMe_Frontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/dropme.jpg",
+    "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/dropme1.jpg",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
