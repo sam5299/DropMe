@@ -209,7 +209,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
         });
         setTimeout(() => {
           navigation.navigate("AddVehicle", { isChanged: true });
-        }, 3000);
+        }, 1000);
       } catch (ex) {
         setIsLoading(false);
         toast.show({
