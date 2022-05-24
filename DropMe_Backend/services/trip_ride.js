@@ -102,11 +102,11 @@ async function deleteBookedTrip(tripRideId) {
     today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
   //get the time difference
   let timeDifference = getTimeDifference(tripRideObj.date + ";" + currentTime);
-  console.log("time difference:" + timeDifference);
+  // console.log("time difference:" + timeDifference);
   //check if cancellation time is above 10 hrs then trip deposit will be refunded
   if (timeDifference >= 10) {
     let depositAmount = parseInt(tripRideObj.amount * 0.1);
-    console.log("penalty", depositAmount);
+    // console.log("penalty", depositAmount);
 
     // update passengers used credits
     let result = await updateUsedCredit(

@@ -134,6 +134,8 @@ router.put("/updateTripStatus", auth, async (req, res) => {
   let tripRideId = req.body.tripRideId;
   let tripId = req.body.tripId;
   let status = req.body.status;
+
+  console.log("Update trip status is called");
   let TripRideObj = await updateTripStatus(tripRideId, tripId, status);
 
   // let saveResult = await TripRideObj.save();

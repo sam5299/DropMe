@@ -163,7 +163,7 @@ const BookRide = ({ navigation }) => {
         );
         //console.log("distance:" + parseFloat(newResult.data));
         dispatch({ type: "distance", payload: newResult.data });
-        console.log(state);
+        // console.log(state);
         setLoading(false);
       } catch (error) {
         console.log("exception Book Ride");

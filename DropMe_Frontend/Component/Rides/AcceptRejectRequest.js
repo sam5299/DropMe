@@ -65,7 +65,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
     try {
       setButtonDisabled(true);
       let amount = perSeatAmount * seatRequest;
-      console.log(amount);
+      //  console.log(amount);
       const result = await axios.post(
         url + "/ride/acceptTripRequest",
         { tripId, rideId, raiderName, amount, vehicleNumber },

@@ -78,7 +78,7 @@ const AvailableRides = ({ route, navigation }) => {
         // });
         setLoading(false);
       } catch (error) {
-        console.log("AvailableRides: ", error.response.data);
+        console.log("Exception in AvailableRides: ", error.response.data);
         setLoading(false);
       }
     };

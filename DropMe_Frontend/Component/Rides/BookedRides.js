@@ -141,11 +141,6 @@ const BookedRides = ({ navigation }) => {
       });
       setStarted("Ended");
       setIsButtonDisabled(false);
-      // socket.emit("send_message", {
-      //   message: "Trip completed!",
-      //   tripRideObj: tripRideId,
-      //   isTripCompleted: true,
-      // });
     } catch (error) {
       toast.show({
         render: () => {
