@@ -54,22 +54,8 @@ const ViewVehicles = () => {
           console.log("Available Vehicles");
           setFetching(false);
         }
-      } catch (ex) {
-        toast.show({
-          render: () => {
-            return (
-              <Box bg="red.400" px="10" py="3" rounded="sm">
-                <Text fontSize={"15"}>
-                  {error.name === "AxiosError"
-                    ? "Sorry cannot reach to server!"
-                    : error.response.data}
-                </Text>
-              </Box>
-            );
-          },
-          placement: "top",
-        });
-        console.log("Exception", ex.response.data);
+      } catch (error) {
+        console.log("Exception", error.response.data);
         setFetching(false);
       }
     }
