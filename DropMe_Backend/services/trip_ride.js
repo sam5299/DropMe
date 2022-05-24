@@ -5,7 +5,11 @@ const { TripRide } = require("../models/trip_ride");
 const { User } = require("../models/user");
 const { WalletHistory } = require("../models/wallet_history");
 const { createNotification } = require("./notification");
-const { getTimeDifference, reduceAvailableSeats } = require("./ride");
+const {
+  getTimeDifference,
+  reduceAvailableSeats,
+  updateRideStatus,
+} = require("./ride");
 const {
   updateWallet,
   updateUsedCredit,
@@ -197,6 +201,7 @@ async function updateTripStatus(tripRideId, tripId, status) {
     (messageContent = `Your trip from ${TripRideObj.rideId.source} to ${TripRideObj.rideId.destination} is completed.`),
       (notificationTypeName = "Trip Completed");
     tripRideObjectIdForMessage = TripRideObj._id;
+
     // add 90% amount to riders wallet and 10% commission will be given to DropMe.
 
     // let sourceArrary = TripRideObj.rideId.source.split(",");
@@ -311,6 +316,11 @@ async function updateTripStatus(tripRideId, tripId, status) {
   let notificationResult = await newNotification.save();
   if (!notificationResult)
     console.log("error while creating notification in updateRideStatus.");
+
+  // Update the main ride status in ride table
+  let updateRideResult = await updateRideStatus(TripRideObj.rideId._id, status);
+  if (!updateRideResult)
+    console.log("Error in update main ride status in update trip status");
 
   return await TripRideObj.save();
 }

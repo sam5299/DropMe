@@ -102,15 +102,6 @@ const AvailableRides = ({ route, navigation }) => {
         },
       });
 
-      let newResult = [];
-      RideDetails.forEach((ride) => {
-        if (ride._id != tripDetails.rideId) {
-          newResult.push(ride);
-        }
-      });
-      setRideDetails(newResult);
-
-      // console.log("done");
       toast.show({
         render: () => {
           return (
@@ -124,17 +115,27 @@ const AvailableRides = ({ route, navigation }) => {
         },
         placement: "top",
       });
-    } catch (error) {
-      setAlertField({
-        status: "error",
-        title: error.response.data,
+
+      let newResult = [];
+      RideDetails.forEach((ride) => {
+        if (ride._id != tripDetails.rideId) {
+          newResult.push(ride);
+        }
       });
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-        setIsSetRequest(false);
-      }, 3000);
-      console.log("Request to ride: ", error.response.data);
+      setRideDetails(newResult);
+
+      // console.log("done");
+    } catch (error) {
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>{error.response.data}</Text>
+            </Box>
+          );
+        },
+        placement: "top",
+      });
     }
   };
 
@@ -220,9 +221,18 @@ const AvailableRides = ({ route, navigation }) => {
               <Text fontWeight={"bold"} color={"black"} fontSize={18}>
                 {ride.Vehicle.vehicleClass}
               </Text>
-              <Text fontWeight={"bold"} color={"black"} fontSize={18}>
-                Rs.{ride.amount == 0 ? "Free" : ride.amount * seats}
-              </Text>
+
+              {ride.amount > 0 ? (
+                <Text fontSize={18} fontWeight="bold">
+                  <FontAwesome name="rupee" size={18} color="black" />
+                  Rs.{ride.amount * seats}
+                </Text>
+              ) : (
+                <Text fontSize={18} fontWeight="bold" color={"green.500"}>
+                  Free
+                </Text>
+              )}
+
               {/* <Button size={"md"} px="10" onPress={() => sendRequest(ride)}>
                 Send Request
               </Button> */}

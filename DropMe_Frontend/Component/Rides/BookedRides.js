@@ -82,13 +82,7 @@ const BookedRides = ({ navigation }) => {
         { tripRideId, tripId, status, token },
         { headers: { "x-auth-token": userToken } }
       );
-
-      //write code to join room by trip_ride id and send passenger id
-      // socket.emit("join_trip", tripRideId);
-      // socket.emit("send_message", {
-      //   message: "Trip initated!",
-      //   tripRideObj: tripRideId,
-      // });
+      setStarted("Accepted");
 
       toast.show({
         render: () => {
@@ -100,7 +94,6 @@ const BookedRides = ({ navigation }) => {
         },
         placement: "top",
       });
-      setStarted("Accepted");
       setIsButtonDisabled(false);
     } catch (error) {
       toast.show({
@@ -283,6 +276,7 @@ const BookedRides = ({ navigation }) => {
               </Box>
               <Input
                 isDisabled={ride.status === "Booked" ? false : true}
+                maxLength={6}
                 variant={"outline"}
                 keyboardType="numeric"
                 placeholder="Enter the token"

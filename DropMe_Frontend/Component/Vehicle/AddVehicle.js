@@ -43,7 +43,8 @@ const AddVehicle = ({ route, navigation }) => {
   ]);
   let FuelTypeArray = ["Petrol", "Diesel", "CNG", "Electric"];
   const [isLoading, setIsLoading] = useState(false);
-  const [pageRerender, setPageRerender] = useState(false);
+
+  const [errorVehicleNumber, setErrorVehicleNumber] = useState(false);
 
   const clearFields = () => {
     setPic(null);
@@ -60,13 +61,16 @@ const AddVehicle = ({ route, navigation }) => {
   };
 
   if (route.params) {
-    console.log("params available..");
+    //console.log("params available..");
     clearFields();
     delete route.params;
   }
 
   useEffect(() => {
     let mounted = true;
+    if (mounted) {
+      setErrorVehicleNumber(false);
+    }
 
     return () => (mounted = false);
   }, [vehicleClass, slider, Picture]);
@@ -84,13 +88,15 @@ const AddVehicle = ({ route, navigation }) => {
       vehicleNumber: { minlength: 12, maxLength: 13, required: true },
       fuelType: { required: true },
     });
-    let pattern = /^[A-Z]{2}[ -][0-9]{1,2}(?: [A-Z])?(?: [A-Z]*)? [0-9]{4}$/;
+    let pattern = /^[A-Z]{2} [0-9]{2,3} [A-Z]{2} [0-9]{1,4}$/;
     // /^([A-Z]{2}\s{1}\d{2}\s{1}\[A-Z]{1,2}\s{1}\d{1,4})?([A-Z|a-z]{3}\s{1}\d{1,4})?$/;
     console.log("matching vehicle number");
 
     if (!pattern.test(vehicleNumber)) {
-      console.log("not matched");
-      isFieldInError.vehicleNumber = "Please enter valid vehicle number.";
+      //  console.log("not matched");
+      // isFieldInError.vehicleNumber = "Please enter valid vehicle number.";
+      setErrorVehicleNumber(true);
+      return;
     }
     if (Picture === null) {
       setPictureError(true);
@@ -343,7 +349,7 @@ const AddVehicle = ({ route, navigation }) => {
                     setVehicleNumber(value);
                   }}
                 />
-                {isFieldInError("vehicleNumber") && (
+                {errorVehicleNumber && (
                   <FormControl.ErrorMessage
                     isInvalid={true}
                     leftIcon={<WarningOutlineIcon size="xs" />}
@@ -376,7 +382,7 @@ const AddVehicle = ({ route, navigation }) => {
                     isInvalid={true}
                     leftIcon={<WarningOutlineIcon size="xs" />}
                   >
-                    {"Please select vehicle's fuel type"}
+                    {"Please select fuel type"}
                   </FormControl.ErrorMessage>
                 )}
               </Box>
