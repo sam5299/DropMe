@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/dropme.jpg",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/dropme1.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

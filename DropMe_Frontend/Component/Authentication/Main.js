@@ -7,43 +7,18 @@ import Splash from "../Splash";
 import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Forgot from "./Forgot";
-import axios from "axios";
+
 const Stack = createNativeStackNavigator();
 
 const Main = () => {
+  // setting URI for axios
+  const url = "http://192.168.43.87:3100";
+
   const initialState = {
     userName: null,
     userToken: null,
     animating: true,
   };
-
-  useEffect(() => {
-    let mounted = true;
-    socket.on("receive_message", (data) => {
-      console.log("main useffect called");
-      // alert(data.message);
-      console.log("data come:", data);
-      //check if button pressed was end trip
-      if (data.isTripCompleted) {
-        console.log("tripRideId present in home.js");
-        setData(data);
-        setModalVisible(true);
-      } else {
-        toast.show({
-          render: () => {
-            return (
-              <Box bg="green.400" px="10" py="3" rounded="sm">
-                <Text fontSize={"15"}>{data.message}</Text>
-              </Box>
-            );
-          },
-          placement: "top",
-        });
-      }
-    });
-    return () => (mounted = false);
-    //check if data has tripRideId and if yes then show the Rating modal
-  }, [socket]);
 
   const reducer = (state, action) => {
     switch (action.type) {
