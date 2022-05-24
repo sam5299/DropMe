@@ -182,7 +182,7 @@ async function updateTripStatus(tripRideId, tripId, status) {
 
   //define variable according to condition for user notification
   let fromUserId, toUserId, messageContent, notificationTypeName;
-  let tripRideObjectId = null;
+  let tripRideObjectIdForMessage = null;
 
   if (status == "Initiated") {
     TripRideObj.startTime = currentTime;
@@ -196,7 +196,7 @@ async function updateTripStatus(tripRideId, tripId, status) {
     toUserId = TripRideObj.PassengerId._id;
     (messageContent = `Your trip from ${TripRideObj.rideId.source} to ${TripRideObj.rideId.destination} is completed.`),
       (notificationTypeName = "Trip Completed");
-    tripRideObjectId = TripRideObj._id;
+    tripRideObjectIdForMessage = TripRideObj._id;
     // add 90% amount to riders wallet and 10% commission will be given to DropMe.
 
     // let sourceArrary = TripRideObj.rideId.source.split(",");
@@ -260,16 +260,13 @@ async function updateTripStatus(tripRideId, tripId, status) {
         );
 
       // deduct amount from passenger's Used credit
-      console.log("@@@ Used credit is", TripRideObj.amount * -1);
-      // deduct amount from passenger's Used credit
       let updateUsedCreditResult = await updateUsedCredit(
         TripRideObj.PassengerId._id,
         TripRideObj.amount * -1
       );
-      console.log("@@@ updated used credit is", updateUsedCreditResult);
+      // console.log("@@@ updated used credit is", updateUsedCreditResult);
     }
   } else {
-    //console.log(status);
     // apply safety points penalty to rider
     if (TripRideObj.amount) {
       let penalty = TripRideObj.amount * 0.1;
@@ -308,7 +305,8 @@ async function updateTripStatus(tripRideId, tripId, status) {
     message: messageContent,
     notificationType: notificationTypeName,
   };
-  if (tripRideObjectId) notificationBody.tripRideId = tripRideObjectId;
+  if (tripRideObjectIdForMessage)
+    notificationBody.tripRideId = tripRideObjectIdForMessage;
   let newNotification = new Notification(notificationBody);
   let notificationResult = await newNotification.save();
   if (!notificationResult)

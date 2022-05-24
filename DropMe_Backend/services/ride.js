@@ -87,6 +87,13 @@ async function getUserRides(userId) {
   //.find({$gte:[{rideDate:Date.now}]});
 }
 
+// complete a ride
+async function updateRideStatus(rideId, status) {
+  let rideObj = await Ride.findOne({ _id: rideId });
+  rideObj.status = status;
+  return await rideObj.save();
+}
+
 // delete a ride by its id
 async function deleteRide(rideId) {
   return await Ride.findOneAndDelete({
@@ -197,4 +204,5 @@ module.exports = {
   removeTripId,
   getTimeDifference,
   convertToDate,
+  updateRideStatus,
 };
