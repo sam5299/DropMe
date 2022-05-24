@@ -134,7 +134,7 @@ router.put("/forgotPassword", async (req, res) => {
     return res.status(404).send("mobileNumber is require");
 
   let user = await isUserExists(req.body.mobileNumber);
-  if (!user) return res.status(400).send("Invalid detail's");
+  if (!user) return res.status(400).send("Invalid mobile number!");
 
   let newPassword = await generateRandomPassword();
   console.log(newPassword);
