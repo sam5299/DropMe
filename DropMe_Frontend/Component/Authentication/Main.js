@@ -8,24 +8,14 @@ import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Forgot from "./Forgot";
 import axios from "axios";
-import io from "socket.io-client";
-import { Modal, Text } from "native-base";
-import RideCompleted from "../../Screens/RideCompletedForHome";
-const socket = io.connect("http://192.168.43.195:3100");
 const Stack = createNativeStackNavigator();
 
 const Main = () => {
-  const url = "http://192.168.43.195:3100";
-
   const initialState = {
     userName: null,
     userToken: null,
     animating: true,
   };
-
-  //defining states for rating
-  const [modalVisible, setModalVisible] = useState(false);
-  const [data, setData] = useState({});
 
   useEffect(() => {
     let mounted = true;
