@@ -5,8 +5,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
-const http = require("http");
-const { Server } = require("socket.io");
+//const http = require("http");
+//const { Server } = require("socket.io");
 const cors = require("cors");
 const helmet = require("helmet");
 const user = require("./routes/user");
@@ -18,7 +18,7 @@ const walletHistory = require("./routes/walletHistory");
 const notification = require("./routes/notification");
 const map = require("./routes/map");
 
-const server = http.createServer(app);
+//const server = http.createServer(app);
 
 app.use(bodyParser.json({ limit: "50mb" })); // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
@@ -48,24 +48,24 @@ mongoose
   .catch((err) => console.log("error connecting to database:", err));
 
 //creating Server for socket.io
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:3000", //replace origin with frontend server url
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  },
-});
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:3000", //replace origin with frontend server url
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//   },
+// });
 
-io.on("connection", (socket) => {
-  console.log(`user connected ${socket.id}`);
+// io.on("connection", (socket) => {
+//   console.log(`user connected ${socket.id}`);
 
-  socket.on("join_trip", (data) => {
-    console.log("joining trip");
-    socket.join(data);
-  });
+//   socket.on("join_trip", (data) => {
+//     console.log("joining trip");
+//     socket.join(data);
+//   });
 
-  socket.on("send_message", (data) => {
-    socket.to(data.tripRideObj).emit("receive_message", data);
-  });
-});
+//   socket.on("send_message", (data) => {
+//     socket.to(data.tripRideObj).emit("receive_message", data);
+//   });
+// });
 
-server.listen(3100, () => console.log("connected to server"));
+app.listen(3100, () => console.log("connected to server"));

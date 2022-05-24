@@ -3,34 +3,19 @@ import BottomBar from "../Component/BottomBar";
 import { useContext, useEffect, useState } from "react";
 import io from "socket.io-client";
 import { AuthContext } from "../Component/Context";
+import { Modal, Text } from "native-base";
+import AcceptRating from "./AcceptRating";
+import RideCompleted from "./RideCompletedForHome";
 
 const Home = () => {
   const { getUrl } = useContext(AuthContext);
-  const url = getUrl();
-  const socket = io.connect(url);
 
-  useEffect(() => {
-    socket.on("receive_message", (data) => {
-      console.log("Home useffect called");
-      // alert(data.message);
-      console.log("data come:", data);
-      if (data.tripRideObj) {
-        console.log("tripRideId present in home.js");
-      }
-      toast.show({
-        render: () => {
-          return (
-            <Box bg="green.400" px="10" py="3" rounded="sm">
-              <Text fontSize={"15"}>{data.message}</Text>
-            </Box>
-          );
-        },
-        placement: "top",
-      });
-    });
+  // const url = getUrl();
+  // const socket = io.connect("http://192.168.43.195:3100");
+  //defining states for rating
+  const [modalVisible, setModalVisible] = useState(false);
+  const [data, setData] = useState({});
 
-    //check if data has tripRideId and if yes then show the Rating modal
-  }, [socket]);
   return (
     <>
       <BottomBar />

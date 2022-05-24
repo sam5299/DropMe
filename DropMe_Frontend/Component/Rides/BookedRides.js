@@ -155,6 +155,7 @@ const BookedRides = ({ navigation }) => {
       socket.emit("send_message", {
         message: "Trip completed!",
         tripRideObj: tripRideId,
+        isTripCompleted: true,
       });
     } catch (error) {
       toast.show({
