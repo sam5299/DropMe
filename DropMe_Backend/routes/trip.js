@@ -97,15 +97,18 @@ router.get("/getBookedTrips", auth, async (req, res) => {
   let passengerId = req.body.User;
   let bookedTrips = await getAllBookedTrips(passengerId);
   if (!bookedTrips) return res.status(400).send("No rides found");
-  let finalResult = bookedTrips.filter((trips) => {
-    let tripDate = convertToDate(trips.date);
-    let currentDate = Date.now;
-    return tripDate >= currentDate;
-  });
+  // let finalResult = [];
+  // bookedTrips.map((tripObj) => {
+  //   let tripDate = convertToDate(tripObj.date);
+  //   let currentDate = Date.now;
+  //   if (tripDate >= currentDate) {
+  //     finalResult.push(tripObj);
+  //   }
+  // });
 
   //return res.status(200).send("searchForRide called and result:" + rides);
 
-  return res.status(200).send(finalResult);
+  return res.status(200).send(bookedTrips);
 });
 
 //route to get all history of passenger

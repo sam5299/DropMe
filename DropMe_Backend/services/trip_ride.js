@@ -260,18 +260,14 @@ async function updateTripStatus(tripRideId, tripId, status) {
         );
 
       // deduct amount from passenger's Used credit
+      console.log("@@@ Used credit is", TripRideObj.amount * -1);
+      // deduct amount from passenger's Used credit
       let updateUsedCreditResult = await updateUsedCredit(
         TripRideObj.PassengerId._id,
-        TripRideObj.amount - parseInt(TripRideObj.amount / 10)
+        TripRideObj.amount * -1
       );
-      //add default rating for completed ride once rider click on end trip
+      console.log("@@@ updated used credit is", updateUsedCreditResult);
     }
-    // let ratingResult = setRating(TripRideObj._id, 3);
-    // if (!ratingResult)
-    //   console.log(
-    //     "error while setting default rating in trip_ride:",
-    //     ratingResult
-    //   );
   } else {
     //console.log(status);
     // apply safety points penalty to rider

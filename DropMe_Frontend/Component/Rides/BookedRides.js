@@ -98,11 +98,11 @@ const BookedRides = ({ navigation }) => {
       );
 
       //write code to join room by trip_ride id and send passenger id
-      socket.emit("join_trip", tripRideId);
-      socket.emit("send_message", {
-        message: "Trip initated!",
-        tripRideObj: tripRideId,
-      });
+      // socket.emit("join_trip", tripRideId);
+      // socket.emit("send_message", {
+      //   message: "Trip initated!",
+      //   tripRideObj: tripRideId,
+      // });
 
       toast.show({
         render: () => {
@@ -121,7 +121,9 @@ const BookedRides = ({ navigation }) => {
         render: () => {
           return (
             <Box bg="red.400" px="10" py="3" rounded="sm">
-              <Text fontSize={"15"}>{error.response.data}</Text>
+              <Text fontSize={"15"}>
+                {"error.response.data in booked rides"}
+              </Text>
             </Box>
           );
         },
@@ -153,11 +155,11 @@ const BookedRides = ({ navigation }) => {
       });
       setStarted("Ended");
       setIsButtonDisabled(false);
-      socket.emit("send_message", {
-        message: "Trip completed!",
-        tripRideObj: tripRideId,
-        isTripCompleted: true,
-      });
+      // socket.emit("send_message", {
+      //   message: "Trip completed!",
+      //   tripRideObj: tripRideId,
+      //   isTripCompleted: true,
+      // });
     } catch (error) {
       toast.show({
         render: () => {
