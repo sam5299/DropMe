@@ -2,7 +2,7 @@ const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
 const { validateTrip } = require("../models/trip");
-const { getRides, addTripRequest } = require("../services/ride");
+const { getRides, addTripRequest, convertToDate } = require("../services/ride");
 const { requestRide } = require("../services/trip");
 const { getWallet, updateUsedCredit } = require("../services/wallet");
 const { getUser } = require("../services/user");
@@ -93,13 +93,18 @@ router.post("/requestRide", auth, async (req, res) => {
 
 //route to get all accepted trip request
 router.get("/getBookedTrips", auth, async (req, res) => {
-  let raiderId = req.body.User;
-  let bookedRide = await getAllBookedTrips(raiderId);
-  if (!bookedRide) return res.status(400).send("No rides found");
-
+  let passengerId = req.body.User;
+  let bookedTrips = await getAllBookedTrips(passengerId);
+  if (!bookedTrips) return res.status(400).send("No rides found");
+  let finalResult=bookedTrips.filter(trips=>{
+    let tripDate= convertToDate(trips.date);
+    let currentDate= Date.now;
+    return tripDate>=currentDate;
+  })
+  
   //return res.status(200).send("searchForRide called and result:" + rides);
 
-  return res.status(200).send(bookedRide);
+  return res.status(200).send(finalResult);
 });
 
 //route to get all history of passenger
