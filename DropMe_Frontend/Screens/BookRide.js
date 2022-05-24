@@ -208,14 +208,16 @@ const BookRide = ({ navigation }) => {
           </Box>
           <DateTime dispatch={dispatch} />
           <PickupPoint dispatch={dispatch} />
-          {isFieldInError("pickupPoint") && (
-            <FormControl.ErrorMessage
-              isInvalid={true}
-              leftIcon={<WarningOutlineIcon size="xs" />}
-            >
-              Please enter Pickup Point
-            </FormControl.ErrorMessage>
-          )}
+          <Box ml={4}>
+            {isFieldInError("pickupPoint") && (
+              <FormControl.ErrorMessage
+                isInvalid={true}
+                leftIcon={<WarningOutlineIcon size="xs" />}
+              >
+                Please enter Pickup Point
+              </FormControl.ErrorMessage>
+            )}
+          </Box>
           <Box mt={5} alignItems={"center"}>
             <Text textAlign="center">Selected Seats: {state.seats}</Text>
             <Slider
