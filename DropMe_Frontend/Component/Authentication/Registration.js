@@ -33,7 +33,7 @@ const Registration = ({ navigation }) => {
     title: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-
+  const [mobileNumberError, setMobileNumberError] = useState(false);
   const initialState = {
     name: "",
     mobileNumber: "",
@@ -95,20 +95,28 @@ const Registration = ({ navigation }) => {
   });
 
   const uploadImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 0.5,
-      base64: true,
-    });
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 4],
+        quality: 0.5,
+        base64: true,
+      });
 
-    if (!result.cancelled) {
+      if (!result.cancelled) {
+        dispatch({
+          type: "profile",
+          payload: "data:image/png;base64," + result.base64,
+        });
+        //setPic("data:image/png;base64," + result.base64);
+      }
+    } catch (error) {
       dispatch({
         type: "profile",
-        payload: "data:image/png;base64," + result.base64,
+        payload:
+          "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png",
       });
-      //setPic("data:image/png;base64," + result.base64);
     }
   };
 
@@ -127,6 +135,11 @@ const Registration = ({ navigation }) => {
       },
     });
     if (isTrue) {
+      let pattern = /[7-9]{1}[0-9]{9}/;
+      if (!pattern.test(mobileNumber)) {
+        setMobileNumberError(true);
+        return;
+      } else setMobileNumberError(false);
       // make a call to backend and store user details
       setIsLoading(true);
       try {
@@ -278,6 +291,14 @@ const Registration = ({ navigation }) => {
                   Mobile No must be 10 digit
                 </FormControl.ErrorMessage>
               )}
+              {mobileNumberError && (
+                <FormControl.ErrorMessage
+                  isInvalid={true}
+                  leftIcon={<WarningOutlineIcon size="xs" />}
+                >
+                  Please type valid mobile number
+                </FormControl.ErrorMessage>
+              )}
             </Box>
             <Box>
               <Input
@@ -377,7 +398,8 @@ const Registration = ({ navigation }) => {
                     isInvalid={true}
                     leftIcon={<WarningOutlineIcon size="xs" />}
                   >
-                    Containe at least one upper,lower,special character & No.
+                    Contains at least one upper, lower, special character &
+                    number.
                   </FormControl.ErrorMessage>
                 </>
               )}

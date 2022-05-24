@@ -124,7 +124,10 @@ const SourceDestination = ({ dispatch }) => {
             size={5}
             mr="2"
             color="rgba(6,182,212,1.00)"
-            onPress={() => setStartLocation(null)}
+            onPress={() => {
+              setStartLocation(null);
+              dispatch({ type: "source", payload: "" });
+            }}
           />
         }
       />
@@ -142,7 +145,10 @@ const SourceDestination = ({ dispatch }) => {
             size={5}
             mr="2"
             color="rgba(6,182,212,1.00)"
-            onPress={() => setEndLocation(null)}
+            onPress={() => {
+              setEndLocation(null);
+              dispatch({ type: "destination", payload: "" });
+            }}
           />
         }
       />

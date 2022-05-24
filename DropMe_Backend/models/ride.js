@@ -17,7 +17,7 @@ const rideSchema = new mongoose.Schema({
   requestedUserList: { type: Array },
   status: {
     type: String,
-    enum: ["Created", "Cancelled", "Completed"],
+    enum: ["Created", "Initiated", "Cancelled", "Completed"],
     default: "Created",
     required: true,
   },
@@ -41,10 +41,10 @@ const rideSchema = new mongoose.Schema({
     ref: "vehicle",
     required: true,
   },
-  rideDate:{
-    type:Date,
-    required:true,
-  }
+  rideDate: {
+    type: Date,
+    required: true,
+  },
 });
 
 const Ride = mongoose.model("ride", rideSchema);
@@ -67,16 +67,14 @@ function validateRideDetails(rideData) {
     rideFor: Joi.string().valid("Male", "Female", "Both").required(),
     rideType: Joi.string().valid("Free", "Paid").required(),
     vehicleNumber: Joi.string()
-      .regex(
-        /^([A-Z|a-z]{2}\s{1}\d{2}\s{1}[A-Z|a-z]{1,2}\s{1}\d{1,4})?([A-Z|a-z]{3}\s{1}\d{1,4})?$/
-      )
+      .regex(/^[A-Z]{2} [0-9]{2,3} [A-Z]{2} [0-9]{1,4}$/)
       .required()
       .messages({
         "object.regex": "Please enter valid vehicle number",
       }),
     User: Joi.string().required(),
     Vehicle: Joi.string().required(),
-    rideDate:Joi.date().required(),
+    rideDate: Joi.date().required(),
   });
   return joiRideSchema.validate(rideData);
 }

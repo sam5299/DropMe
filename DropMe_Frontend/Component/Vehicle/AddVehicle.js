@@ -27,9 +27,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import axios from "axios";
 
 const AddVehicle = ({ route, navigation }) => {
-  let [Picture, setPic] = useState(
-    "https://www.extremetech.com/wp-content/uploads/2019/12/SONATA-hero-option1-764A5360-edit-640x354.jpg"
-  );
+  let [Picture, setPic] = useState(null);
+  const [pictureError, setPictureError] = useState(false);
   let [vehicleType, setVehicleType] = useState("Bike");
   let [vehicleClass, setVehicleClass] = useState("");
   let [vehicleNumber, setVehicleNumber] = useState("");
@@ -44,12 +43,11 @@ const AddVehicle = ({ route, navigation }) => {
   ]);
   let FuelTypeArray = ["Petrol", "Diesel", "CNG", "Electric"];
   const [isLoading, setIsLoading] = useState(false);
-  const [pageRerender, setPageRerender] = useState(false);
+
+  const [errorVehicleNumber, setErrorVehicleNumber] = useState(false);
 
   const clearFields = () => {
-    setPic(
-      "https://www.extremetech.com/wp-content/uploads/2019/12/SONATA-hero-option1-764A5360-edit-640x354.jpg"
-    );
+    setPic(null);
     setVehicleType("Bike");
     setVehicleClass("");
     setVehicleNumber("");
@@ -63,13 +61,16 @@ const AddVehicle = ({ route, navigation }) => {
   };
 
   if (route.params) {
-    console.log("params available..");
+    //console.log("params available..");
     clearFields();
     delete route.params;
   }
 
   useEffect(() => {
     let mounted = true;
+    if (mounted) {
+      setErrorVehicleNumber(false);
+    }
 
     return () => (mounted = false);
   }, [vehicleClass, slider, Picture]);
@@ -87,13 +88,21 @@ const AddVehicle = ({ route, navigation }) => {
       vehicleNumber: { minlength: 12, maxLength: 13, required: true },
       fuelType: { required: true },
     });
-    let pattern = /^[A-Z]{2}[ -][0-9]{1,2}(?: [A-Z])?(?: [A-Z]*)? [0-9]{4}$/;
+    let pattern = /^[A-Z]{2} [0-9]{2,3} [A-Z]{2} [0-9]{1,4}$/;
     // /^([A-Z]{2}\s{1}\d{2}\s{1}\[A-Z]{1,2}\s{1}\d{1,4})?([A-Z|a-z]{3}\s{1}\d{1,4})?$/;
     console.log("matching vehicle number");
 
     if (!pattern.test(vehicleNumber)) {
-      console.log("not matched");
-      isFieldInError.vehicleNumber = "Please enter valid vehicle number.";
+      //  console.log("not matched");
+      // isFieldInError.vehicleNumber = "Please enter valid vehicle number.";
+      setErrorVehicleNumber(true);
+      return;
+    }
+    if (Picture === null) {
+      setPictureError(true);
+      return;
+    } else {
+      setPictureError(false);
     }
     if (isTrue) {
       // navigation.setOptions = {
@@ -227,22 +236,33 @@ const AddVehicle = ({ route, navigation }) => {
           }}
         >
           <FormControl justifyContent="center" alignItems={"center"}>
-            <TouchableHighlight
-              onPress={() => uploadImage()}
-              underlayColor="rgba(0,0,0,0)"
-            >
-              <Avatar
-                bg="green.500"
-                size="xl"
-                source={{
-                  uri: Picture,
-                }}
+            <Box>
+              <TouchableHighlight
+                onPress={() => uploadImage()}
+                underlayColor="rgba(0,0,0,0)"
               >
-                Vehicle Image
-                <Avatar.Badge bg="green.500" />
-              </Avatar>
-            </TouchableHighlight>
-
+                <Avatar
+                  bg="green.500"
+                  size="xl"
+                  source={{
+                    uri: Picture,
+                  }}
+                >
+                  <Text fontSize={"sm"}>Vehicle Image</Text>
+                  <Avatar.Badge bg="green.500" />
+                </Avatar>
+              </TouchableHighlight>
+            </Box>
+            <Box>
+              {pictureError && (
+                <FormControl.ErrorMessage
+                  isInvalid={true}
+                  leftIcon={<WarningOutlineIcon size="xs" />}
+                >
+                  Image required!
+                </FormControl.ErrorMessage>
+              )}
+            </Box>
             <Stack space={6} mt="2">
               <Radio.Group
                 name="Vehicle Type"
@@ -325,9 +345,11 @@ const AddVehicle = ({ route, navigation }) => {
                   }
                   placeholder="Vehicle Number"
                   value={vehicleNumber}
-                  onChangeText={(value) => setVehicleNumber(value)}
+                  onChangeText={(value) =>
+                    setVehicleNumber(value.toUpperCase())
+                  }
                 />
-                {isFieldInError("vehicleNumber") && (
+                {errorVehicleNumber && (
                   <FormControl.ErrorMessage
                     isInvalid={true}
                     leftIcon={<WarningOutlineIcon size="xs" />}
@@ -360,7 +382,7 @@ const AddVehicle = ({ route, navigation }) => {
                     isInvalid={true}
                     leftIcon={<WarningOutlineIcon size="xs" />}
                   >
-                    {"Please select vehicle's fuel type"}
+                    {"Please select fuel type"}
                   </FormControl.ErrorMessage>
                 )}
               </Box>

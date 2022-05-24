@@ -35,8 +35,9 @@ async function isUserDataValidate(userData) {
       .required(),
     mobileNumber: Joi.string()
       .length(10)
-      .pattern(/^[0-9]+$/)
+      .pattern(/[7-9]{1}[0-9]{9}/)
       .required(),
+
     gender: Joi.string().required(),
     password: new PasswordComplexity({
       min: 8,

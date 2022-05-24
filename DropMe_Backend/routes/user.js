@@ -34,7 +34,8 @@ router.use(fileUpload({ useTempFiles: true, tempFileDir: "../image_files" }));
 
 //register user route
 router.post("/register", async (req, res) => {
-  //console.log("register:", req.body);
+  console.log("register route called..");
+
   try {
     let userId = await getUniqueId();
     req.body.userId = userId;
@@ -133,7 +134,7 @@ router.put("/forgotPassword", async (req, res) => {
     return res.status(404).send("mobileNumber is require");
 
   let user = await isUserExists(req.body.mobileNumber);
-  if (!user) return res.status(400).send("Invalid detail's");
+  if (!user) return res.status(400).send("Invalid mobile number!");
 
   let newPassword = await generateRandomPassword();
   console.log(newPassword);

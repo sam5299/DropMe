@@ -5,7 +5,11 @@ const { TripRide } = require("../models/trip_ride");
 const { User } = require("../models/user");
 const { WalletHistory } = require("../models/wallet_history");
 const { createNotification } = require("./notification");
-const { getTimeDifference, reduceAvailableSeats } = require("./ride");
+const {
+  getTimeDifference,
+  reduceAvailableSeats,
+  updateRideStatus,
+} = require("./ride");
 const {
   updateWallet,
   updateUsedCredit,
@@ -102,11 +106,11 @@ async function deleteBookedTrip(tripRideId) {
     today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
   //get the time difference
   let timeDifference = getTimeDifference(tripRideObj.date + ";" + currentTime);
-  console.log("time difference:" + timeDifference);
+  // console.log("time difference:" + timeDifference);
   //check if cancellation time is above 10 hrs then trip deposit will be refunded
   if (timeDifference >= 10) {
     let depositAmount = parseInt(tripRideObj.amount * 0.1);
-    console.log("penalty", depositAmount);
+    // console.log("penalty", depositAmount);
 
     // update passengers used credits
     let result = await updateUsedCredit(
@@ -182,7 +186,7 @@ async function updateTripStatus(tripRideId, tripId, status) {
 
   //define variable according to condition for user notification
   let fromUserId, toUserId, messageContent, notificationTypeName;
-  let tripRideObjectId = null;
+  let tripRideObjectIdForMessage = null;
 
   if (status == "Initiated") {
     TripRideObj.startTime = currentTime;
@@ -196,7 +200,8 @@ async function updateTripStatus(tripRideId, tripId, status) {
     toUserId = TripRideObj.PassengerId._id;
     (messageContent = `Your trip from ${TripRideObj.rideId.source} to ${TripRideObj.rideId.destination} is completed.`),
       (notificationTypeName = "Trip Completed");
-    tripRideObjectId = TripRideObj._id;
+    tripRideObjectIdForMessage = TripRideObj._id;
+
     // add 90% amount to riders wallet and 10% commission will be given to DropMe.
 
     // let sourceArrary = TripRideObj.rideId.source.split(",");
@@ -260,16 +265,13 @@ async function updateTripStatus(tripRideId, tripId, status) {
         );
 
       // deduct amount from passenger's Used credit
-      console.log("@@@ Used credit is", TripRideObj.amount * -1);
-      // deduct amount from passenger's Used credit
       let updateUsedCreditResult = await updateUsedCredit(
         TripRideObj.PassengerId._id,
         TripRideObj.amount * -1
       );
-      console.log("@@@ updated used credit is", updateUsedCreditResult);
+      // console.log("@@@ updated used credit is", updateUsedCreditResult);
     }
   } else {
-    //console.log(status);
     // apply safety points penalty to rider
     if (TripRideObj.amount) {
       let penalty = TripRideObj.amount * 0.1;
@@ -308,11 +310,17 @@ async function updateTripStatus(tripRideId, tripId, status) {
     message: messageContent,
     notificationType: notificationTypeName,
   };
-  if (tripRideObjectId) notificationBody.tripRideId = tripRideObjectId;
+  if (tripRideObjectIdForMessage)
+    notificationBody.tripRideId = tripRideObjectIdForMessage;
   let newNotification = new Notification(notificationBody);
   let notificationResult = await newNotification.save();
   if (!notificationResult)
     console.log("error while creating notification in updateRideStatus.");
+
+  // Update the main ride status in ride table
+  let updateRideResult = await updateRideStatus(TripRideObj.rideId._id, status);
+  if (!updateRideResult)
+    console.log("Error in update main ride status in update trip status");
 
   return await TripRideObj.save();
 }
