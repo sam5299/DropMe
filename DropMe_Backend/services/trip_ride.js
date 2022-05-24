@@ -260,13 +260,15 @@ async function updateTripStatus(tripRideId, tripId, status) {
         );
 
       // deduct amount from passenger's Used credit
-      console.log("@@@ Used credit is", TripRideObj.amount * -1);
+      // console.log("@@@ Used credit is", TripRideObj.amount * -1);
       // deduct amount from passenger's Used credit
       let updateUsedCreditResult = await updateUsedCredit(
         TripRideObj.PassengerId._id,
         TripRideObj.amount * -1
       );
-      console.log("@@@ updated used credit is", updateUsedCreditResult);
+      // console.log("@@@ updated used credit is", updateUsedCreditResult);
+
+      // update ride status to completed
     }
   } else {
     //console.log(status);
