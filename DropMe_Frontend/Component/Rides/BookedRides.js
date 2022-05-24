@@ -51,20 +51,6 @@ const BookedRides = ({ navigation }) => {
         }
       } catch (error) {
         console.log("Booked Rides Exception: ", error.response.data);
-        toast.show({
-          render: () => {
-            return (
-              <Box bg="red.400" px="10" py="3" rounded="sm">
-                <Text fontSize={"15"}>
-                  {error.name === "AxiosError"
-                    ? "Sorry cannot reach to server!"
-                    : error.response.data}
-                </Text>
-              </Box>
-            );
-          },
-          placement: "top",
-        });
         setShowRides(false);
       }
     };
