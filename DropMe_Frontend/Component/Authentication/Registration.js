@@ -95,20 +95,28 @@ const Registration = ({ navigation }) => {
   });
 
   const uploadImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 0.5,
-      base64: true,
-    });
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 4],
+        quality: 0.5,
+        base64: true,
+      });
 
-    if (!result.cancelled) {
+      if (!result.cancelled) {
+        dispatch({
+          type: "profile",
+          payload: "data:image/png;base64," + result.base64,
+        });
+        //setPic("data:image/png;base64," + result.base64);
+      }
+    } catch (error) {
       dispatch({
         type: "profile",
-        payload: "data:image/png;base64," + result.base64,
+        payload:
+          "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png",
       });
-      //setPic("data:image/png;base64," + result.base64);
     }
   };
 
