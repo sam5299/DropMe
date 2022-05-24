@@ -86,7 +86,7 @@ async function getAllRequest(allRideList) {
 
 //function to generate 4 digit trip token for each accepted trip request
 function generateTripToken() {
-  return Math.floor(Math.random() * 1000000) + 1;
+  return Math.floor(Math.random() * 1000000);
 }
 
 // calculate trip amount
@@ -121,7 +121,7 @@ async function calculateTripAmount(vehicleId, distance) {
       break;
   }
   if ("Car" == vehicleType) {
-    console.log("Car");
+    // console.log("Car");
     switch (vehicleObj.fuelType) {
       case "Petrol":
         fuelFactor = 2;
@@ -141,13 +141,10 @@ async function calculateTripAmount(vehicleId, distance) {
   return amount;
 }
 
-
-
 module.exports = {
   requestRide,
   getTripDetails,
   generateTripToken,
   calculateTripAmount,
   getAllRequest,
-  
 };

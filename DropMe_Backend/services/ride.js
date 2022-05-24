@@ -87,8 +87,9 @@ async function getUserRides(userId) {
   //.find({$gte:[{rideDate:Date.now}]});
 }
 
-// complete a ride
+// update the status of the ride
 async function updateRideStatus(rideId, status) {
+  console.log("Update ride status is called");
   let rideObj = await Ride.findOne({ _id: rideId });
   rideObj.status = status;
   return await rideObj.save();
@@ -133,9 +134,9 @@ function getTimeDifference(rideDate) {
   let d1 = new Date(Date.parse(rideDate));
   let d2 = new Date(Date.parse(Date())); //"Mon May 02 2022;06:30");
   let hrs = Math.round((d1 - d2) / (1000 * 60 * 60));
-  console.log(hrs);
-  console.log(d1.toString());
-  console.log(d2.toString());
+  // console.log(hrs);
+  // console.log(d1.toString());
+  // console.log(d2.toString());
   return hrs;
 }
 

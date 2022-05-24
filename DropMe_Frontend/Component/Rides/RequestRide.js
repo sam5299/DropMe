@@ -92,10 +92,17 @@ const RequestRides = ({ navigation }) => {
               />
 
               <Text fontSize={25}>{ride.vehicleNumber}</Text>
-              <Text fontSize={18} fontWeight="bold">
-                <FontAwesome name="rupee" size={18} color="black" />
-                {ride.amount}
-              </Text>
+              {ride.amount > 0 ? (
+                <Text fontSize={18} fontWeight="bold">
+                  <FontAwesome name="rupee" size={18} color="black" />
+                  {ride.amount}
+                </Text>
+              ) : (
+                <Text fontSize={18} fontWeight="bold" color={"green.500"}>
+                  Free
+                </Text>
+              )}
+
               <Box justifyContent={"flex-start"}>
                 <Box>
                   <Text fontSize={18} fontWeight="bold">

@@ -80,7 +80,7 @@ const RideHistory = () => {
             {trip.status == "Completed" ? (
               <AirbnbRating
                 count={5}
-                reviews={["OK", "Good", "Very Good", "Wow", "Amazing"]}
+                reviews={["Average", "Good", "Very Good", "Wow", "Amazing"]}
                 readonly={true}
                 size={15}
                 reviewColor={"black"}
@@ -89,15 +89,7 @@ const RideHistory = () => {
                 defaultRating={trip.tripRating || 0}
               />
             ) : null}
-            {/* <AirbnbRating
-              count={trip.tripRating}
-              reviews={["OK", "Good", "Very Good", "Wow", "Amazing"]}
-              readonly={true}
-              size={15}
-              reviewColor={"black"}
-              reviewSize={20}
-              isDisabled={true}
-            /> */}
+
             <Stack direction={"column"} alignItems="center" space={5} m={2}>
               <Stack direction={"row"}>
                 <Text fontSize={18} fontWeight="bold" color="black">
@@ -127,15 +119,29 @@ const RideHistory = () => {
                 <Text fontSize={18}> {trip.tripId.date}</Text>
               </Stack>
 
-              <Text fontSize={18} fontWeight="bold" color="black">
-                <FontAwesome name="rupee" size={18} color="black" />
-                {trip.amount}
-              </Text>
-              <Stack direction={"row"}>
+              {trip.amount > 0 ? (
+                <Text fontSize={18} fontWeight="bold">
+                  <FontAwesome name="rupee" size={18} color="black" />
+                  {trip.amount}
+                </Text>
+              ) : (
+                <Text fontSize={18} fontWeight="bold" color={"green.500"}>
+                  Free
+                </Text>
+              )}
+              <Stack direction={"row"} space={2}>
                 <Text fontSize={18} fontWeight="bold" color="black">
                   Status:
                 </Text>
-                <Text fontSize={18}> {trip.status}</Text>
+                {trip.status === "Completed" ? (
+                  <Text fontSize={18} fontWeight="bold" color={"green.500"}>
+                    {trip.status}
+                  </Text>
+                ) : (
+                  <Text fontSize={18} fontWeight="bold" color={"red.500"}>
+                    {trip.status}
+                  </Text>
+                )}
               </Stack>
             </Stack>
           </Box>

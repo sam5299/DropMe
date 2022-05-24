@@ -214,7 +214,7 @@ const CreateRide = ({ navigation }) => {
           placement: "top",
         });
       } catch (error) {
-        console.log(error.name);
+        console.log(error.response.data);
         setLoading(false);
         toast.show({
           render: () => {

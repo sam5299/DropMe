@@ -119,16 +119,30 @@ const TripHistory = () => {
                 <Text fontSize={18}> {trip.tripId.date}</Text>
               </Stack>
 
-              <Text fontSize={18} fontWeight="bold" color="black">
-                <FontAwesome name="rupee" size={18} color="black" />
-                {trip.amount}
-              </Text>
+              {trip.amount > 0 ? (
+                <Text fontSize={18} fontWeight="bold">
+                  <FontAwesome name="rupee" size={18} color="black" />
+                  {trip.amount}
+                </Text>
+              ) : (
+                <Text fontSize={18} fontWeight="bold" color={"green.500"}>
+                  Free
+                </Text>
+              )}
 
-              <Stack direction={"row"}>
+              <Stack direction={"row"} space={2}>
                 <Text fontSize={18} fontWeight="bold" color="black">
                   Status:
                 </Text>
-                <Text fontSize={18}> {trip.status}</Text>
+                {trip.status === "Completed" ? (
+                  <Text fontSize={18} fontWeight="bold" color={"green.500"}>
+                    {trip.status}
+                  </Text>
+                ) : (
+                  <Text fontSize={18} fontWeight="bold" color={"red.500"}>
+                    {trip.status}
+                  </Text>
+                )}
               </Stack>
             </Stack>
           </Box>

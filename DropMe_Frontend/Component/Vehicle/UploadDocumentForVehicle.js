@@ -184,8 +184,8 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
         required: userData.licenseNumber === null ? true : false,
       },
     });
-    console.log("pucError:" + pucError);
-    console.log("rcError:" + rcError);
+    // console.log("pucError:" + pucError);
+    //console.log("rcError:" + rcError);
     if (pucError === false && rcError === false && isTrue) {
       console.log("Validation done");
       try {
@@ -212,21 +212,9 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
         }, 1000);
       } catch (ex) {
         setIsLoading(false);
-        toast.show({
-          render: () => {
-            return (
-              <Box bg="red.400" px="10" py="3" rounded="sm">
-                <Text fontSize={"15"}>
-                  {error.name === "AxiosError"
-                    ? "Sorry cannot reach to server!"
-                    : error.response.data}
-                </Text>
-              </Box>
-            );
-          },
-          placement: "top",
-        });
-        console.log("exception:" + ex.response.data);
+        console.log(
+          "exception in upload vehicle documents:" + ex.response.data
+        );
       }
     }
   };
