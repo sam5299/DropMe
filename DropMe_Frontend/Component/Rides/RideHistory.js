@@ -77,15 +77,16 @@ const RideHistory = () => {
               alt="Image not available"
               borderRadius={100}
             />
-            {trip.status === "Completed" ? (
+            {trip.status == "Completed" ? (
               <AirbnbRating
-                count={trip.tripRating}
+                count={5}
                 reviews={["OK", "Good", "Very Good", "Wow", "Amazing"]}
                 readonly={true}
                 size={15}
                 reviewColor={"black"}
                 reviewSize={20}
                 isDisabled={true}
+                defaultRating={trip.tripRating || 0}
               />
             ) : null}
             {/* <AirbnbRating

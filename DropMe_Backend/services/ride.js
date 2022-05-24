@@ -39,13 +39,13 @@ async function getCreatedRides(
   // console.log("Seats:" + seats);
   // console.log("Gender:" + gender);
 
- // let dateObj=convertToDate(date);
-  
+  // let dateObj=convertToDate(date);
 
   return await Ride.find({
     source: Source,
     destination: Destination,
     // time: Time,
+    date: date,
     availableSeats: { $gte: seats },
     User: { $ne: userId },
     requestedUserList: { $nin: userId },
@@ -83,9 +83,8 @@ async function getUserRides(userId) {
     .populate("Vehicle", "_id  vehicleImage ", Vehicle)
     .populate("User", "_id name", User)
     .sort({ _id: -1 });
-    //.where({rideDate:{$gte:Date.now}});
-    //.find({$gte:[{rideDate:Date.now}]});
-    
+  //.where({rideDate:{$gte:Date.now}});
+  //.find({$gte:[{rideDate:Date.now}]});
 }
 
 // delete a ride by its id

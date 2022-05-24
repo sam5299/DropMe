@@ -5,7 +5,7 @@ const { TripRide } = require("../models/trip_ride");
 const { User } = require("../models/user");
 const { WalletHistory } = require("../models/wallet_history");
 const { createNotification } = require("./notification");
-const { getTimeDifference } = require("./ride");
+const { getTimeDifference, reduceAvailableSeats } = require("./ride");
 const {
   updateWallet,
   updateUsedCredit,
@@ -87,14 +87,14 @@ async function deleteBookedTrip(tripRideId) {
     .populate("PassengerId", "name", User);
 
   tripRideObj.date = tripRideObj.rideId.date;
-  console.log("tripRideObj:", tripRideObj);
+  // console.log("tripRideObj:", tripRideObj);
 
   //setting simple sourcename and destination name for wallethistory purpose
   let sourceArrary = tripRideObj.rideId.source.split(",");
   let destinationArray = tripRideObj.rideId.destination.split(",");
   let sourceName = sourceArrary[0];
   let destinationName = destinationArray[0];
-  console.log("SourceName:" + sourceName);
+  //console.log("SourceName:" + sourceName);
   //console.log("DestinationName:" + destinationName);
 
   let today = new Date();
@@ -147,13 +147,20 @@ async function deleteBookedTrip(tripRideId) {
     console.log("failed to send notification.");
     return newNotification;
   }
+  let tripObj = await Trip.findOne({ _id: tripRideObj.tripId._id });
+  let updateRideResult = await reduceAvailableSeats(
+    tripRideObj.rideId._id,
+    tripObj.seatRequest * -1
+  );
+  if (!updateRideResult)
+    console.log("Error in update ride seats in after cancelling trip");
 
   tripRideObj.status = "Rejected";
   return await tripRideObj.save();
 }
 
 // get trip ride details by TripRideId and tripId
-async function getTripRideByTripId(tripRideId, tripId, status) {
+async function updateTripStatus(tripRideId, tripId, status) {
   let TripRideObj = await TripRide.findOne({
     _id: tripRideId,
     tripId: tripId,
@@ -175,7 +182,7 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
 
   //define variable according to condition for user notification
   let fromUserId, toUserId, messageContent, notificationTypeName;
-  let tripRideObjectId=null;
+  let tripRideObjectId = null;
 
   if (status == "Initiated") {
     TripRideObj.startTime = currentTime;
@@ -185,12 +192,11 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
       (notificationTypeName = "Trip");
   } else if (status == "Completed") {
     TripRideObj.endTime = currentTime;
-
     fromUserId = TripRideObj.RaiderId._id;
     toUserId = TripRideObj.PassengerId._id;
     (messageContent = `Your trip from ${TripRideObj.rideId.source} to ${TripRideObj.rideId.destination} is completed.`),
       (notificationTypeName = "Trip Completed");
-      tripRideObjectId=TripRideObj._id;
+    tripRideObjectId = TripRideObj._id;
     // add 90% amount to riders wallet and 10% commission will be given to DropMe.
 
     // let sourceArrary = TripRideObj.rideId.source.split(",");
@@ -213,7 +219,7 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
       let riderWalletHistoryDetails = {
         User: TripRideObj.RaiderId._id,
         amount: tripAmount,
-        message: `Credit point added for ride from ${sourceName} to ${sourceName}`,
+        message: `Credit point added for ride from ${sourceName} to ${destinationName}`,
         date: TripRideObj.date,
         type: "Credit",
       };
@@ -238,7 +244,7 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
       let passengerWalletHistoryDetails = {
         User: TripRideObj.PassengerId._id,
         amount: tripAmount,
-        message: `Completed trip from ${sourceName} to ${sourceName}`,
+        message: `Completed trip from ${sourceName} to ${destinationName}`,
         date: TripRideObj.date,
         type: "Debit",
       };
@@ -256,7 +262,7 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
       // deduct amount from passenger's Used credit
       let updateUsedCreditResult = await updateUsedCredit(
         TripRideObj.PassengerId._id,
-        TripRideObj.amount - TripRideObj.amount
+        TripRideObj.amount - parseInt(TripRideObj.amount / 10)
       );
       //add default rating for completed ride once rider click on end trip
     }
@@ -306,8 +312,7 @@ async function getTripRideByTripId(tripRideId, tripId, status) {
     message: messageContent,
     notificationType: notificationTypeName,
   };
-  if(tripRideObjectId)
-  notificationBody.tripRideId=tripRideObjectId;
+  if (tripRideObjectId) notificationBody.tripRideId = tripRideObjectId;
   let newNotification = new Notification(notificationBody);
   let notificationResult = await newNotification.save();
   if (!notificationResult)
@@ -348,6 +353,6 @@ module.exports = {
   getRiderHistory,
   getPassengerHistory,
   deleteBookedTrip,
-  getTripRideByTripId,
+  updateTripStatus,
   setRating,
 };

@@ -2,12 +2,17 @@ import { SimpleLineIcons } from "@expo/vector-icons";
 import { React, useContext, useEffect, useState } from "react";
 import { Rating, AirbnbRating } from "react-native-ratings";
 import { Box, Button, Stack, Text } from "native-base";
-import axios from 'axios';
+import axios from "axios";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Component/Context";
 
-const AcceptRating = ({tripRideId, setModalVisible,notificationObject,markReadNotification}) => {
+const AcceptRating = ({
+  tripRideId,
+  setModalVisible,
+  notificationObject,
+  markReadNotification,
+}) => {
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
   const [rating, setRating] = useState(0);
@@ -19,33 +24,34 @@ const AcceptRating = ({tripRideId, setModalVisible,notificationObject,markReadNo
     try {
       setModalVisible(false);
       const User = await AsyncStorage.getItem("User");
-        const parseUser = JSON.parse(User);
-        let result = await axios.put(url + "/trip/setRating",{
-          tripRideId:tripRideId,
-          rating:rating
+      const parseUser = JSON.parse(User);
+      let result = await axios.put(
+        url + "/trip/setRating",
+        {
+          tripRideId: tripRideId,
+          rating: rating,
         },
-         {
+        {
           headers: {
             "x-auth-token": parseUser.userToken,
           },
-        });
-        alert("rating done!");
-       
+        }
+      );
+      // alert("rating done!");
 
-        //set notification as read
-        let notificationResult = await markReadNotification(notificationObject);
-        console.log("marking notification as read done");
-
-    } catch(error) {
+      //set notification as read
+      let notificationResult = await markReadNotification(notificationObject);
+      console.log("marking notification as read done");
+    } catch (error) {
       console.log("error while setting rating to trip!");
       console.log(error);
     }
 
     //set rating alert disabled
-    }
+  }
 
   return (
-    <Box display={"flex"} >
+    <Box display={"flex"}>
       <Box>
         <Stack
           direction={"column"}
@@ -71,21 +77,16 @@ const AcceptRating = ({tripRideId, setModalVisible,notificationObject,markReadNo
               reviewColor={"black"}
               reviewSize={15}
               isDisabled={false}
-              onFinishRating={(val)=>setRating(val)}
-            />    
-            
+              onFinishRating={(val) => setRating(val)}
+            />
           </Stack>
           <Box>
-              <Button
-                size="sm"
-                px={10}
-                onPress={()=>saveRating()}
-              >
-                <Text fontSize={"sm"} color="white">
-                  OK
-                </Text>
-              </Button>
-            </Box>
+            <Button size="sm" px={10} onPress={() => saveRating()}>
+              <Text fontSize={"sm"} color="white">
+                OK
+              </Text>
+            </Button>
+          </Box>
         </Stack>
       </Box>
     </Box>

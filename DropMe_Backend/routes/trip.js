@@ -2,7 +2,7 @@ const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
 const { validateTrip } = require("../models/trip");
-const { getRides, addTripRequest } = require("../services/ride");
+const { getRides, addTripRequest, convertToDate } = require("../services/ride");
 const { requestRide } = require("../services/trip");
 const { getWallet, updateUsedCredit } = require("../services/wallet");
 const { getUser } = require("../services/user");
@@ -16,6 +16,7 @@ const {
   getTripRideByTripId,
   addRating,
   setRating,
+  updateTripStatus,
 } = require("../services/trip_ride");
 
 //endpoint to search riders who are travelling on route passenger searching for
@@ -93,13 +94,18 @@ router.post("/requestRide", auth, async (req, res) => {
 
 //route to get all accepted trip request
 router.get("/getBookedTrips", auth, async (req, res) => {
-  let raiderId = req.body.User;
-  let bookedRide = await getAllBookedTrips(raiderId);
-  if (!bookedRide) return res.status(400).send("No rides found");
+  let passengerId = req.body.User;
+  let bookedTrips = await getAllBookedTrips(passengerId);
+  if (!bookedTrips) return res.status(400).send("No rides found");
+  let finalResult = bookedTrips.filter((trips) => {
+    let tripDate = convertToDate(trips.date);
+    let currentDate = Date.now;
+    return tripDate >= currentDate;
+  });
 
   //return res.status(200).send("searchForRide called and result:" + rides);
 
-  return res.status(200).send(bookedRide);
+  return res.status(200).send(finalResult);
 });
 
 //route to get all history of passenger
@@ -125,7 +131,7 @@ router.put("/updateTripStatus", auth, async (req, res) => {
   let tripRideId = req.body.tripRideId;
   let tripId = req.body.tripId;
   let status = req.body.status;
-  let TripRideObj = await getTripRideByTripId(tripRideId, tripId, status);
+  let TripRideObj = await updateTripStatus(tripRideId, tripId, status);
 
   // let saveResult = await TripRideObj.save();
 
@@ -137,9 +143,9 @@ router.put("/updateTripStatus", auth, async (req, res) => {
 
 // set rating to raider
 router.put("/setRating", auth, async (req, res) => {
-  console.log("setRating is called");
-  console.log("triprideid:",req.body.tripRideId);
-  console.log("rating:",req.body.rating);
+  console.log("setRating is called..");
+  // console.log("trip ride id:",req.body.tripRideId);
+  // console.log("rating:",req.body.rating);
   let tripRideId = req.body.tripRideId;
   let rating = req.body.rating;
   let addRatingResult = await setRating(tripRideId, rating);

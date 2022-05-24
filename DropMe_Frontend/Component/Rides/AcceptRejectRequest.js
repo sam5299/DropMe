@@ -58,11 +58,14 @@ const AcceptRejectRequest = ({ route, navigation }) => {
     tripId,
     rideId,
     raiderName,
-    amount,
-    vehicleNumber
+    perSeatAmount,
+    vehicleNumber,
+    seatRequest
   ) => {
     try {
       setButtonDisabled(true);
+      let amount = perSeatAmount * seatRequest;
+      console.log(amount);
       const result = await axios.post(
         url + "/ride/acceptTripRequest",
         { tripId, rideId, raiderName, amount, vehicleNumber },
@@ -235,7 +238,14 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                   }}
                   isDisabled={buttonDisabled}
                   onPress={() =>
-                    acceptRequest(list._id, rideId, name, amount, vehicleNumber)
+                    acceptRequest(
+                      list._id,
+                      rideId,
+                      name,
+                      amount,
+                      vehicleNumber,
+                      list.seatRequest
+                    )
                   }
                   px={5}
                 >
