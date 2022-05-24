@@ -18,6 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { AuthContext } from "../Component/Context";
 import { useValidation } from "react-native-form-validator";
+import { useIsFocused } from "@react-navigation/native";
 
 const initialState = {
   source: "",
@@ -123,6 +124,8 @@ const CreateRide = ({ navigation }) => {
   const [userToken, setToken] = useState(null);
   const [isLoading, setLoading] = useState(false);
 
+  const isFocused = useIsFocused();
+
   const todaysDate = new Date();
   const hourse = todaysDate.getHours();
   const min = todaysDate.getMinutes();
@@ -156,7 +159,7 @@ const CreateRide = ({ navigation }) => {
     };
     createRide();
     return () => (mounted = false);
-  }, []);
+  }, [isFocused]);
 
   const handleForm = async () => {
     setLoading(true);
