@@ -34,7 +34,8 @@ router.use(fileUpload({ useTempFiles: true, tempFileDir: "../image_files" }));
 
 //register user route
 router.post("/register", async (req, res) => {
-  //console.log("register:", req.body);
+  console.log("register route called..");
+
   try {
     let userId = await getUniqueId();
     req.body.userId = userId;

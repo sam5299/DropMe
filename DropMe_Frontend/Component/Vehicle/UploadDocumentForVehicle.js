@@ -137,7 +137,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
       fuelType: fuelType,
       pucImage: pucImage,
     };
-    console.log(body);
+    //  console.log(body);
     let rcError = false;
     let pucError = false;
 

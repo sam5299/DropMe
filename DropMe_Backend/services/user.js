@@ -32,7 +32,7 @@ async function getUniqueId() {
     if (!lastUserId) {
       return 1;
     }
-    console.log("temp result:" + typeof lastUserId.userId);
+    //console.log("temp result:" + typeof lastUserId.userId);
     return lastUserId.userId + 1;
   } catch (ex) {
     console.log("exception occured:" + ex);
@@ -73,7 +73,7 @@ async function validateLogin(loginData) {
   let schema = Joi.object({
     mobileNumber: Joi.string()
       .length(10)
-      .pattern(/^[0-9]+$/)
+      .pattern(/[7-9]{1}[0-9]{9}/)
       .required(),
     password: Joi.string().required(),
   });
@@ -86,7 +86,7 @@ async function isLicenseDetailsPresent(userId) {
     { userId: userId },
     { licenseNumber: 1, licensePhoto: 1, _id: 0 }
   );
-  console.log(licenseDetails);
+  // console.log(licenseDetails);
   if (
     licenseDetails.licenseNumber === null ||
     licenseDetails.licensePhoto === null

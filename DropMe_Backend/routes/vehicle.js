@@ -37,7 +37,7 @@ router.use(fileUpload({ useTempFiles: true, tempFileDir: "../image_files" }));
 // route to add new vehicle for logged in user
 router.post("/addVehicle", auth, async (req, res) => {
   delete req.body.User;
-  console.log("add Vehicle called:");
+  console.log("add Vehicle called....");
   try {
     if ("licenseNumber" in req.body && "licenseImage" in req.body) {
       console.log("licenseNumber and licenseImage is present");

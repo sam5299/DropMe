@@ -102,7 +102,7 @@ router.get(
         seats,
         gender
       );
-      //console.log(rides);
+      // console.log("@@@", rides);
       if (rides.length == 0) return res.status(400).send("No rides found");
 
       return res.status(200).send(rides);
@@ -205,7 +205,7 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
     req.body.amount = 0;
   }
 
-  console.log(req.body.amount);
+  // (console.log)(req.body.amount);
   req.body.date = trip.date;
   //adding RaiderId and PassengerId to req.body
   req.body.RaiderId = req.body.User;
@@ -297,7 +297,7 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
 
     //get the time difference
     let timeDifference = getTimeDifference(ride.date + ";" + ride.time);
-    console.log("time difference:" + timeDifference);
+    // console.log("time difference:" + timeDifference);
 
     //first get the list of requests for trip and auto reject it also send notification to user
     ride.requestedTripList.forEach(async (trip) => {
@@ -323,7 +323,7 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
         fromUser: req.body.User.toString(),
         toUser: trip.tripId.User.toString(),
         message:
-          "Your booked trip has been cancelled by rider! \nYour credit points will be added to your wallet shortly.",
+          "Your booked trip has been cancelled by rider!\nYour credit points will be added to your wallet shortly.",
         notificationType: "Trip",
       });
       if (!notificationResult) console.log("error while sending notification");

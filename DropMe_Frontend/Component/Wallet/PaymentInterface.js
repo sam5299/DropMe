@@ -109,7 +109,7 @@ const PaymentInterface = ({ navigation }) => {
             render: () => {
               return (
                 <Box bg="green.400" px="10" py="3" rounded="sm">
-                  <Text fontSize={"15"}>Credit Added Successfully!</Text>
+                  <Text fontSize={"15"}>Credit Added Successfully...!</Text>
                 </Box>
               );
             },
