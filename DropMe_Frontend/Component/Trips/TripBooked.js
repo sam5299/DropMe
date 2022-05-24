@@ -16,7 +16,6 @@ import {
   Spinner,
   useToast,
 } from "native-base";
-import io from "socket.io-client";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
