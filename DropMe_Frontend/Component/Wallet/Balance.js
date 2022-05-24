@@ -3,11 +3,14 @@ import { Box, Stack, Text, Button, Spinner, useToast } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
 import axios from "axios";
+import { useIsFocused } from "@react-navigation/native";
 
 const Balance = ({ route, navigation }) => {
   const [isPageLoading, setIspageLoading] = useState(false);
   const [userToken, setToken] = useState(null);
   const [wallet, setBalance] = useState({});
+
+  const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(false);
 
   const { getUrl } = useContext(AuthContext);
@@ -15,14 +18,9 @@ const Balance = ({ route, navigation }) => {
 
   const toast = useToast();
 
-  if (route.params) {
-    let { amount } = route.params;
-    wallet.creditPoint = parseInt(wallet.creditPoint) + parseInt(amount);
-    //console.log(amount);
-  }
-
   useEffect(() => {
     let mounted = true;
+
     async function fetchUserData() {
       try {
         setIspageLoading(true);
@@ -62,7 +60,7 @@ const Balance = ({ route, navigation }) => {
     fetchUserData();
 
     return () => (mounted = false);
-  }, []);
+  }, [isFocused]);
 
   let reedeemSafetyPoints = async () => {
     console.log("method called");

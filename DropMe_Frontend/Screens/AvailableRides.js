@@ -1,4 +1,3 @@
-import { View } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import {
   Box,
@@ -13,12 +12,11 @@ import {
   CloseIcon,
   Alert,
   Spinner,
+  useToast,
 } from "native-base";
 import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 import { AuthContext } from "../Component/Context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import RideForType from "../Component/RideForType";
 
 const AvailableRides = ({ route, navigation }) => {
   const [RideDetails, setRideDetails] = useState([]);
@@ -35,6 +33,8 @@ const AvailableRides = ({ route, navigation }) => {
     status: "success",
     title: "",
   });
+
+  const toast = useToast();
 
   let AlertField = (
     <Alert w="100%" status={alertField.status}>
@@ -69,11 +69,13 @@ const AvailableRides = ({ route, navigation }) => {
           }
         );
         //console.log("ride data:", rides.data);
-        setRideDetails(rides.data);
-        let tempObj = [];
-        RideDetails.forEach((ride) => {
-          console.log(ride._id);
-        });
+        if (mounted) {
+          setRideDetails(rides.data);
+        }
+        // let tempObj = [];
+        // RideDetails.forEach((ride) => {
+        //   console.log(ride._id);
+        // });
         setLoading(false);
       } catch (error) {
         console.log("AvailableRides: ", error.response.data);
@@ -106,17 +108,22 @@ const AvailableRides = ({ route, navigation }) => {
           newResult.push(ride);
         }
       });
+      setRideDetails(newResult);
 
       // console.log("done");
-      setAlertField({
-        status: "success",
-        title: `Request has been sent to rider.\nYou will receive notification once rider \n accept/reject your request.`,
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="green.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>
+                Request has been sent to rider.You will receive notification
+                once rider accept/reject your request.
+              </Text>
+            </Box>
+          );
+        },
+        placement: "top",
       });
-      setShowAlert(true);
-      setTimeout(() => {
-        setRideDetails(newResult);
-        setShowAlert(false);
-      }, 5000);
     } catch (error) {
       setAlertField({
         status: "error",
@@ -191,7 +198,7 @@ const AvailableRides = ({ route, navigation }) => {
                   <Entypo name="star" size={20} color="#FF9529" />
                   <Text fontWeight={"bold"} color={"black"} fontSize={15}>
                     {ride.User.totalNumberOfRatedRides == 0
-                      ? 0.0
+                      ? "0.0"
                       : (
                           ride.User.sumOfRating /
                           ride.User.totalNumberOfRatedRides

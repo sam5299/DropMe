@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ShadowPropTypesIOS } from "react-native";
 import { Alert as NewAlert } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
 import {
@@ -14,17 +14,21 @@ import {
   IconButton,
   CloseIcon,
   Spinner,
+  useToast,
 } from "native-base";
-
+import io from "socket.io-client";
 import axios from "axios";
-import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../Context";
+import RideCompleted from "../../Screens/RideCompletedForHome";
+
 function TripBooked() {
   const [bookedTripList, setBookedTripList] = useState([]);
   const [userToken, setToken] = useState(null);
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isBookedTripFetchingDone, setIsBookedTripFetchDone] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
@@ -33,6 +37,9 @@ function TripBooked() {
     title: "",
   });
   let [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  //toast field
+  const toast = useToast();
 
   const showConfirmDialog = (tripRideId, amount) => {
     return NewAlert.alert(
@@ -126,6 +133,12 @@ function TripBooked() {
     return () => (mounted = false);
   }, []);
 
+  let showOtp = (tripRideObj) => {
+    setToggleButton(false);
+    //code to add join group by tripRide id
+    socket.emit("join_trip", tripRideObj);
+  };
+
   let AlertField = (
     <Alert w="100%" status={alertField.status}>
       <VStack space={2} flexShrink={1} w="100%">
@@ -202,7 +215,9 @@ function TripBooked() {
               <Text style={styles.details}>
                 Vehicle Number: {trip.vehicleNumber}
               </Text>
+
               <Text style={styles.details}>OTP: {trip.token}</Text>
+
               {trip.status === "Booked" ? (
                 <Button
                   size={"lg"}
@@ -226,7 +241,6 @@ function TripBooked() {
 
   return (
     <Box flex={1} alignItems={"center"} bg={"#F0F8FF"}>
-      {showAlert ? AlertField : null}
       {isBookedTripFetchingDone ? (
         <Box flex={1} justifyContent="center" alignItems={"center"}>
           <Spinner size="lg" />

@@ -113,7 +113,7 @@ const RequestRides = ({ navigation }) => {
                   <Text fontSize={18} fontWeight="bold">
                     Date:
                   </Text>
-                  <Text fontSize={18}>{ride.date}</Text>
+                  <Text fontSize={15}>{ride.date}</Text>
                 </Box>
                 <Text fontSize={18} fontWeight="bold" mt={2}>
                   Available Seats: {ride.availableSeats}

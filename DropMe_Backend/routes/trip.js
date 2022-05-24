@@ -16,6 +16,7 @@ const {
   getTripRideByTripId,
   addRating,
   setRating,
+  updateTripStatus,
 } = require("../services/trip_ride");
 
 //endpoint to search riders who are travelling on route passenger searching for
@@ -96,12 +97,12 @@ router.get("/getBookedTrips", auth, async (req, res) => {
   let passengerId = req.body.User;
   let bookedTrips = await getAllBookedTrips(passengerId);
   if (!bookedTrips) return res.status(400).send("No rides found");
-  let finalResult=bookedTrips.filter(trips=>{
-    let tripDate= convertToDate(trips.date);
-    let currentDate= Date.now;
-    return tripDate>=currentDate;
-  })
-  
+  let finalResult = bookedTrips.filter((trips) => {
+    let tripDate = convertToDate(trips.date);
+    let currentDate = Date.now;
+    return tripDate >= currentDate;
+  });
+
   //return res.status(200).send("searchForRide called and result:" + rides);
 
   return res.status(200).send(finalResult);
@@ -130,7 +131,7 @@ router.put("/updateTripStatus", auth, async (req, res) => {
   let tripRideId = req.body.tripRideId;
   let tripId = req.body.tripId;
   let status = req.body.status;
-  let TripRideObj = await getTripRideByTripId(tripRideId, tripId, status);
+  let TripRideObj = await updateTripStatus(tripRideId, tripId, status);
 
   // let saveResult = await TripRideObj.save();
 

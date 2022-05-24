@@ -15,6 +15,7 @@ import { Alert as NewAlert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { AuthContext } from "../Context";
+import { useIsFocused } from "@react-navigation/native";
 
 const BookedRides = ({ navigation }) => {
   const [bookedRides, setbookedRides] = useState([]);
@@ -28,6 +29,8 @@ const BookedRides = ({ navigation }) => {
 
   //toast field
   const toast = useToast();
+
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     let mounted = true;
@@ -69,7 +72,7 @@ const BookedRides = ({ navigation }) => {
     getUserRides();
 
     return () => (mounted = false);
-  }, [isTripStarted]);
+  }, [isTripStarted, isFocused]);
 
   const startTrip = async (tripRideId, tripId, status, token) => {
     if (passengerToken === "" || passengerToken != token) {
@@ -93,6 +96,13 @@ const BookedRides = ({ navigation }) => {
         { tripRideId, tripId, status, token },
         { headers: { "x-auth-token": userToken } }
       );
+
+      //write code to join room by trip_ride id and send passenger id
+      socket.emit("join_trip", tripRideId);
+      socket.emit("send_message", {
+        message: "Trip initated!",
+        tripRideObj: tripRideId,
+      });
 
       toast.show({
         render: () => {
@@ -143,6 +153,11 @@ const BookedRides = ({ navigation }) => {
       });
       setStarted("Ended");
       setIsButtonDisabled(false);
+      socket.emit("send_message", {
+        message: "Trip completed!",
+        tripRideObj: tripRideId,
+        isTripCompleted: true,
+      });
     } catch (error) {
       toast.show({
         render: () => {
@@ -191,6 +206,9 @@ const BookedRides = ({ navigation }) => {
         { headers: { "x-auth-token": userToken } }
       );
 
+      let updatedRides = bookedRides.filter((ride) => ride._id != tripRideId);
+      setbookedRides(updatedRides);
+
       toast.show({
         render: () => {
           return (
@@ -201,7 +219,7 @@ const BookedRides = ({ navigation }) => {
         },
         placement: "top",
       });
-      setStarted("Ended");
+      // setStarted("Ended");
     } catch (error) {
       toast.show({
         render: () => {
@@ -240,7 +258,7 @@ const BookedRides = ({ navigation }) => {
               backgroundColor: "gray.50",
             }}
           >
-            {console.log(ride.status, ride.token)}
+            {/* {console.log(ride.status, ride.token)} */}
             <Stack
               direction={"column"}
               alignItems="center"

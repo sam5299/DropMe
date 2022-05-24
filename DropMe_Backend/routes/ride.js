@@ -118,18 +118,16 @@ router.get("/getUserRides", auth, async (req, res) => {
   let id = req.body.User;
   try {
     let rideData = await getUserRides(id);
-    let finalResult=[]
+    let finalResult = [];
     //console.log(rideData);
-    rideData.map(ride=>{
+    rideData.map((ride) => {
       // console.log("@@@",(ride.rideDate-new Date())/(1000*60*60*24)>0?true:false);
-      if(ride.rideDate-new Date()>0)
-      finalResult.push(ride)
-    })
-    
+      if (ride.rideDate - new Date() > 0) finalResult.push(ride);
+    });
+
     if (rideData.length == 0) return res.status(400).send("No rides found");
     // return res.status(200).send(rideData);
     return res.status(200).send(finalResult);
-
   } catch (ex) {
     return res.status(500).send("something failed!! try again latter:" + ex);
   }
@@ -201,12 +199,13 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
   let trip = await Trip.findOne({ _id: req.body.tripId });
 
   //calculate trip cost
-  req.body.amount = 0;
 
-  if (vehicle.amount) {
+  if (vehicle.amount == 0) {
     // amount = await calculateTripAmount(vehicle.Vehicle, trip.distance);
-    req.body.amount = vehicle.amount;
+    req.body.amount = 0;
   }
+
+  console.log(req.body.amount);
   req.body.date = trip.date;
   //adding RaiderId and PassengerId to req.body
   req.body.RaiderId = req.body.User;

@@ -2,10 +2,12 @@ const config = require("config");
 const dotenv = require("dotenv");
 dotenv.config();
 const express = require("express");
-const PORT= process.env.PORT || 3100;
+const PORT = process.env.PORT || 3100;
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
+//const http = require("http");
+//const { Server } = require("socket.io");
 const cors = require("cors");
 const helmet = require("helmet");
 const user = require("./routes/user");
@@ -16,6 +18,8 @@ const wallet = require("./routes/wallet");
 const walletHistory = require("./routes/walletHistory");
 const notification = require("./routes/notification");
 const map = require("./routes/map");
+
+//const server = http.createServer(app);
 
 app.use(bodyParser.json({ limit: "50mb" })); // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
@@ -40,7 +44,10 @@ if (!config.get("jwtPrivateKey")) {
 
 //connecting to database
 mongoose
-  .connect(process.env.MONGODB_URI || "mongodb+srv://DropMe:Project4@cluster0.psfti.mongodb.net/test3")
+  .connect(
+    process.env.MONGODB_URI ||
+      "mongodb+srv://DropMe:Project4@cluster0.psfti.mongodb.net/test3"
+  )
   .then(() => console.log("Connected to dropMe_sample"))
   .catch((err) => console.log("error connecting to database:", err));
 
