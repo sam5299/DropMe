@@ -96,7 +96,7 @@ const RideHistory = () => {
               />
             ) : null}
 
-            <Stack direction={"column"} alignItems="center" space={5} m={2}>
+            <Stack direction={"column"} alignItems="center" space={3} m={2}>
               <Stack direction={"row"}>
                 <Text fontSize={18} fontWeight="bold" color="black">
                   From:

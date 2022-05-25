@@ -213,12 +213,12 @@ const BookedRides = ({ navigation }) => {
 
   function allUserRides() {
     return (
-      <ScrollView>
+      <ScrollView w={"80%"}  m={2}>
         {bookedRides.map((ride) => (
           <Box
-            key={ride._id}
+            flex={1}
             my={5}
-            mx={5}
+            key={ride._id}
             rounded="lg"
             borderColor="coolGray.200"
             borderWidth="1"
@@ -255,7 +255,7 @@ const BookedRides = ({ navigation }) => {
               <Text fontSize={18} fontWeight="bold">
                 {ride.PassengerId.name}
               </Text>
-              <Box justifyContent={"flex-start"}>
+              <Stack justifyContent={"flex-start"} space={1}>
                 <Text fontSize={18} fontWeight="bold">
                   From:
                 </Text>
@@ -273,7 +273,7 @@ const BookedRides = ({ navigation }) => {
                   Pickup Point:
                 </Text>
                 <Text fontSize={15}>{ride.tripId.pickupPoint}</Text>
-              </Box>
+              </Stack>
               <Input
                 isDisabled={ride.status === "Booked" ? false : true}
                 maxLength={6}
@@ -346,20 +346,18 @@ const BookedRides = ({ navigation }) => {
   } else {
     return (
       <Box flex={1} alignItems={"center"} pb={"5"} bg={"#F0F8FF"}>
-        <Box mt={2}>
-          {bookedRides.length ? (
-            allUserRides()
-          ) : (
-            <Box
-              flex={1}
-              justifyContent="center"
-              alignItems={"center"}
-              bg={"#F0F8FF"}
-            >
-              <Text>No Booked Rides</Text>
-            </Box>
-          )}
-        </Box>
+        {bookedRides.length ? (
+          allUserRides()
+        ) : (
+          <Box
+            flex={1}
+            justifyContent="center"
+            alignItems={"center"}
+            bg={"#F0F8FF"}
+          >
+            <Text>No Booked Rides</Text>
+          </Box>
+        )}
       </Box>
     );
   }
