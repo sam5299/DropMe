@@ -59,7 +59,7 @@ const Balance = ({ route, navigation }) => {
   }, [isFocused]);
 
   let reedeemSafetyPoints = async () => {
-    console.log("method called");
+  //  console.log("method called");
 
     //check if safety points greater than 0 to reedeem
     if (wallet.safetyPoint <= 0) {
