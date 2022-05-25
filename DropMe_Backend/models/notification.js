@@ -7,7 +7,11 @@ const notificationSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  toUser: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  toUser: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   message: {
     type: String,
     required: true,
@@ -22,8 +26,8 @@ const notificationSchema = new mongoose.Schema({
   },
   tripRideId: {
     type: String,
-    default:null
-  }
+    default: null,
+  },
 });
 
 const Notification = mongoose.model("Notification", notificationSchema);

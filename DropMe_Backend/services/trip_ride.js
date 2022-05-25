@@ -24,9 +24,9 @@ async function addAcceptedTrip(body) {
 }
 
 async function getTripDetailsByRideIdAndStatus(rid, status) {
-  return await TripRide.findOne({ rideId: rid, status: status }).populate(
+  return await TripRide.find({ rideId: rid, status: status }).populate(
     "tripId",
-    "-_id User",
+    "-_id User source destination",
     Trip
   );
 }
@@ -119,7 +119,7 @@ async function deleteBookedTrip(tripRideId) {
     // console.log('====================================');
     // console.log("Deposit amount",depositAmount * -1);
     // console.log('====================================');
-      if(!updateWalletResult)
+    if (!updateWalletResult)
       console.log("Error in update wallet in cancel trip");
     //add code to add new entry in wallet_history collection for deducted credit point
     let body = {
@@ -135,13 +135,12 @@ async function deleteBookedTrip(tripRideId) {
     console.log("WalletHistory in trip ride deleteRide function");
   }
 
-   // update passengers used credits
-   let result = await updateUsedCredit(
+  // update passengers used credits
+  let result = await updateUsedCredit(
     tripRideObj.PassengerId._id,
     tripRideObj.amount * -1
   );
   if (!result) console.log("error while adding used credit in cancel trip");
-
 
   let notificationDetails = {
     fromUser: tripRideObj.PassengerId._id,
@@ -275,6 +274,13 @@ async function updateTripStatus(tripRideId, tripId, status) {
       );
       // console.log("@@@ updated used credit is", updateUsedCreditResult);
     }
+    // Update the main ride status in ride table
+    let updateRideResult = await updateRideStatus(
+      TripRideObj.rideId._id,
+      status
+    );
+    if (!updateRideResult)
+      console.log("Error in update main ride status in update trip status");
   } else {
     // apply safety points penalty to rider
     if (TripRideObj.amount) {
@@ -320,11 +326,6 @@ async function updateTripStatus(tripRideId, tripId, status) {
   let notificationResult = await newNotification.save();
   if (!notificationResult)
     console.log("error while creating notification in updateRideStatus.");
-
-  // Update the main ride status in ride table
-  let updateRideResult = await updateRideStatus(TripRideObj.rideId._id, status);
-  if (!updateRideResult)
-    console.log("Error in update main ride status in update trip status");
 
   return await TripRideObj.save();
 }

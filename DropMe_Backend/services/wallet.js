@@ -59,19 +59,19 @@ async function addPenalty(userId, penalty) {
   let [walletObj] = await Wallet.find({ User: userId });
   //console.log(walletObj);
   // walletObj.creditPoint=walletObj.creditPoint+walletObj.safetyPoint;
-  walletObj.safetyPoint -= parseInt(penalty);
+  walletObj.safetyPoint = walletObj.safetyPoint + parseInt(penalty);
   return await walletObj.save();
 }
 
-//function to validate reedeemSafetyPoint body
-function validationReedeemSafetPointBody(body) {
-  const joiReedeemSafetyPointSchema = new Joi.object({
-    safetyPoint: Joi.number().required(),
-    creditPoint: Joi.number().required(),
-    User: Joi.string().required(),
-  });
-  return joiReedeemSafetyPointSchema.validate(details);
-}
+// //function to validate reedeemSafetyPoint body
+// function validationReedeemSafetPointBody(body) {
+//   const joiReedeemSafetyPointSchema = new Joi.object({
+//     safetyPoint: Joi.number().required(),
+//     creditPoint: Joi.number().required(),
+//     User: Joi.string().required(),
+//   });
+//   return joiReedeemSafetyPointSchema.validate(details);
+// }
 
 module.exports = {
   createWallet,
