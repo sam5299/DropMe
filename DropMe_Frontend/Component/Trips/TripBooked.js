@@ -10,6 +10,7 @@ import {
   Text,
   Spinner,
   useToast,
+  Modal,
 } from "native-base";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,7 +22,7 @@ function TripBooked() {
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
-
+  const [showModal, setShowModal] = useState(false);
   const [isBookedTripFetchingDone, setIsBookedTripFetchDone] = useState(true);
   let [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
@@ -151,61 +152,84 @@ function TripBooked() {
               backgroundColor: "gray.50",
             }}
           >
-            <Stack direction={"column"} alignItems={"center"} space={2}>
-              <Text style={styles.details}>Source: {trip.tripId.source}</Text>
-              <Text style={styles.details}>
-                Destination : {trip.tripId.destination}
-              </Text>
-              <Text style={styles.details}>
-                Pickup Point: {trip.tripId.pickupPoint}
-              </Text>
-              <Text style={styles.details}>Date: {trip.tripId.date}</Text>
-              <Text style={styles.details}>Time: {trip.tripId.time}</Text>
-              <Text style={styles.details}>Amount: {trip.amount}</Text>
-              <Image
-                source={{
-                  uri: trip.RaiderId.profile,
-                }}
-                alt="image not available"
-                size="xl"
-                borderRadius={100}
-              />
-              <Text style={styles.details}>
-                Rider Name: {trip.RaiderId.name}
-              </Text>
-              <Text style={styles.details}>
-                Mobile No.: {trip.RaiderId.mobileNumber}
-              </Text>
-              <Text style={styles.details}>
-                Vehicle Number: {trip.vehicleNumber}
-              </Text>
+            {showModal ? (
+              <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+                <Modal.Content width={"90%"} p={2}>
+                  <Modal.CloseButton />
+                  <Modal.Header>
+                    <Text fontWeight={"bold"} fontSize={20}>
+                      Rider Details
+                    </Text>
+                  </Modal.Header>
+                  <ScrollView>
+                    <Stack direction={"column"} alignItems={"center"} space={2}>
+                      <Image
+                        source={{
+                          uri: trip.RaiderId.profile,
+                        }}
+                        alt="image not available"
+                        size="xl"
+                        borderRadius={100}
+                      />
+                      <Text style={styles.riderDetails}>
+                        {trip.RaiderId.name}
+                      </Text>
+                      <Text style={styles.riderDetails}>
+                        Mobile Number: {trip.RaiderId.mobileNumber}
+                      </Text>
+                      <Text style={styles.riderDetails}>
+                        Vehicle Number: {trip.vehicleNumber}
+                      </Text>
+                      {trip.amount== 0?<Text color={'green.500'}>Free</Text>:
+                        <Text style={styles.riderDetails} color={'green.500'}>
+                        Amount: {trip.amount}
+                      </Text>}
+                      <Text style={styles.riderDetails}>OTP: {trip.token}</Text>
 
-              <Text style={styles.details}>OTP: {trip.token}</Text>
-
-              {trip.status === "Booked" ? (
+                      {trip.status === "Booked" ? (
+                        <Button
+                          size={"lg"}
+                          px={5}
+                          disabled={isButtonDisabled}
+                          onPress={() =>
+                            showConfirmDialog(trip._id, trip.amount)
+                          }
+                        >
+                          Cancel trip
+                        </Button>
+                      ) : (
+                        <Button size={"lg"} px={10} isDisabled={true}>
+                          Trip initiated
+                        </Button>
+                      )}
+                    
+                    </Stack>
+                  </ScrollView>
+                </Modal.Content>
+              </Modal>
+            ) : null}
+            <Box>
+              <Stack direction={"column"} space={2}>
+                <Text style={styles.details}>Source: </Text>
+                <Text style={styles.TripDetails}>{trip.tripId.source}</Text>
+                <Text style={styles.details}>Destination :</Text>
+                <Text style={styles.TripDetails}>{trip.tripId.destination}</Text>
+                <Text style={styles.details}>Pickup Point:</Text>
+                <Text style={styles.TripDetails}>{trip.tripId.pickupPoint}</Text>
+                <Text style={styles.details}>Date: </Text>
+                <Text style={styles.TripDetails}>
+                  {trip.tripId.date} : {trip.tripId.time}
+                </Text>
                 <Button
-                  size={"lg"}
+                  size={"md"}
                   px={10}
                   disabled={isButtonDisabled}
-                  onPress={() => showConfirmDialog(trip._id, trip.amount)}
+                  onPress={() => setShowModal(true)}
                 >
-                  Cancel trip
+                  Show More
                 </Button>
-              ) : (
-                <Button size={"lg"} px={10} isDisabled={true}>
-                  Trip initiated
-                </Button>
-              )}
-              {/* <Button
-                  size={"lg"}
-                  px={10}
-                  disabled={isButtonDisabled}
-                  onPress={() => alert("Hii")}
-                >
-                Show More
-                </Button> */}
-
-            </Stack>
+              </Stack>
+            </Box>
           </Box>
         ))}
       </ScrollView>
@@ -234,8 +258,13 @@ export default TripBooked;
 
 const styles = StyleSheet.create({
   details: {
-    fontSize: 15,
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  riderDetails: {
+    fontSize: 16,
     fontWeight: "bold",
     margin: 3,
   },
+  TripDetails: { fontSize: 15 },
 });
