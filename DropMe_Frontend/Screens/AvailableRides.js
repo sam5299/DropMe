@@ -14,7 +14,7 @@ import {
   Spinner,
   useToast,
 } from "native-base";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, FontAwesome } from "@expo/vector-icons";
 import axios from "axios";
 import { AuthContext } from "../Component/Context";
 
