@@ -156,7 +156,6 @@ const AcceptRejectRequest = ({ route, navigation }) => {
       setTripRequestList(newTripRequestList);
       setButtonDisabled(false);
       navigation.goBack();
-
     } catch (error) {
       toast.show({
         render: () => {
