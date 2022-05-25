@@ -213,7 +213,7 @@ const BookedRides = ({ navigation }) => {
 
   function allUserRides() {
     return (
-      <ScrollView w={"80%"}  m={2}>
+      <ScrollView w={"80%"} m={2}>
         {bookedRides.map((ride) => (
           <Box
             flex={1}
@@ -288,6 +288,7 @@ const BookedRides = ({ navigation }) => {
                 <Stack direction={"row"} space={5} mt={2}>
                   <Button
                     isDisabled={isButtonDisabled}
+                    bg={"#03c03c"}
                     onPress={() =>
                       startTrip(
                         ride._id,
@@ -298,10 +299,11 @@ const BookedRides = ({ navigation }) => {
                     }
                     px={5}
                   >
-                    Start Trip
+                    <Text fontWeight={"bold"}> Start Trip</Text>
                   </Button>
                   <Button
-                    colorScheme="secondary"
+                    px={5}
+                    bg={"#e8000d"}
                     isDisabled={isButtonDisabled}
                     onPress={() =>
                       showConfirmDialog(
@@ -312,7 +314,7 @@ const BookedRides = ({ navigation }) => {
                       )
                     }
                   >
-                    Cancel Trip
+                    <Text fontWeight={"bold"}> Cancel Trip</Text>
                   </Button>
                 </Stack>
               ) : (
@@ -322,7 +324,7 @@ const BookedRides = ({ navigation }) => {
                     endTrip(ride._id, ride.tripId._id, "Completed", ride.token)
                   }
                 >
-                  End Trip
+                  <Text fontWeight={"bold"}> End Trip</Text>
                 </Button>
               )}
             </Stack>

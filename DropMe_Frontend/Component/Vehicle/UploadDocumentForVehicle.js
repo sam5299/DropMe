@@ -145,34 +145,43 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
       let pattern =
         /^(([A-Z]{2}[0-9]{2})( )|([A-Z]{2}-[0-9]{2}))((19|20)[0-9][0-9])[0-9]{7}$/;
       if (!pattern.test(licenseNumber)) {
+        console.log("license number not valid");
         setLicenseNumberError(true);
-        return;
+        //return;
       } else {
         setLicenseNumberError(false);
       }
       if (licenseImage === null) {
         setLicenseImageError(true);
-        return;
+        //return;
       } else {
         setLicenseImageError(false);
       }
       //add license properties
-      body.licenseNumber = licenseNumber;
+      body.licenseNumber = licenseNumber.toUpperCase();
       body.licenseImage = licenseImage;
     }
 
     if (rcBookImage === null) {
       setRcError(true);
+      if (pucImage === null) setPucError(true);
+      else setPucError(false);
       return;
     } else {
       setRcError(false);
     }
     if (pucImage === null) {
+      //console.log("pucImage not present");
       setPucError(true);
       return;
     } else {
       setPucError(false);
     }
+    if (licenseImageError || licenseNumberError) {
+      //console.log("one of the field is with error");
+      return;
+    }
+    console.log("below return");
 
     let isTrue = validate({
       rcBookImage: { required: true, hasLowerCase: true },
@@ -212,6 +221,17 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
         }, 1000);
       } catch (ex) {
         setIsLoading(false);
+        console.log("exception name:" + ex.name);
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="red.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>{ex.response.data}</Text>
+              </Box>
+            );
+          },
+          placement: "top",
+        });
         console.log(
           "exception in upload vehicle documents:" + ex.response.data
         );
@@ -243,7 +263,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
           isInvalid={true}
           leftIcon={<WarningOutlineIcon size="xs" />}
         >
-          Please type valid Number Ex. MH20 20220007722
+          Please type valid Number Ex. MH20 00000000000
         </FormControl.ErrorMessage>
       )}
     </Box>

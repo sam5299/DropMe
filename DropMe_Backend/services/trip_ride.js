@@ -119,7 +119,7 @@ async function deleteBookedTrip(tripRideId) {
     // console.log('====================================');
     // console.log("Deposit amount",depositAmount * -1);
     // console.log('====================================');
-      if(!updateWalletResult)
+    if (!updateWalletResult)
       console.log("Error in update wallet in cancel trip");
     //add code to add new entry in wallet_history collection for deducted credit point
     let body = {
@@ -135,13 +135,12 @@ async function deleteBookedTrip(tripRideId) {
     console.log("WalletHistory in trip ride deleteRide function");
   }
 
-   // update passengers used credits
-   let result = await updateUsedCredit(
+  // update passengers used credits
+  let result = await updateUsedCredit(
     tripRideObj.PassengerId._id,
     tripRideObj.amount * -1
   );
   if (!result) console.log("error while adding used credit in cancel trip");
-
 
   let notificationDetails = {
     fromUser: tripRideObj.PassengerId._id,
@@ -252,7 +251,7 @@ async function updateTripStatus(tripRideId, tripId, status) {
       //call to updateWallet history for passenger
       let passengerWalletHistoryDetails = {
         User: TripRideObj.PassengerId._id,
-        amount: tripAmount,
+        amount: TripRideObj.amount,
         message: `Completed trip from ${sourceName} to ${destinationName}`,
         date: TripRideObj.date,
         type: "Debit",

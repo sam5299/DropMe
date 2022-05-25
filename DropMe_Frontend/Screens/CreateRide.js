@@ -15,6 +15,7 @@ import {
   useToast,
   Select,
   Slider,
+  Spinner,
 } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -125,6 +126,7 @@ const CreateRide = ({ navigation }) => {
   const [gender, setGender] = useState("");
   const [userToken, setToken] = useState(null);
   const [isLoading, setLoading] = useState(false);
+  const [pageLoaded, setPageLoaded] = useState(true);
 
   // vehicle and class states
   const [vehicles, setVehicles] = useState([]);
@@ -162,20 +164,21 @@ const CreateRide = ({ navigation }) => {
       try {
         const User = await AsyncStorage.getItem("User");
         const userDetails = JSON.parse(User);
+        setGender(userDetails.gender);
         const list = await axios.get(url + "/vehicle/getVehicleList", {
           headers: { "x-auth-token": userDetails.userToken },
         });
         if (mounted) {
           setVehicles(list.data);
-          console.log(vehicles.length);
           setToken(userDetails.userToken);
-          setGender(userDetails.gender);
           dispatch({ type: "date", payload: todaysDate.toDateString() });
           dispatch({ type: "time", payload: currentTime });
+          setPageLoaded(false);
         }
       } catch (error) {
         console.log("in catch of createRide");
-        console.log(error);
+        console.log(error.response.data);
+        setPageLoaded(false);
       }
     };
     createRide();
@@ -320,60 +323,73 @@ const CreateRide = ({ navigation }) => {
     </Box>
   );
 
-  return (
-    <Box flex={1} bg={"#F0F8FF"} flexDirection="column">
-      <GoogleMap />
-      <ScrollView>
-        <FormControl p={1}>
-          <SourceDestination dispatch={dispatch} />
-          <Box ml="5" flexDirection={"row"} justifyContent={"space-between"}>
-            {isFieldInError("source") && (
-              <FormControl.ErrorMessage
-                isInvalid={true}
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                Please Enter Source
-              </FormControl.ErrorMessage>
-            )}
-            {isFieldInError("destination") && (
-              <FormControl.ErrorMessage
-                isInvalid={true}
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                Please Enter Destination
-              </FormControl.ErrorMessage>
-            )}
-          </Box>
-          <DateTime dispatch={dispatch} />
-          {VehiclenClass}
-          <Box ml={5}>
-            {isFieldInError("Vehicle") && (
-              <FormControl.ErrorMessage
-                isInvalid={true}
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                Please Select Vehicle
-              </FormControl.ErrorMessage>
-            )}
-          </Box>
-          <RideForType type={{ dispatch: dispatch, rideFor: gender }} />
-          <Button
-            isLoading={isLoading}
-            isLoadingText="Creating ride.."
-            size="md"
-            mt={"5"}
-            w="95%"
-            ml={2}
-            onPress={handleForm}
-          >
-            <Text fontSize={"lg"} color="white">
-              Create Ride
-            </Text>
-          </Button>
-        </FormControl>
-      </ScrollView>
-    </Box>
-  );
+  if (pageLoaded) {
+    return (
+      <Box
+        flex={1}
+        justifyContent="center"
+        alignItems={"center"}
+        bg={"#F0F8FF"}
+      >
+        <Spinner size="lg" />
+      </Box>
+    );
+  } else {
+    return (
+      <Box flex={1} bg={"#F0F8FF"} flexDirection="column">
+        <GoogleMap />
+        <ScrollView>
+          <FormControl p={1}>
+            <SourceDestination dispatch={dispatch} />
+            <Box ml="5" flexDirection={"row"} justifyContent={"space-between"}>
+              {isFieldInError("source") && (
+                <FormControl.ErrorMessage
+                  isInvalid={true}
+                  leftIcon={<WarningOutlineIcon size="xs" />}
+                >
+                  Please Enter Source
+                </FormControl.ErrorMessage>
+              )}
+              {isFieldInError("destination") && (
+                <FormControl.ErrorMessage
+                  isInvalid={true}
+                  leftIcon={<WarningOutlineIcon size="xs" />}
+                >
+                  Please Enter Destination
+                </FormControl.ErrorMessage>
+              )}
+            </Box>
+            <DateTime dispatch={dispatch} />
+            {VehiclenClass}
+            <Box ml={5}>
+              {isFieldInError("Vehicle") && (
+                <FormControl.ErrorMessage
+                  isInvalid={true}
+                  leftIcon={<WarningOutlineIcon size="xs" />}
+                >
+                  Please Select Vehicle
+                </FormControl.ErrorMessage>
+              )}
+            </Box>
+            <RideForType type={{ dispatch: dispatch, rideFor: gender }} />
+            <Button
+              isLoading={isLoading}
+              isLoadingText="Creating ride.."
+              size="md"
+              mt={"5"}
+              w="95%"
+              ml={2}
+              onPress={handleForm}
+            >
+              <Text fontSize={"lg"} color="white">
+                Create Ride
+              </Text>
+            </Button>
+          </FormControl>
+        </ScrollView>
+      </Box>
+    );
+  }
 };
 
 export default CreateRide;

@@ -233,9 +233,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
               </Stack>
               <Stack direction={"row"} space={10} mt={2}>
                 <Button
-                  _text={{
-                    color: "white",
-                  }}
+                  bg={"#03c03c"}
                   isDisabled={buttonDisabled}
                   onPress={() =>
                     acceptRequest(
@@ -249,10 +247,10 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                   }
                   px={5}
                 >
-                  Accept
+                  <Text fontWeight={"bold"}>Accept</Text>
                 </Button>
                 <Button
-                  colorScheme="secondary"
+                  bg={"#e8000d"}
                   isDisabled={buttonDisabled}
                   onPress={() =>
                     rejectRequest(
@@ -266,7 +264,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                   }
                   px={5}
                 >
-                  Reject
+                  <Text fontWeight={"bold"}>Reject</Text>
                 </Button>
               </Stack>
             </Stack>

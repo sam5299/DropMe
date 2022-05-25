@@ -58,6 +58,7 @@ const AddVehicle = ({ route, navigation }) => {
     setVehicleClassArray(["NormalBike", "SportBike", "Scooter"]);
     FuelTypeArray = ["Petrol", "Diesel", "CNG", "Electric"];
     setIsLoading(false);
+    setPictureError(false);
   };
 
   if (route.params) {
@@ -92,18 +93,23 @@ const AddVehicle = ({ route, navigation }) => {
     // /^([A-Z]{2}\s{1}\d{2}\s{1}\[A-Z]{1,2}\s{1}\d{1,4})?([A-Z|a-z]{3}\s{1}\d{1,4})?$/;
     console.log("matching vehicle number");
 
+    if (Picture === null) {
+      console.log("Vehicle not available");
+      setPictureError(true);
+      if (!pattern.test(vehicleNumber)) setErrorVehicleNumber(true);
+      return;
+    } else {
+      setPictureError(false);
+    }
     if (!pattern.test(vehicleNumber)) {
       //  console.log("not matched");
       // isFieldInError.vehicleNumber = "Please enter valid vehicle number.";
       setErrorVehicleNumber(true);
       return;
-    }
-    if (Picture === null) {
-      setPictureError(true);
-      return;
     } else {
-      setPictureError(false);
+      setErrorVehicleNumber(false);
     }
+
     if (isTrue) {
       // navigation.setOptions = {
       //   clearFields: (props) => clearFields,
@@ -269,8 +275,9 @@ const AddVehicle = ({ route, navigation }) => {
                 defaultValue="Bike"
                 accessibilityLabel="Select Vehicle"
                 onChange={(value) => {
+                  //setPic(null);
+                  clearFields();
                   setVehicleType(value);
-                  setPic(null);
                   if (value === "Bike") {
                     setFuelTypeArray(["Petrol", "Electric"]);
 
