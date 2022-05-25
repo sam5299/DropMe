@@ -15,20 +15,14 @@ const ViewProfile = () => {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-        let profile = await axios.get(
-          url + "/user/loadProfile",
-          {
-            headers: {
-              "x-auth-token": parseUser.userToken,
-            },
-          }
-        );
-          setUserDetails(profile.data);
-          setPageLoading(false)
+        let profile = await axios.get(url + "/user/loadProfile", {
+          headers: {
+            "x-auth-token": parseUser.userToken,
+          },
+        });
         if (mounted) {
-          setUserDetails(parseUser);
+          setUserDetails(profile.data);
           setPageLoading(false);
-          console.log("User Profile");
         }
       } catch (ex) {
         console.log("Exception in profile", ex.response.data);
@@ -112,6 +106,7 @@ const ViewProfile = () => {
                         userDetails.totalNumberOfRatedRides
                       ).toPrecision(2)}
                 </Text>
+
                 <Text style={styles.details}>Average Rating</Text>
               </Box>
             </Box>

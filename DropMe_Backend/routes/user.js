@@ -214,6 +214,6 @@ router.get("/loadProfile", auth, async (req, res) => {
     console.log("Error in load profile");
     return res.status(400).send("Could not load profile try after sometime..");
   }
-  return res.send(200).send(profile);
+  return res.status(200).send(profile);
 });
 module.exports = router;
