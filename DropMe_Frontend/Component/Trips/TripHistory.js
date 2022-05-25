@@ -81,7 +81,13 @@ const TripHistory = () => {
             {trip.status === "Completed" ? (
               <AirbnbRating
                 count={5}
-                reviews={["Average", "Good", "Very Good", "Wow", "Amazing"]}
+                reviews={[
+                  "Average",
+                  "Good",
+                  "Very Good",
+                  "Amazing",
+                  "Excellent",
+                ]}
                 readonly={true}
                 size={15}
                 reviewColor={"black"}

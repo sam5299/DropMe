@@ -80,7 +80,7 @@ async function validateLogin(loginData) {
   return await schema.validate(loginData);
 }
 
-//function to check whather license detail's already present or not
+//function to check whether license detail's already present or not
 async function isLicenseDetailsPresent(userId) {
   let licenseDetails = await User.findOne(
     { userId: userId },
@@ -107,8 +107,8 @@ async function validateLicenseNumber(licenseNumber) {
 }
 
 //function to check if licenseNumber in body already exists
-async function isLicenseNumberExists(licenceNum) {
-  return await User.findOne({ licenseNumber: licenceNum });
+async function isLicenseNumberExists(licenseNum) {
+  return await User.findOne({ licenseNumber: licenseNum });
 }
 
 //function to update user's licenseNumber and licenseDocument image path
@@ -203,6 +203,20 @@ function nodemailerService(mail, message) {
   });
 }
 
+// function to get profile details
+async function loadProfile(userId){
+  return await User.findOne({_id:userId},
+    {
+      name:1,
+      email:1,
+      mobileNumber:1,
+      profile:1,
+      totalNumberOfRides:1,
+      sumOfRating:1,
+      totalNumberOfRatedRides:1
+    });
+}
+
 module.exports = {
   getUniqueId,
   isUserExists,
@@ -218,4 +232,5 @@ module.exports = {
   mailSend,
   encryptPassword,
   validatePassword,
+  loadProfile
 };

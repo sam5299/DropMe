@@ -1,6 +1,5 @@
 const { Trip } = require("../models/trip");
 const { Ride } = require("../models/ride");
-const req = require("express/lib/request");
 const { addTripRequest } = require("./ride");
 const { Vehicle } = require("../models/vehicle");
 const { TripRide } = require("../models/trip_ride");
@@ -30,7 +29,7 @@ async function requestRide(tripBody, rid) {
   //console.log(trip);
   if (trip) tripId = trip._id;
   else tripId = await addNewTrip(tripBody);
-  //console.log("tripid which is to store:"+tripId);
+  //console.log("tripId which is to store:"+tripId);
   let requestedTrip = await addTripRequest(tripBody.User, rid, tripId);
   //console.log(requestedTrip);
   return requestedTrip;
@@ -43,46 +42,7 @@ async function getTripDetails(tripId) {
     .populate("User", "_id profile name");
   //.select("source destination distance seatRequest ");
 }
-// get all rides of the user not working
-async function getAllRequest(allRideList) {
-  //   let requestList = [];
-  //   let tmp=[]
-  //   await allRideList.map((rideObj) => {
-  //     tmp.push(rideObj)
-  //     if (rideObj.requestedTripList.length > 0) {
-  //       let tripList = rideObj.requestedTripList;
-  //       tripList.map(async (tripId) => {
-  //         let tripDetails = await getTripDetails(tripId);
-  //         // console.log(`Trip Details for ${tripId}`, ...tripDetails);
-  //         requestList.push(...tripDetails);
-  //         //console.log("@@@", requestList);
-  //       });
-  //     }
-  //     console.log(requestList);
-  //     if(tmp.length==allRideList.length){
-  //       console.log(tmp.length);
-  //       console.log(tmp.length);
-  //       console.log(requestList);
-  //       return requestList;
-  //     }
-  //   });
-  //   // console.log("@@", requestList);
-  //   // return requestList;
-  //   // allRideList.map((rideObj) => {
-  //   //   if (rideObj.requestedTripList.length > 0) {
-  //   //     let tripList = rideObj.requestedTripList;
-  //   //     tripList.map((tripId) => {
-  //   //       getTripDetails(tripId).then((tripDetails) =>
-  //   //         {
-  //   //           console.log(tripDetails)
-  //   //           requestList.push(...tripDetails)}
-  //   //       );
-  //   //       // console.log(`Trip Details for ${tripId}`, ...tripDetails);
-  //   //       //console.log("@@@", requestList);
-  //   //     });
-  //   //   }
-  //   // });
-}
+
 
 //function to generate 4 digit trip token for each accepted trip request
 function generateTripToken() {
@@ -146,5 +106,4 @@ module.exports = {
   getTripDetails,
   generateTripToken,
   calculateTripAmount,
-  getAllRequest,
 };

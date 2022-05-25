@@ -16,6 +16,7 @@ const {
   mailSend,
   encryptPassword,
   validatePassword,
+  loadProfile,
 } = require("../services/user");
 const { isUserDataValidate, User } = require("../models/user");
 const {
@@ -204,4 +205,15 @@ router.get("/getUser", auth, async (req, res) => {
   }
 });
 
+router.get("/loadProfile", auth, async (req, res) => {
+  console.log("Load profile is called");
+  let userId = req.body.User;
+  let profile = await loadProfile(userId);
+  console.log("Profile:", profile);
+  if (!profile) {
+    console.log("Error in load profile");
+    return res.status(400).send("Could not load profile try after sometime..");
+  }
+  return res.send(200).send(profile);
+});
 module.exports = router;

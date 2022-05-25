@@ -6,11 +6,6 @@ import {
   Image,
   Button,
   ScrollView,
-  VStack,
-  HStack,
-  IconButton,
-  CloseIcon,
-  Alert,
   Spinner,
   useToast,
 } from "native-base";
@@ -27,36 +22,7 @@ const AvailableRides = ({ route, navigation }) => {
   const [isLoading, setLoading] = useState(true);
   const url = getUrl();
 
-  const [isSentRequest, setIsSetRequest] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertField, setAlertField] = useState({
-    status: "success",
-    title: "",
-  });
-
   const toast = useToast();
-
-  let AlertField = (
-    <Alert w="100%" status={alertField.status}>
-      <VStack space={2} flexShrink={1} w="100%">
-        <HStack flexShrink={1} space={2} justifyContent="space-between">
-          <HStack space={2} flexShrink={1}>
-            <Alert.Icon mt="1" />
-            <Text fontSize="md" color="coolGray.800">
-              {alertField.title}
-            </Text>
-          </HStack>
-          <IconButton
-            variant="unstyled"
-            _focus={{
-              borderWidth: 0,
-            }}
-            icon={<CloseIcon size="3" color="coolGray.600" />}
-          />
-        </HStack>
-      </VStack>
-    </Alert>
-  );
 
   useEffect(() => {
     let mounted = true;
@@ -68,15 +34,11 @@ const AvailableRides = ({ route, navigation }) => {
             headers: { "x-auth-token": token },
           }
         );
-        //console.log("ride data:", rides.data);
+
         if (mounted) {
           setRideDetails(rides.data);
+          setLoading(false);
         }
-        // let tempObj = [];
-        // RideDetails.forEach((ride) => {
-        //   console.log(ride._id);
-        // });
-        setLoading(false);
       } catch (error) {
         console.log("Exception in AvailableRides: ", error.response.data);
         setLoading(false);
@@ -94,7 +56,6 @@ const AvailableRides = ({ route, navigation }) => {
     tripDetails["amount"] = parseInt(ride.amount * seats);
     tripDetails["rideId"] = ride._id;
 
-    // console.log("Trip: ", tripDetails);
     try {
       const result = await axios.post(url + "/trip/requestRide", tripDetails, {
         headers: {
@@ -123,8 +84,6 @@ const AvailableRides = ({ route, navigation }) => {
         }
       });
       setRideDetails(newResult);
-
-      // console.log("done");
     } catch (error) {
       toast.show({
         render: () => {
@@ -142,7 +101,6 @@ const AvailableRides = ({ route, navigation }) => {
   function getRides() {
     return (
       <ScrollView bg={"#F0F8FF"}>
-        {showAlert ? AlertField : null}
         {RideDetails.map((ride) => (
           <Box
             key={ride._id}
@@ -181,7 +139,6 @@ const AvailableRides = ({ route, navigation }) => {
                 w="100%"
                 justifyContent={"space-evenly"}
                 borderRadius={2}
-                //borderColor="rgba(6,182,212,1.00)"
                 borderColor="black"
               >
                 <Image
@@ -225,24 +182,14 @@ const AvailableRides = ({ route, navigation }) => {
               {ride.amount > 0 ? (
                 <Text fontSize={18} fontWeight="bold">
                   <FontAwesome name="rupee" size={18} color="black" />
-                  Rs.{ride.amount * seats}
+                  {ride.amount * seats}
                 </Text>
               ) : (
                 <Text fontSize={18} fontWeight="bold" color={"green.500"}>
                   Free
                 </Text>
               )}
-
-              {/* <Button size={"md"} px="10" onPress={() => sendRequest(ride)}>
-                Send Request
-              </Button> */}
-              <Button
-                px="10"
-                mt={"2"}
-                //w="90%"
-                ml={2}
-                onPress={() => sendRequest(ride)}
-              >
+              <Button px="10" mt={"2"} ml={2} onPress={() => sendRequest(ride)}>
                 <Text fontSize={"lg"} color="white">
                   Send Request
                 </Text>
@@ -253,23 +200,6 @@ const AvailableRides = ({ route, navigation }) => {
       </ScrollView>
     );
   }
-
-  // useEffect(() => {
-  //   async function loadRides() {
-  //     try {
-  //       let rideList = await axios.get("", {
-  //         headers: {
-  //           "x-auth-token": "",
-  //         },
-  //       });
-  //       setRideDetails(rideList.data)
-  //     } catch (ex) {
-  //       console.log("Exception " + ex);
-  //     }
-  //   }
-
-  //   loadRides();
-  // }, []);
 
   if (isLoading) {
     return (
