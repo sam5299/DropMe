@@ -50,11 +50,15 @@ router.put("/updateBalance/:amount", auth, async (req, res) => {
 
 // Convert safety points into credit points
 router.put("/reedeemSafetyPoints", auth, async (req, res) => {
+  console.log("Redeem safety points is called..");
   try {
     let updateResult = await reedemSafetyPoints(req.body.User);
+    if(!updateResult)
+    return res.status(400).send("Error in redeem safety points please try after some time...")
     return res.status(200).send(updateResult);
   } catch (ex) {
-    return res.status(500).send("Error", ex);
+    console.log("Exception in redeem safety points",ex.message);
+    return res.status(400).send(ex.message);
   }
 });
 
