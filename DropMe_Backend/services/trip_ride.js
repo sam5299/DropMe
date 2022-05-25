@@ -93,7 +93,7 @@ async function deleteBookedTrip(tripRideId) {
   tripRideObj.date = tripRideObj.rideId.date;
   // console.log("tripRideObj:", tripRideObj);
 
-  //setting simple sourcename and destination name for wallethistory purpose
+  //setting simple sourceName and destination name for wallet history purpose
   let sourceArrary = tripRideObj.rideId.source.split(",");
   let destinationArray = tripRideObj.rideId.destination.split(",");
   let sourceName = sourceArrary[0];
@@ -133,8 +133,8 @@ async function deleteBookedTrip(tripRideId) {
       amount: depositAmount,
       date: new Date().toDateString(),
     };
-    let newWalletHisotry = new WalletHistory(body);
-    let walletHistoryResult = await newWalletHisotry.save();
+    let newWalletHistory = new WalletHistory(body);
+    let walletHistoryResult = await newWalletHistory.save();
     if (!walletHistoryResult) console.log(walletHistoryResult);
     console.log("WalletHistory in trip ride deleteRide function");
   }

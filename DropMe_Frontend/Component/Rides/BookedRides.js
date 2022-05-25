@@ -18,7 +18,7 @@ import { AuthContext } from "../Context";
 import { useIsFocused } from "@react-navigation/native";
 
 const BookedRides = ({ navigation }) => {
-  const [bookedRides, setbookedRides] = useState([]);
+  const [bookedRides, setBookedRides] = useState([]);
   const [showRides, setShowRides] = useState(true);
   const [userToken, setToken] = useState(null);
   const [passengerToken, setPassengerToken] = useState("");
@@ -45,7 +45,7 @@ const BookedRides = ({ navigation }) => {
           },
         });
         if (mounted) {
-          setbookedRides(allRides.data);
+          setBookedRides(allRides.data);
           console.log("Booked Rides");
           setShowRides(false);
         }
@@ -183,7 +183,7 @@ const BookedRides = ({ navigation }) => {
       );
 
       let updatedRides = bookedRides.filter((ride) => ride._id != tripRideId);
-      setbookedRides(updatedRides);
+      setBookedRides(updatedRides);
 
       toast.show({
         render: () => {
