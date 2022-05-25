@@ -4,7 +4,7 @@ const { User } = require("../models/user");
 const fs = require("fs");
 const req = require("express/lib/request");
 const { Vehicle } = require("../models/vehicle");
-const { trip_ride } = require("../models/trip_ride");
+const { trip_ride, TripRide } = require("../models/trip_ride");
 const { Trip } = require("../models/trip");
 
 // create ride function
@@ -78,7 +78,7 @@ async function getUserRides(userId) {
   return await Ride.find({
     User: userId,
     status: "Created",
-    availableSeats: { $gt: 0 },
+    availableSeats: { $gte: 0 },
   })
     .populate("Vehicle", "_id  vehicleImage ", Vehicle)
     .populate("User", "_id name", User)
@@ -139,6 +139,11 @@ function getTimeDifference(rideDate) {
   // console.log(d2.toString());
   return hrs;
 }
+
+async function checkIsBooked(rideId){
+  return await TripRide.find({rideId:rideId, status:"Booked"})
+}
+
 
 //function which return date object of date string
 function convertToDate(dateString) {
@@ -206,4 +211,5 @@ module.exports = {
   getTimeDifference,
   convertToDate,
   updateRideStatus,
+  checkIsBooked
 };

@@ -72,7 +72,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
         { headers: { "x-auth-token": token } }
       );
       {
-        console.log("showing toast");
+        //console.log("showing toast");
       }
       toast.show({
         render: () => {
@@ -94,6 +94,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
         }
       });
       setTripRequestList(newTripRequestList);
+      navigation.goBack();
 
       setButtonDisabled(false);
     } catch (error) {
@@ -154,6 +155,8 @@ const AcceptRejectRequest = ({ route, navigation }) => {
       });
       setTripRequestList(newTripRequestList);
       setButtonDisabled(false);
+      navigation.goBack();
+
     } catch (error) {
       toast.show({
         render: () => {

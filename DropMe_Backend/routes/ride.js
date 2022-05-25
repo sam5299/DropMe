@@ -14,6 +14,7 @@ const {
   getRideDetails,
   getTimeDifference,
   convertToDate,
+  checkIsBooked,
 } = require("../services/ride");
 
 const {
@@ -34,6 +35,7 @@ const { Trip } = require("../models/trip");
 const { updateUsedCredit, addPenalty } = require("../services/wallet");
 const { createNotification } = require("../services/notification");
 const { Wallet } = require("../models/wallet");
+const { User } = require("../models/user");
 router.use(express.json());
 
 //ride creat route
@@ -58,7 +60,7 @@ router.post("/createRide", auth, async (req, res) => {
     if (!newRide)
       return res.status(400).send("Something went wrong try again latter.");
 
-    console.log("New ride obj", newRide);
+    //console.log("New ride obj", newRide);
     // After that save the ipc of created ride vehicle
     // savePicture(`${newRide.vehicleNumber}_${userId}`);
     return res.status(200).send(newRide);
@@ -129,7 +131,22 @@ router.get("/getUserRides", auth, async (req, res) => {
     // return res.status(200).send(rideData);
     return res.status(200).send(finalResult);
   } catch (ex) {
-    return res.status(500).send("something failed!! try again latter:" + ex);
+    return res.status(400).send("something failed!! try again latter:" + ex);
+  }
+});
+
+
+//   check whether the ride is booked or not
+router.get("/checkIsBooked/:rideId", auth, async (req, res) => {
+  console.log("check is booked ride or not is called");
+  try {
+   let result=await checkIsBooked(req.params.rideId);
+   //console.log("@@@",result);
+   if(!result)
+    return res.status(400).send(false);
+    return res.status(200).send(result.length>0);
+  } catch (ex) {
+    return res.status(400).send("something failed!! try again latter:" + ex);
   }
 });
 
@@ -165,20 +182,6 @@ router.get("/getTripRequestList/:rid", auth, async (req, res) => {
   //console.log(requestedTripList);
   return res.status(200).send(requestedTripList);
 });
-
-// // get all trip request for the user
-// router.get("/getAllRequest", auth, async (req, res) => {
-//   let userId = req.body.User;
-//   let allRideList = await getUserRides(userId);
-//   // console.log("All Rides", allRideList);
-//   //let requestList = await getAllRequest(allRideList);
-
-//   //console.log("### final OP", requestList);
-//   // for (ride in allRideList) {
-//   //   console.log(ride);
-//   // }
-//   return res.status(200).send(await getAllRequest(allRideList));
-// });
 
 //route to accept trip request
 router.post("/acceptTripRequest", auth, async (req, res) => {
@@ -289,8 +292,9 @@ router.get("/getBookedRides", auth, async (req, res) => {
   return res.status(200).send(bookedRide);
 });
 
-// endpoint to cancel ride
+// endpoint to cancel ride 
 router.put("/cancelRide/:rid", auth, async (req, res) => {
+  console.log("Cancel ride is called...");
   try {
     let ride = await getRideDetails(req.params.rid, req.body.User);
     if (!ride) return res.status(400).send("Invalid ride to delete");
@@ -298,14 +302,17 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
     //get the time difference
     let timeDifference = getTimeDifference(ride.date + ";" + ride.time);
     // console.log("time difference:" + timeDifference);
-
+    let userDetails = await User.findOne({ _id: req.body.User }, { name: 1 });
+    if (!userDetails)
+      console.log("Error in getting user details in cancel ride..");
     //first get the list of requests for trip and auto reject it also send notification to user
     ride.requestedTripList.forEach(async (trip) => {
-      let userId = await Trip.findOne({ _id: trip });
+      let tripObj = await Trip.findOne({ _id: trip });
       let notificationResult = await createNotification({
         fromUser: req.body.User.toString(),
-        toUser: userId.User.toString(),
-        message: "Trip request rejected!",
+        toUser: tripObj.User.toString(),
+        message: `Your trip request from ${tripObj.source} to ${tripObj.destination} is cancelled by ${userDetails.name}.`,
+        notificationType: "Trip",
       });
       if (!notificationResult) console.log("error while sending notification");
     });
@@ -318,37 +325,39 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
 
     //loop over the bookTrip find tripId.User and update the usedCreditPoint by amount and
     //change status of trip
-    bookedTrip.forEach(async (trip) => {
-      let notificationResult = await createNotification({
-        fromUser: req.body.User.toString(),
-        toUser: trip.tripId.User.toString(),
-        message:
-          "Your booked trip has been cancelled by rider!\nYour credit points will be added to your wallet shortly.",
-        notificationType: "Trip",
+    if(bookedTrip)
+    {
+      bookedTrip.forEach(async (trip) => {
+        let notificationResult = await createNotification({
+          fromUser: req.body.User.toString(),
+          toUser: trip.tripId.User.toString(),
+          message: `Your booked trip from ${trip.tripId.source} to ${trip.tripId.destination} has been cancelled by ${userDetails.name}.!\nYour credit points will be added to your wallet shortly.`,
+          notificationType: "Trip",
+        });
+        if (!notificationResult) console.log("error while sending notification");
+  
+        let usedCreditUpdate = await updateUsedCredit(
+          trip.PassengerId._id,
+          trip.amount * -1
+        );
+        if (!usedCreditUpdate)
+          console.log("error while updating the credit balance of User.");
+  
+        //update wallet notification for passenger and update wallet history
+  
+        trip.status = "Cancelled";
+        let result = await trip.save();
+        if (!result) return console.log("error while changing status of trip");
+  
+        //check if cancellation time is below 10hrs if yes apply safety point penalty
+        if (timeDifference <= 10) {
+          let penalty = trip.amount * 0.1;
+          //console.log("penalty");
+          let result = await addPenalty(userDetails._id, penalty);
+          if (!result) console.log("error while applying penalty");
+        }
       });
-      if (!notificationResult) console.log("error while sending notification");
-
-      let usedCreditUpdate = await updateUsedCredit(
-        trip.tripId.User,
-        -trip.amount
-      );
-      if (!usedCreditUpdate)
-        console.log("error while updating the credit balance of User.");
-
-      //update wallet notification for passenger and update wallet history
-
-      trip.status = "Cancelled";
-      let result = await trip.save();
-      if (!result) return console.log("error while changing status of trip");
-
-      //check if cancellation time is below 10hrs if yes apply safety point penalty
-      if (timeDifference <= 10) {
-        let penalty = trip.amount * 0.1;
-        //console.log("penalty");
-        let result = await addPenalty(req.body.User, penalty);
-        if (!result) console.log("error while applying penalty");
-      }
-    });
+    }
     ride.status = "Cancelled";
     // ride.requestedTripList=[];
     // ride.requestedUserList=[];

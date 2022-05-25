@@ -24,9 +24,9 @@ async function addAcceptedTrip(body) {
 }
 
 async function getTripDetailsByRideIdAndStatus(rid, status) {
-  return await TripRide.findOne({ rideId: rid, status: status }).populate(
+  return await TripRide.find({ rideId: rid, status: status }).populate(
     "tripId",
-    "-_id User",
+    "-_id User source destination",
     Trip
   );
 }
@@ -274,6 +274,13 @@ async function updateTripStatus(tripRideId, tripId, status) {
       );
       // console.log("@@@ updated used credit is", updateUsedCreditResult);
     }
+    // Update the main ride status in ride table
+    let updateRideResult = await updateRideStatus(
+      TripRideObj.rideId._id,
+      status
+    );
+    if (!updateRideResult)
+      console.log("Error in update main ride status in update trip status");
   } else {
     // apply safety points penalty to rider
     if (TripRideObj.amount) {
@@ -319,11 +326,6 @@ async function updateTripStatus(tripRideId, tripId, status) {
   let notificationResult = await newNotification.save();
   if (!notificationResult)
     console.log("error while creating notification in updateRideStatus.");
-
-  // Update the main ride status in ride table
-  let updateRideResult = await updateRideStatus(TripRideObj.rideId._id, status);
-  if (!updateRideResult)
-    console.log("Error in update main ride status in update trip status");
 
   return await TripRideObj.save();
 }
