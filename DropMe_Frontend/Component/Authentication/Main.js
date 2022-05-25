@@ -11,7 +11,7 @@ import Forgot from "./Forgot";
 const Stack = createNativeStackNavigator();
 
 const Main = () => {
-  const url = "http://192.168.44.101:3100";
+  const url = "http://192.168.43.87:3100";
 
   const initialState = {
     userName: null,
