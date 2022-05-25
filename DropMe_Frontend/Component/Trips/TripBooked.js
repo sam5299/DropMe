@@ -196,6 +196,15 @@ function TripBooked() {
                   Trip initiated
                 </Button>
               )}
+              {/* <Button
+                  size={"lg"}
+                  px={10}
+                  disabled={isButtonDisabled}
+                  onPress={() => alert("Hii")}
+                >
+                Show More
+                </Button> */}
+
             </Stack>
           </Box>
         ))}
