@@ -270,6 +270,7 @@ const AddVehicle = ({ route, navigation }) => {
                 accessibilityLabel="Select Vehicle"
                 onChange={(value) => {
                   setVehicleType(value);
+                  setPic(null);
                   if (value === "Bike") {
                     setFuelTypeArray(["Petrol", "Electric"]);
 
