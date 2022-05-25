@@ -284,7 +284,7 @@ const AvailableRides = ({ route, navigation }) => {
           getRides()
         ) : (
           <Box flex={1} justifyContent="center" alignItems={"center"}>
-            <Text>No Rides found</Text>
+            <Text>No Rides Found</Text>
           </Box>
         )}
       </>

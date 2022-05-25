@@ -113,7 +113,7 @@ const AddVehicle = ({ route, navigation }) => {
         vehicleType,
         vehicleClass,
         vehicleName,
-        vehicleNumber,
+        vehicleNumber: vehicleNumber.toUpperCase(),
         fuelType,
         seatingCapacity,
       });
@@ -345,9 +345,9 @@ const AddVehicle = ({ route, navigation }) => {
                   }
                   placeholder="Vehicle Number"
                   value={vehicleNumber}
-                  onChangeText={(value) =>
-                    setVehicleNumber(value.toUpperCase())
-                  }
+                  onChangeText={(value) => {
+                    setVehicleNumber(value);
+                  }}
                 />
                 {errorVehicleNumber && (
                   <FormControl.ErrorMessage

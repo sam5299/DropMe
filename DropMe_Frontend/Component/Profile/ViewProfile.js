@@ -1,19 +1,30 @@
 import { StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Stack, Text, Image, Spinner } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import axios from "axios";
+import { AuthContext } from "../Context";
 const ViewProfile = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [pageLoading, setPageLoading] = useState(true);
-
+  const { getUrl } = useContext(AuthContext);
+  const url = getUrl();
   useEffect(() => {
     let mounted = true;
     async function loadDetails() {
       try {
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
-
+        let profile = await axios.get(
+          url + "/user/loadProfile",
+          {
+            headers: {
+              "x-auth-token": parseUser.userToken,
+            },
+          }
+        );
+          setUserDetails(profile.data);
+          setPageLoading(false)
         if (mounted) {
           setUserDetails(parseUser);
           setPageLoading(false);
