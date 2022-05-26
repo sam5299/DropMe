@@ -82,11 +82,18 @@ const WalletHistory = () => {
               justifyContent={"center"}
               alignItems={"center"}
               p={2}
+              color="green.500"
             >
-              <FontAwesome5 name="rupee-sign" size={18} color="black" />
-              <Text fontWeight={"bold"} fontSize={18}>
-                {" "}
-                {/*color={transaction.type === "Credit" ?"green.999":"red.999"}> */}
+              <FontAwesome5
+                name="rupee-sign"
+                size={18}
+                color={transaction.type === "Credit" ? "green" : "#FF0000"}
+              />
+              <Text
+                fontWeight={"bold"}
+                fontSize={18}
+                color={transaction.type === "Credit" ? "green.700" : "#FF0000"}
+              >
                 {transaction.amount}
               </Text>
             </Box>

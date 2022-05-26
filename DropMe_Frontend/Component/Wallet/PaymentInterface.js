@@ -52,7 +52,7 @@ const PaymentInterface = ({ navigation }) => {
     let isTrue = validate({
       cardHolderName: { required: true },
       cardNumber: { required: true },
-      cardCvv: { required: true },
+      cardCvv: { required: true, minlength: 3 },
       amount: { required: true },
     });
 
@@ -249,7 +249,7 @@ const PaymentInterface = ({ navigation }) => {
                   isInvalid={true}
                   leftIcon={<WarningOutlineIcon size="xs" />}
                 >
-                  Please add card cvv
+                  Please enter valid cvv
                 </FormControl.ErrorMessage>
               )}
             </Box>

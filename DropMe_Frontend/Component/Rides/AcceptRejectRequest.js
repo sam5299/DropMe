@@ -155,7 +155,6 @@ const AcceptRejectRequest = ({ route, navigation }) => {
       setTripRequestList(newTripRequestList);
       setButtonDisabled(false);
       navigation.goBack();
-
     } catch (error) {
       toast.show({
         render: () => {
@@ -235,9 +234,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
               </Stack>
               <Stack direction={"row"} space={10} mt={2}>
                 <Button
-                  _text={{
-                    color: "white",
-                  }}
+                  bg={"#03c03c"}
                   isDisabled={buttonDisabled}
                   onPress={() =>
                     acceptRequest(
@@ -251,10 +248,10 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                   }
                   px={5}
                 >
-                  Accept
+                  <Text color="white">Accept</Text>
                 </Button>
                 <Button
-                  colorScheme="secondary"
+                  bg={"#e8000d"}
                   isDisabled={buttonDisabled}
                   onPress={() =>
                     rejectRequest(
@@ -268,7 +265,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                   }
                   px={5}
                 >
-                  Reject
+                  <Text color="white">Reject</Text>
                 </Button>
               </Stack>
             </Stack>

@@ -93,7 +93,7 @@ const TripHistory = () => {
                 reviewColor={"black"}
                 reviewSize={20}
                 isDisabled={true}
-                defaultRating={trip.tripRating}
+                defaultRating={trip.tripRating || 0}
               />
             ) : null}
 

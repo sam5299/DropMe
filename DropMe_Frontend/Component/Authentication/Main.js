@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useReducer, useEffect } from "react";
+import React, { useMemo, useReducer, useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "../../Screens/Home";
 import Login from "./Login";
@@ -11,7 +11,7 @@ import Forgot from "./Forgot";
 const Stack = createNativeStackNavigator();
 
 const Main = () => {
-  const url = "http://192.168.43.180:3100";
+  const url = "http://192.168.43.87:3100";
 
   const initialState = {
     userName: null,

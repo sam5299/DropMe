@@ -61,7 +61,6 @@ const RequestRides = ({ navigation }) => {
   };
 
   async function cancelRide(rideId) {
-    alert(token);
     try {
       const cancelRide = await axios.put(
         url + `/ride/cancelRide/${rideId}`,
@@ -72,10 +71,14 @@ const RequestRides = ({ navigation }) => {
           },
         }
       );
-        let filteredData=allRides.filter(ride=>{
-            ride._id!=rideId;
-        })
-        setUserRides(filteredData);
+      let filteredData = [];
+      allRides.forEach((ride) => {
+        if (ride._id != rideId) {
+          filteredData.push(ride);
+        }
+      });
+      //console.log(filteredData);
+      setUserRides(filteredData);
 
       toast.show({
         render: () => {
@@ -144,7 +147,6 @@ const RequestRides = ({ navigation }) => {
               backgroundColor: "gray.50",
             }}
           >
-            {/* {console.log("Ride", ride.date)} */}
             <Stack
               direction={"column"}
               alignItems="center"
@@ -205,6 +207,7 @@ const RequestRides = ({ navigation }) => {
                 <Button
                   mt={2}
                   px={5}
+                  bg={"#03c03c"}
                   onPress={() =>
                     navigation.navigate("ViewRequest", {
                       rideId: ride._id,
@@ -214,7 +217,12 @@ const RequestRides = ({ navigation }) => {
                       vehicleNumber: ride.vehicleNumber,
                     })
                   }
-                  isDisabled={ride.availableSeats == 0 ? true : false}
+                  isDisabled={
+                    ride.availableSeats == 0 ||
+                    ride.requestedTripList.length == 0
+                      ? true
+                      : false
+                  }
                 >
                   View Request
                 </Button>
@@ -222,7 +230,7 @@ const RequestRides = ({ navigation }) => {
                 <Button
                   mt={2}
                   px={5}
-                  colorScheme="secondary"
+                  bg={"#e8000d"}
                   isDisabled={ride.status == "Created" ? false : true}
                   onPress={() => showConfirmDialog(ride._id, ride.amount)}
                 >
@@ -250,8 +258,8 @@ const RequestRides = ({ navigation }) => {
   } else {
     return (
       <Box flex={1} alignItems={"center"} pb={"5"} bg={"#F0F8FF"}>
-        <Box mt={2} w="95%">
-          {allRides.length ? (
+        <Box flex={1} mt={2}>
+          {allRides.length > 0 ? (
             allUserRides()
           ) : (
             <Box flex={1} justifyContent="center" alignItems={"center"}>

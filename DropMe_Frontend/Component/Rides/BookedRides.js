@@ -182,9 +182,6 @@ const BookedRides = ({ navigation }) => {
         { headers: { "x-auth-token": userToken } }
       );
 
-      let updatedRides = bookedRides.filter((ride) => ride._id != tripRideId);
-      setBookedRides(updatedRides);
-
       toast.show({
         render: () => {
           return (
@@ -195,6 +192,9 @@ const BookedRides = ({ navigation }) => {
         },
         placement: "top",
       });
+      let updatedRides = bookedRides.filter((ride) => ride._id != tripRideId);
+      setBookedRides(updatedRides);
+
       // setStarted("Ended");
     } catch (error) {
       toast.show({
@@ -213,7 +213,7 @@ const BookedRides = ({ navigation }) => {
 
   function allUserRides() {
     return (
-      <ScrollView w={"80%"}  m={2}>
+      <ScrollView w={"80%"} m={2}>
         {bookedRides.map((ride) => (
           <Box
             flex={1}
@@ -234,7 +234,7 @@ const BookedRides = ({ navigation }) => {
               backgroundColor: "gray.50",
             }}
           >
-            {/* {console.log(ride.status, ride.token)} */}
+            {console.log(ride.status, ride.token)}
             <Stack
               direction={"column"}
               alignItems="center"
@@ -288,6 +288,7 @@ const BookedRides = ({ navigation }) => {
                 <Stack direction={"row"} space={5} mt={2}>
                   <Button
                     isDisabled={isButtonDisabled}
+                    bg={"#03c03c"}
                     onPress={() =>
                       startTrip(
                         ride._id,
@@ -298,10 +299,11 @@ const BookedRides = ({ navigation }) => {
                     }
                     px={5}
                   >
-                    Start Trip
+                    <Text color="white"> Start Trip</Text>
                   </Button>
                   <Button
-                    colorScheme="secondary"
+                    px={5}
+                    bg={"#e8000d"}
                     isDisabled={isButtonDisabled}
                     onPress={() =>
                       showConfirmDialog(
@@ -312,17 +314,18 @@ const BookedRides = ({ navigation }) => {
                       )
                     }
                   >
-                    Cancel Trip
+                    <Text color="white">Cancel Trip</Text>
                   </Button>
                 </Stack>
               ) : (
                 <Button
+                  bg={"#03c03c"}
                   w={"100%"}
                   onPress={() =>
                     endTrip(ride._id, ride.tripId._id, "Completed", ride.token)
                   }
                 >
-                  End Trip
+                  <Text color="white">End Trip</Text>
                 </Button>
               )}
             </Stack>

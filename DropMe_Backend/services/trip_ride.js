@@ -198,6 +198,7 @@ async function updateTripStatus(tripRideId, tripId, status) {
     (messageContent = `Your trip from ${TripRideObj.rideId.source} to ${TripRideObj.rideId.destination} is initiated.`),
       (notificationTypeName = "Trip");
   } else if (status == "Completed") {
+    console.log("In Completd...!");
     TripRideObj.endTime = currentTime;
     fromUserId = TripRideObj.RaiderId._id;
     toUserId = TripRideObj.PassengerId._id;
@@ -251,7 +252,7 @@ async function updateTripStatus(tripRideId, tripId, status) {
       //call to updateWallet history for passenger
       let passengerWalletHistoryDetails = {
         User: TripRideObj.PassengerId._id,
-        amount: tripAmount,
+        amount: TripRideObj.amount,
         message: `Completed trip from ${sourceName} to ${destinationName}`,
         date: TripRideObj.date,
         type: "Debit",
@@ -273,14 +274,14 @@ async function updateTripStatus(tripRideId, tripId, status) {
         TripRideObj.amount * -1
       );
       // console.log("@@@ updated used credit is", updateUsedCreditResult);
+      // Update the main ride status in ride table
+      let updateRideResult = await updateRideStatus(
+        TripRideObj.rideId._id,
+        status
+      );
+      if (!updateRideResult)
+        console.log("Error in update main ride status in update trip status");
     }
-    // Update the main ride status in ride table
-    let updateRideResult = await updateRideStatus(
-      TripRideObj.rideId._id,
-      status
-    );
-    if (!updateRideResult)
-      console.log("Error in update main ride status in update trip status");
   } else {
     // apply safety points penalty to rider
     if (TripRideObj.amount) {

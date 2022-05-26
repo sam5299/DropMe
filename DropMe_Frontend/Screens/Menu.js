@@ -43,8 +43,8 @@ const Menu = ({ navigation }) => {
             <Text>Manage Rides</Text>
           </Stack>
         </Box>
-        <MaterialCommunityIcons
-          name="arrow-right"
+        <MaterialIcons
+          name="keyboard-arrow-right"
           size={40}
           color="rgba(6,182,212,1.00)"
         />
@@ -73,8 +73,8 @@ const Menu = ({ navigation }) => {
             <Text>Manage Trips</Text>
           </Stack>
         </Box>
-        <MaterialCommunityIcons
-          name="arrow-right"
+        <MaterialIcons
+          name="keyboard-arrow-right"
           size={40}
           color="rgba(6,182,212,1.00)"
         />
@@ -103,8 +103,8 @@ const Menu = ({ navigation }) => {
             <Text>Manage Vehicles</Text>
           </Stack>
         </Box>
-        <MaterialCommunityIcons
-          name="arrow-right"
+        <MaterialIcons
+          name="keyboard-arrow-right"
           size={40}
           color="rgba(6,182,212,1.00)"
         />
@@ -133,8 +133,8 @@ const Menu = ({ navigation }) => {
             <Text>View Profile</Text>
           </Stack>
         </Box>
-        <MaterialCommunityIcons
-          name="arrow-right"
+        <MaterialIcons
+          name="keyboard-arrow-right"
           size={40}
           color="rgba(6,182,212,1.00)"
         />
@@ -163,8 +163,8 @@ const Menu = ({ navigation }) => {
             <Text>Manage Payments</Text>
           </Stack>
         </Box>
-        <MaterialCommunityIcons
-          name="arrow-right"
+        <MaterialIcons
+          name="keyboard-arrow-right"
           size={40}
           color="rgba(6,182,212,1.00)"
         />
@@ -191,8 +191,8 @@ const Menu = ({ navigation }) => {
             <Text>View Notification</Text>
           </Stack>
         </Box>
-        <MaterialCommunityIcons
-          name="arrow-right"
+        <MaterialIcons
+          name="keyboard-arrow-right"
           size={40}
           color="rgba(6,182,212,1.00)"
         />
