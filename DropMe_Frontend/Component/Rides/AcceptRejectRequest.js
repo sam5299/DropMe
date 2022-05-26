@@ -249,7 +249,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                   }
                   px={5}
                 >
-                  <Text fontWeight={"bold"}>Accept</Text>
+                  <Text color="white">Accept</Text>
                 </Button>
                 <Button
                   bg={"#e8000d"}
@@ -266,7 +266,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                   }
                   px={5}
                 >
-                  <Text fontWeight={"bold"}>Reject</Text>
+                  <Text color="white">Reject</Text>
                 </Button>
               </Stack>
             </Stack>

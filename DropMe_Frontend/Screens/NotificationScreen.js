@@ -19,11 +19,12 @@ const NotificationScreen = ({ navigation }) => {
   const [notificationList, setNotification] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [isUpdated, setUpdated] = useState(false);
-  const [tripRideId,setTripRideId] = useState(null)
+  const [tripRideId, setTripRideId] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
-  const [markReadNotificationObject, setMarkReadNotificationObject] = useState(null);
+  const [markReadNotificationObject, setMarkReadNotificationObject] =
+    useState(null);
 
   async function markAllRead() {
     try {
@@ -64,7 +65,7 @@ const NotificationScreen = ({ navigation }) => {
           },
         }
       );
-     // console.log(result.data);
+      // console.log(result.data);
       setUpdated(true);
     } catch (ex) {
       console.log("Exception in mark notification", ex.response);
@@ -73,7 +74,7 @@ const NotificationScreen = ({ navigation }) => {
   }
 
   const redirectToPage = (notificationObj) => {
-    let notificationType=notificationObj.notificationType;
+    let notificationType = notificationObj.notificationType;
     // alert(notificationType);
     switch (notificationType) {
       case "Wallet":
@@ -137,11 +138,12 @@ const NotificationScreen = ({ navigation }) => {
               <Text fontWeight={"bold"}>How was the ride?</Text>
             </Modal.Header>
             <Modal.Body>
-              <AcceptRating tripRideId={tripRideId} 
-              setModalVisible={setModalVisible} 
-              notificationObject={markReadNotificationObject}
-              markReadNotification={markReadNotification}
-                />
+              <AcceptRating
+                tripRideId={tripRideId}
+                setModalVisible={setModalVisible}
+                notificationObject={markReadNotificationObject}
+                markReadNotification={markReadNotification}
+              />
             </Modal.Body>
           </Modal.Content>
         </Modal>
@@ -162,10 +164,7 @@ const NotificationScreen = ({ navigation }) => {
               maxW="90%"
               minWidth={"90%"}
             >
-              <Text
-                fontSize={15}
-                onPress={() => redirectToPage(msg)}
-              >
+              <Text fontSize={15} onPress={() => redirectToPage(msg)}>
                 {msg.message}
               </Text>
             </Box>

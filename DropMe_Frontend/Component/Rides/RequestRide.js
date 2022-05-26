@@ -207,6 +207,7 @@ const RequestRides = ({ navigation }) => {
                 <Button
                   mt={2}
                   px={5}
+                  bg={"#03c03c"}
                   onPress={() =>
                     navigation.navigate("ViewRequest", {
                       rideId: ride._id,
@@ -229,7 +230,7 @@ const RequestRides = ({ navigation }) => {
                 <Button
                   mt={2}
                   px={5}
-                  colorScheme="secondary"
+                  bg={"#e8000d"}
                   isDisabled={ride.status == "Created" ? false : true}
                   onPress={() => showConfirmDialog(ride._id, ride.amount)}
                 >

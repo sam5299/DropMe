@@ -180,15 +180,21 @@ function TripBooked() {
                       <Text style={styles.riderDetails}>
                         Vehicle Number: {trip.vehicleNumber}
                       </Text>
-                      {trip.amount== 0?<Text color={'green.500'}>Free</Text>:
-                        <Text style={styles.riderDetails} color={'green.500'}>
-                        Amount: {trip.amount}
-                      </Text>}
-                      <Text style={styles.riderDetails}>OTP: {trip.token}</Text>
+                      {trip.amount == 0 ? (
+                        <Text color={"green.500"}>Free</Text>
+                      ) : (
+                        <Text style={styles.riderDetails} color={"green.500"}>
+                          Amount: {trip.amount}
+                        </Text>
+                      )}
+                      <Text style={styles.riderDetails}>
+                        Token: {trip.token}
+                      </Text>
 
                       {trip.status === "Booked" ? (
                         <Button
                           size={"lg"}
+                          bg={"#e8000d"}
                           px={5}
                           disabled={isButtonDisabled}
                           onPress={() =>
@@ -202,7 +208,6 @@ function TripBooked() {
                           Trip initiated
                         </Button>
                       )}
-                    
                     </Stack>
                   </ScrollView>
                 </Modal.Content>
@@ -213,9 +218,13 @@ function TripBooked() {
                 <Text style={styles.details}>Source: </Text>
                 <Text style={styles.TripDetails}>{trip.tripId.source}</Text>
                 <Text style={styles.details}>Destination :</Text>
-                <Text style={styles.TripDetails}>{trip.tripId.destination}</Text>
+                <Text style={styles.TripDetails}>
+                  {trip.tripId.destination}
+                </Text>
                 <Text style={styles.details}>Pickup Point:</Text>
-                <Text style={styles.TripDetails}>{trip.tripId.pickupPoint}</Text>
+                <Text style={styles.TripDetails}>
+                  {trip.tripId.pickupPoint}
+                </Text>
                 <Text style={styles.details}>Date: </Text>
                 <Text style={styles.TripDetails}>
                   {trip.tripId.date} : {trip.tripId.time}

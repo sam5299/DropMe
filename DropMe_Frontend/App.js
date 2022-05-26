@@ -6,6 +6,7 @@ import {
   StatusBar,
   useWindowDimensions,
   Dimensions,
+  LogBox,
 } from "react-native";
 
 import { useToast } from "native-base";
@@ -15,6 +16,8 @@ import { useContext, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 // const socket = io.connect("http://192.168.43.195:3100");
 export default function App() {
+  LogBox.ignoreLogs(["Remote debugger"]);
+
   const [animating, setAnimating] = useState(false);
 
   return (

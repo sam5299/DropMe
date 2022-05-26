@@ -182,9 +182,6 @@ const BookedRides = ({ navigation }) => {
         { headers: { "x-auth-token": userToken } }
       );
 
-      let updatedRides = bookedRides.filter((ride) => ride._id != tripRideId);
-      setBookedRides(updatedRides);
-
       toast.show({
         render: () => {
           return (
@@ -195,6 +192,9 @@ const BookedRides = ({ navigation }) => {
         },
         placement: "top",
       });
+      let updatedRides = bookedRides.filter((ride) => ride._id != tripRideId);
+      setBookedRides(updatedRides);
+
       // setStarted("Ended");
     } catch (error) {
       toast.show({
@@ -234,7 +234,7 @@ const BookedRides = ({ navigation }) => {
               backgroundColor: "gray.50",
             }}
           >
-            {/* {console.log(ride.status, ride.token)} */}
+            {console.log(ride.status, ride.token)}
             <Stack
               direction={"column"}
               alignItems="center"
@@ -299,7 +299,7 @@ const BookedRides = ({ navigation }) => {
                     }
                     px={5}
                   >
-                    <Text fontWeight={"bold"}> Start Trip</Text>
+                    <Text color="white"> Start Trip</Text>
                   </Button>
                   <Button
                     px={5}
@@ -314,17 +314,18 @@ const BookedRides = ({ navigation }) => {
                       )
                     }
                   >
-                    <Text fontWeight={"bold"}> Cancel Trip</Text>
+                    <Text color="white">Cancel Trip</Text>
                   </Button>
                 </Stack>
               ) : (
                 <Button
+                  bg={"#03c03c"}
                   w={"100%"}
                   onPress={() =>
                     endTrip(ride._id, ride.tripId._id, "Completed", ride.token)
                   }
                 >
-                  <Text fontWeight={"bold"}> End Trip</Text>
+                  <Text color="white">End Trip</Text>
                 </Button>
               )}
             </Stack>
