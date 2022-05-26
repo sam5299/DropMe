@@ -115,7 +115,7 @@ const Balance = ({ route, navigation }) => {
           render: () => {
             return (
               <Box bg="red.400" px="10" py="3" rounded="sm">
-                <Text fontSize={"15"}>{error.response.data}</Text>
+                <Text fontSize={"15"}>{ex.response.data}</Text>
               </Box>
             );
           },

@@ -132,7 +132,6 @@ const AcceptRejectRequest = ({ route, navigation }) => {
           raiderName,
           source,
           destination,
-          passengerId,
         },
         { headers: { "x-auth-token": token } }
       );
