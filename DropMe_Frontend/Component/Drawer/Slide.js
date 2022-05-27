@@ -8,6 +8,7 @@ import WalletStack from "../Wallet/WalletStack";
 import RideTopBar from "../Rides/RideTopBar";
 import TripsTopBar from "../Trips/TripsTopBar";
 import VehicleTopBar from "../Vehicle/VehicleTopBar";
+import HelpPage from "../../Screens/HelpPage";
 const SliderStack = createNativeStackNavigator();
 
 const Slide = () => {
@@ -39,10 +40,17 @@ const Slide = () => {
           component={TripsTopBar}
           options={{ headerShown: false }}
         />
-        <SliderStack.Screen name="Profile" component={ViewProfile} />
+        <SliderStack.Screen 
+        name="Profile" 
+        component={ViewProfile} 
+        />
         <SliderStack.Screen
           name="Notifications"
           component={NotificationScreen}
+        />
+        <SliderStack.Screen
+          name="Help"
+          component={HelpPage}
         />
       </SliderStack.Navigator>
     </View>

@@ -140,10 +140,9 @@ function getTimeDifference(rideDate) {
   return hrs;
 }
 
-async function checkIsBooked(rideId){
-  return await TripRide.find({rideId:rideId, status:"Booked"})
+async function checkIsBooked(rideId) {
+  return await TripRide.find({ rideId: rideId, status: "Booked" });
 }
-
 
 //function which return date object of date string
 function convertToDate(dateString) {
@@ -197,6 +196,15 @@ function convertToDate(dateString) {
 // To save image of vehicle after creating ride
 function savePicture(fileName) {}
 
+// function to check for pending rides
+async function checkPendingRides(userId, date) {
+  console.log("Check pending is called", userId, date);
+  return await Ride.findOne({ User: userId, rideDate: date, status:"Created"})
+  .find({
+   $or: [{ status: "Created" }, { status: "Initiated" }],
+ });
+}
+
 module.exports = {
   createRide,
   getCreatedRides,
@@ -211,5 +219,6 @@ module.exports = {
   getTimeDifference,
   convertToDate,
   updateRideStatus,
-  checkIsBooked
+  checkIsBooked,
+  checkPendingRides,
 };

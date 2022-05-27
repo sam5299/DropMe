@@ -56,7 +56,7 @@ router.post("/addVehicle", auth, async (req, res) => {
         req.body.licenseNumber
       );
       if (isLicenseNumberPresent)
-        return res.status(400).send("Licence number already present");
+        return res.status(400).send("License number already present");
       console.log("License number is not present");
       let updatedUser = await updateUserLicenseDetails(
         req.body.userId,
