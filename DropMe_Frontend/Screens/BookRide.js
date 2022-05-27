@@ -12,6 +12,7 @@ import {
   Box,
   WarningOutlineIcon,
   ScrollView,
+  useToast,
 } from "native-base";
 import { useValidation } from "react-native-form-validator";
 import { AuthContext } from "../Component/Context";
@@ -108,10 +109,9 @@ const BookRide = ({ navigation }) => {
   const [token, setToken] = useState("");
   const [isLoading, setLoading] = useState(false);
 
+  const toast = useToast();
+
   const todaysDate = new Date();
-  const hourse = todaysDate.getHours();
-  const min = todaysDate.getMinutes();
-  const currentTime = `${hourse}:${min}`;
 
   const { source, destination, pickupPoint } = state;
   const { validate, isFieldInError } = useValidation({
@@ -127,8 +127,17 @@ const BookRide = ({ navigation }) => {
         if (mounted) {
           setGender(userDetails.gender);
           setToken(userDetails.userToken);
+
+          let hours = todaysDate.getHours();
+          let minutes = todaysDate.getMinutes();
+          let ampm = hours >= 12 ? "PM" : "AM";
+          hours = hours % 12;
+          hours = hours ? hours : 12;
+
+          const time = `${hours}:${minutes}:${ampm}`;
+
           dispatch({ type: "date", payload: todaysDate.toDateString() });
-          dispatch({ type: "time", payload: currentTime });
+          dispatch({ type: "time", payload: time });
         }
       } catch (error) {
         console.log("BookRide: ", error.response.data);
@@ -147,6 +156,20 @@ const BookRide = ({ navigation }) => {
       destination: { required: true },
       pickupPoint: { required: true },
     });
+    if (state.source === state.destination) {
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>Source and destination cannot be same</Text>
+            </Box>
+          );
+        },
+        placement: "top",
+      });
+      setLoading(false);
+      return;
+    }
     if (isTrue) {
       setLoading(true);
       try {

@@ -145,9 +145,6 @@ const CreateRide = ({ navigation }) => {
   const isFocused = useIsFocused();
 
   const todaysDate = new Date();
-  const hourse = todaysDate.getHours();
-  const min = todaysDate.getMinutes();
-  const currentTime = `${hourse}:${min}`;
 
   const toast = useToast();
   const { source, destination, Vehicle } = state;
@@ -171,8 +168,17 @@ const CreateRide = ({ navigation }) => {
         if (mounted) {
           setVehicles(list.data);
           setToken(userDetails.userToken);
+
+          let hours = todaysDate.getHours();
+          let minutes = todaysDate.getMinutes();
+          let ampm = hours >= 12 ? "PM" : "AM";
+          hours = hours % 12;
+          hours = hours ? hours : 12;
+
+          const time = `${hours}:${minutes}:${ampm}`;
+
           dispatch({ type: "date", payload: todaysDate.toDateString() });
-          dispatch({ type: "time", payload: currentTime });
+          dispatch({ type: "time", payload: time });
           setPageLoaded(false);
         }
       } catch (error) {
@@ -192,6 +198,20 @@ const CreateRide = ({ navigation }) => {
       destination: { required: true },
       Vehicle: { required: true },
     });
+    if (state.source === state.destination) {
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.400" px="10" py="3" rounded="sm">
+              <Text fontSize={"15"}>Source and destination cannot be same</Text>
+            </Box>
+          );
+        },
+        placement: "top",
+      });
+      setLoading(false);
+      return;
+    }
     if (isTrue) {
       // console.log(state);
       let distance = null;
@@ -238,17 +258,13 @@ const CreateRide = ({ navigation }) => {
           placement: "top",
         });
       } catch (error) {
-        console.log(error.response.data);
+        console.log("While creating ride", error.response.data);
         setLoading(false);
         toast.show({
           render: () => {
             return (
               <Box bg="red.400" px="10" py="3" rounded="sm">
-                <Text fontSize={"15"}>
-                  {error.name === "AxiosError"
-                    ? "Sorry cannot reach to server!"
-                    : error.response.data}
-                </Text>
+                <Text fontSize={"15"}>{error.response.data}</Text>
               </Box>
             );
           },

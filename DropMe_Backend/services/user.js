@@ -204,17 +204,19 @@ function nodemailerService(mail, message) {
 }
 
 // function to get profile details
-async function loadProfile(userId){
-  return await User.findOne({_id:userId},
+async function loadProfile(userId) {
+  return await User.findOne(
+    { _id: userId },
     {
-      name:1,
-      email:1,
-      mobileNumber:1,
-      profile:1,
-      totalNumberOfRides:1,
-      sumOfRating:1,
-      totalNumberOfRatedRides:1
-    });
+      name: 1,
+      email: 1,
+      mobileNumber: 1,
+      profile: 1,
+      totalNumberOfRides: 1,
+      sumOfRating: 1,
+      totalNumberOfRatedRides: 1,
+    }
+  );
 }
 
 module.exports = {
@@ -232,5 +234,5 @@ module.exports = {
   mailSend,
   encryptPassword,
   validatePassword,
-  loadProfile
+  loadProfile,
 };

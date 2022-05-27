@@ -10,13 +10,27 @@ const DateTime = ({ dispatch }) => {
   const [selectedTime, setTime] = useState(new Date());
   const [showClock, setClock] = useState(false);
 
+  let hour = selectedTime.getHours();
+  let minute = selectedTime.getMinutes();
+  let suffix = hour >= 12 ? "PM" : "AM";
+  hour = hour % 12;
+  hour = hour ? hour : 12;
+
+  const t = `${hour}:${minute} ${suffix}`;
+  const [currentTime, setCurrentTime] = useState(t);
+
   //function to handle time change
   const onChange = (event, selectedTime) => {
     setClock(false);
-    setTime(selectedTime);
-    const hourse = selectedTime.getHours();
-    const min = selectedTime.getMinutes();
-    const time = `${hourse}:${min}`;
+
+    let hours = selectedTime.getHours();
+    let minutes = selectedTime.getMinutes();
+    let ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+
+    const time = `${hours}:${minutes}:${ampm}`;
+    setCurrentTime(time);
     dispatch({ type: "time", payload: time });
   };
 
@@ -32,31 +46,27 @@ const DateTime = ({ dispatch }) => {
     setShowModal(false);
   };
 
-  const hourse = selectedTime.getHours();
-  const min = selectedTime.getMinutes();
-  const time = `${hourse}:${min}`;
-
-  const curr = selectedStartDate.toDateString() + " ; " + time;
+  const curr = selectedStartDate.toDateString() + " ; " + currentTime;
 
   return (
     <Box ml={3} mt="5" w={"95%"} flexDir={"row"}>
       <Button
-        flexBasis={"400"}
-        flexShrink="1"
-        flexGrow={1}
-        justifyContent="space-between"
+        w={"100%"}
         variant="outline"
         rightIcon={
           <Icon
             as={<MaterialCommunityIcons name="calendar-arrow-left" />}
             size={6}
             color="rgba(6,182,212,1.00)"
-            ml={"45%"}
           />
         }
         onPress={() => setShowModal(true)}
       >
-        <Text color={"gray.400"}>{curr}</Text>
+        <Box pr={"44%"}>
+          <Text color={"gray.700"} fontSize="13">
+            {curr}
+          </Text>
+        </Box>
       </Button>
       {showModal && (
         <DateTimePicker
@@ -74,7 +84,7 @@ const DateTime = ({ dispatch }) => {
           testID="dateTimePicker"
           value={selectedTime}
           mode="time"
-          is24Hour={true}
+          is24Hour={false}
           onChange={onChange}
         />
       )}
