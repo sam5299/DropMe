@@ -14,7 +14,7 @@ async function addVehicle(body) {
     return await vehicle.save();
 }
 
-//function to get list of vehicle and vehicle class of perticular user
+//function to get list of vehicle and vehicle class of particular user
 async function getVehicleList(userId) {
     return await Vehicle.find({userId:userId , isDeleted:false , isVerified:true });
 }

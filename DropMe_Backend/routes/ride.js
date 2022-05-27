@@ -15,6 +15,7 @@ const {
   getTimeDifference,
   convertToDate,
   checkIsBooked,
+  checkPendingRides,
 } = require("../services/ride");
 
 const {
@@ -41,7 +42,16 @@ router.use(express.json());
 //ride creat route
 router.post("/createRide", auth, async (req, res) => {
   console.log("create ride called");
-  let userId = req.body.userId;
+  let userId = req.body.User;
+  let inpDate=convertToDate( req.body.date);
+  let checkResult=await checkPendingRides(userId,inpDate);
+  //console.log("Check result result:",checkResult);
+  if(checkResult.length){
+  //console.log("Ride present");
+  return res.status(400).send("Sorry you cannot create the ride on this day because your ride is pending please Complete/Cancel the ride");
+
+  }
+
   delete req.body.userId;
   let amount = 0;
   if (req.body.rideType == "Paid") {
@@ -63,7 +73,7 @@ router.post("/createRide", auth, async (req, res) => {
     //console.log("New ride obj", newRide);
     // After that save the ipc of created ride vehicle
     // savePicture(`${newRide.vehicleNumber}_${userId}`);
-    return res.status(200).send(newRide);
+    return res.status(200).send("Your ride is created");
   } catch (ex) {
     return res.status(400).send("something failed!! try again latter:" + ex);
   }
