@@ -258,7 +258,7 @@ const CreateRide = ({ navigation }) => {
           placement: "top",
         });
       } catch (error) {
-        console.log("While creating ride", error.response.data);
+       // console.log("While creating ride", error.response.data);
         setLoading(false);
         toast.show({
           render: () => {
