@@ -140,10 +140,22 @@ function getTimeDifference(rideDate) {
   return hrs;
 }
 
-async function checkIsBooked(rideId){
-  return await TripRide.find({rideId:rideId, status:"Booked"})
+async function checkIsBooked(rideId) {
+  return await TripRide.find({ rideId: rideId, status: "Booked" });
 }
 
+//function to get User's detail's from rid
+async function getUserDetailsByRideId(rid) {
+  // path: 'key_with_ref',
+  // model: 'model_name',
+  // select: { 'field_name': 1,'field_name':1},
+  console.log("ride id:", rid);
+  return await Ride.findOne({ _id: rid }, { _id: 0, User: 1 }).populate({
+    path: "User",
+    model: User,
+    select: { _id: 1, name: 1 },
+  });
+}
 
 //function which return date object of date string
 function convertToDate(dateString) {
@@ -211,5 +223,6 @@ module.exports = {
   getTimeDifference,
   convertToDate,
   updateRideStatus,
-  checkIsBooked
+  checkIsBooked,
+  getUserDetailsByRideId,
 };

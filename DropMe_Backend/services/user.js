@@ -54,7 +54,7 @@ async function getUser(id) {
   //console.log("called getUser");
   try {
     let user = await User.findOne({ _id: id }, { userId: 0, __v: 0 });
-    if (user.length === 0) return "Users not found";
+    if (!user) return "Users not found";
     else return user;
   } catch (ex) {
     return ex;
@@ -204,17 +204,19 @@ function nodemailerService(mail, message) {
 }
 
 // function to get profile details
-async function loadProfile(userId){
-  return await User.findOne({_id:userId},
+async function loadProfile(userId) {
+  return await User.findOne(
+    { _id: userId },
     {
-      name:1,
-      email:1,
-      mobileNumber:1,
-      profile:1,
-      totalNumberOfRides:1,
-      sumOfRating:1,
-      totalNumberOfRatedRides:1
-    });
+      name: 1,
+      email: 1,
+      mobileNumber: 1,
+      profile: 1,
+      totalNumberOfRides: 1,
+      sumOfRating: 1,
+      totalNumberOfRatedRides: 1,
+    }
+  );
 }
 
 module.exports = {
@@ -232,5 +234,5 @@ module.exports = {
   mailSend,
   encryptPassword,
   validatePassword,
-  loadProfile
+  loadProfile,
 };

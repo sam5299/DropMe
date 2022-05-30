@@ -31,6 +31,18 @@ async function getTripDetailsByRideIdAndStatus(rid, status) {
   );
 }
 
+//function to return passengers booked trip with detail's
+async function getPassengersBookedTrip(passengerId) {
+  return await TripRide.find({
+    passengerId: passengerId,
+    status: "Booked",
+  }).populate(
+    "tripId",
+    "-_id User source destination date time distance pickupPoint seatRequest",
+    Trip
+  );
+}
+
 // return all booked rides of the raider
 async function getAllBookedRides(raiderId) {
   return await TripRide.find({
@@ -365,4 +377,5 @@ module.exports = {
   deleteBookedTrip,
   updateTripStatus,
   setRating,
+  getPassengersBookedTrip,
 };

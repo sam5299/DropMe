@@ -22,6 +22,7 @@ const {
   generateTripToken,
   calculateTripAmount,
   getAllRequest,
+  removeRideId,
 } = require("../services/trip");
 const { validateTripRide } = require("../models/trip_ride");
 const { func } = require("joi");
@@ -135,16 +136,14 @@ router.get("/getUserRides", auth, async (req, res) => {
   }
 });
 
-
 //   check whether the ride is booked or not
 router.get("/checkIsBooked/:rideId", auth, async (req, res) => {
   console.log("check is booked ride or not is called");
   try {
-   let result=await checkIsBooked(req.params.rideId);
-   //console.log("@@@",result);
-   if(!result)
-    return res.status(400).send(false);
-    return res.status(200).send(result.length>0);
+    let result = await checkIsBooked(req.params.rideId);
+    //console.log("@@@",result);
+    if (!result) return res.status(400).send(false);
+    return res.status(200).send(result.length > 0);
   } catch (ex) {
     return res.status(400).send("something failed!! try again latter:" + ex);
   }
@@ -230,6 +229,14 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
     return res.status(400).send("something failed!");
   }
 
+  //change trip status of trip in trip table change status to Booked
+  trip.status = "Booked";
+  let tripUpdateResult = await trip.save();
+  if (!tripUpdateResult)
+    console.log(
+      "******************************\n error while changing status of trip ******************"
+    );
+
   // create notification to passenger
   let notificationDetails = {
     fromUser: req.body.RaiderId,
@@ -275,6 +282,21 @@ router.put("/rejectTripRequest", auth, async (req, res) => {
     notificationType: "Trip",
   };
 
+  //get trip details of trip which gonna be reject
+  let trip = await Trip.findOne({ _id: req.body.tripId });
+  //remove the ride id from requestedRideId array
+  trip = await removeRideId(req.body.rideId, req.body.tripId);
+  //check if requestedRideList is empty and then change status
+  if (trip.requestedRideList.length === 0) {
+    //change trip status of trip in trip table change status to Booked
+    trip.status = "Rejected";
+    let tripUpdateResult = await trip.save();
+    if (!tripUpdateResult)
+      console.log(
+        "******************************\n error while changing status of trip ******************"
+      );
+  }
+
   let newNotification = await createNotification(notificationDetails);
   if (!newNotification) {
     console.log("failed to send notification.");
@@ -292,7 +314,7 @@ router.get("/getBookedRides", auth, async (req, res) => {
   return res.status(200).send(bookedRide);
 });
 
-// endpoint to cancel ride 
+// endpoint to cancel ride
 router.put("/cancelRide/:rid", auth, async (req, res) => {
   console.log("Cancel ride is called...");
   try {
@@ -325,8 +347,7 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
 
     //loop over the bookTrip find tripId.User and update the usedCreditPoint by amount and
     //change status of trip
-    if(bookedTrip)
-    {
+    if (bookedTrip) {
       bookedTrip.forEach(async (trip) => {
         let notificationResult = await createNotification({
           fromUser: req.body.User.toString(),
@@ -334,21 +355,22 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
           message: `Your booked trip from ${trip.tripId.source} to ${trip.tripId.destination} has been cancelled by ${userDetails.name}.!\nYour credit points will be added to your wallet shortly.`,
           notificationType: "Trip",
         });
-        if (!notificationResult) console.log("error while sending notification");
-  
+        if (!notificationResult)
+          console.log("error while sending notification");
+
         let usedCreditUpdate = await updateUsedCredit(
           trip.PassengerId._id,
           trip.amount * -1
         );
         if (!usedCreditUpdate)
           console.log("error while updating the credit balance of User.");
-  
+
         //update wallet notification for passenger and update wallet history
-  
+
         trip.status = "Cancelled";
         let result = await trip.save();
         if (!result) return console.log("error while changing status of trip");
-  
+
         //check if cancellation time is below 10hrs if yes apply safety point penalty
         if (timeDifference <= 10) {
           let penalty = trip.amount * 0.1;
