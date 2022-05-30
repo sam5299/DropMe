@@ -155,19 +155,19 @@ const CreateRide = ({ navigation }) => {
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
-  const map = (
-    <MapboxGL.MapView style={sheet.matchParent}>
-      <MapboxGL.Camera zoomLevel={16} />
+  // const map = (
+  //   <MapboxGL.MapView style={sheet.matchParent}>
+  //     <MapboxGL.Camera zoomLevel={16} />
 
-      <MapboxGL.RasterSource {...rasterSourceProps}>
-        <MapboxGL.RasterLayer
-          id="stamenWatercolorLayer"
-          sourceID="stamenWatercolorSource"
-          style={{ rasterOpacity: this.state.opacity }}
-        />
-      </MapboxGL.RasterSource>
-    </MapboxGL.MapView>
-  );
+  //     <MapboxGL.RasterSource {...rasterSourceProps}>
+  //       <MapboxGL.RasterLayer
+  //         id="stamenWatercolorLayer"
+  //         sourceID="stamenWatercolorSource"
+  //         style={{ rasterOpacity: this.state.opacity }}
+  //       />
+  //     </MapboxGL.RasterSource>
+  //   </MapboxGL.MapView>
+  // );
 
   useEffect(() => {
     let mounted = true;
@@ -390,7 +390,7 @@ const CreateRide = ({ navigation }) => {
                 </FormControl.ErrorMessage>
               )}
             </Box>
-            <DateTime dispatch={dispatch} />
+            {/* < dispatch={dispatch} /> */}
             {VehiclenClass}
             <Box ml={5}>
               {isFieldInError("Vehicle") && (
