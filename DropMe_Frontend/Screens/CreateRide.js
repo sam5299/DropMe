@@ -155,20 +155,6 @@ const CreateRide = ({ navigation }) => {
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
 
-  // const map = (
-  //   <MapboxGL.MapView style={sheet.matchParent}>
-  //     <MapboxGL.Camera zoomLevel={16} />
-
-  //     <MapboxGL.RasterSource {...rasterSourceProps}>
-  //       <MapboxGL.RasterLayer
-  //         id="stamenWatercolorLayer"
-  //         sourceID="stamenWatercolorSource"
-  //         style={{ rasterOpacity: this.state.opacity }}
-  //       />
-  //     </MapboxGL.RasterSource>
-  //   </MapboxGL.MapView>
-  // );
-
   useEffect(() => {
     let mounted = true;
     const createRide = async () => {
@@ -367,8 +353,7 @@ const CreateRide = ({ navigation }) => {
   } else {
     return (
       <Box flex={1} bg={"#F0F8FF"} flexDirection="column">
-        {/* <GoogleMap /> */}
-        {map}
+        <GoogleMap />
         <ScrollView>
           <FormControl p={1}>
             <SourceDestination dispatch={dispatch} />
