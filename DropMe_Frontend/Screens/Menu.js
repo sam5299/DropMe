@@ -1,16 +1,5 @@
-import { TouchableOpacity, View } from "react-native";
 import React, { useContext } from "react";
-import {
-  Box,
-  Button,
-  Center,
-  Heading,
-  Pressable,
-  ScrollView,
-  Stack,
-  Text,
-  VStack,
-} from "native-base";
+import { Box, Heading, Pressable, Stack, Text, VStack } from "native-base";
 import { AuthContext } from "../Component/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
@@ -217,7 +206,7 @@ const Menu = ({ navigation }) => {
         <Box flexDir={"row"} alignItems={"center"} p="5">
           <FontAwesome5 name="bell" size={40} color="rgba(6,182,212,1.00)" />
           <Stack ml={"5"} space={1} m={1}>
-            <Heading size="md" >Notifications</Heading>
+            <Heading size="md">Notifications</Heading>
             <Text>View Notification</Text>
           </Stack>
         </Box>

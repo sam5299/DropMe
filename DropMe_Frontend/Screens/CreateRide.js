@@ -289,6 +289,7 @@ const CreateRide = ({ navigation }) => {
                 : vehicle
               : "Please Add Vehicle"
           }
+          // isDisabled={vehicles.length ? false : true}
           onValueChange={(itemValue) => {
             setVehicle(itemValue.vehicleName);
             setVehicleClass(itemValue.vehicleClass);
@@ -303,7 +304,6 @@ const CreateRide = ({ navigation }) => {
             });
           }}
         >
-          <Select.Item label="Select Vehicle" disabled={true} />
           {vehicles.map((item) => (
             <Select.Item
               shadow={2}

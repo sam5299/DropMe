@@ -14,7 +14,7 @@ const SliderStack = createNativeStackNavigator();
 const Slide = () => {
   return (
     <View style={{ flex: 1 }} collapsable={false}>
-      <SliderStack.Navigator>
+      <SliderStack.Navigator initialRouteName="Menu">
         <SliderStack.Screen
           name="Menu"
           component={Menu}
@@ -40,18 +40,12 @@ const Slide = () => {
           component={TripsTopBar}
           options={{ headerShown: false }}
         />
-        <SliderStack.Screen 
-        name="Profile" 
-        component={ViewProfile} 
-        />
+        <SliderStack.Screen name="Profile" component={ViewProfile} />
         <SliderStack.Screen
           name="Notifications"
           component={NotificationScreen}
         />
-        <SliderStack.Screen
-          name="Help"
-          component={HelpPage}
-        />
+        <SliderStack.Screen name="Help" component={HelpPage} />
       </SliderStack.Navigator>
     </View>
   );

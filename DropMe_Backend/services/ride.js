@@ -198,11 +198,14 @@ function savePicture(fileName) {}
 
 // function to check for pending rides
 async function checkPendingRides(userId, date) {
-  console.log("Check pending is called", userId, date);
-  return await Ride.findOne({ User: userId, rideDate: date, status:"Created"})
-  .find({
-   $or: [{ status: "Created" }, { status: "Initiated" }],
- });
+  //console.log("Check pending is called", userId, date);
+  return await Ride.findOne({
+    User: userId,
+    rideDate: date,
+    status: "Created",
+  }).find({
+    $or: [{ status: "Created" }, { status: "Initiated" }],
+  });
 }
 
 module.exports = {
