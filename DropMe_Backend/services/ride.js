@@ -236,9 +236,6 @@ module.exports = {
   convertToDate,
   updateRideStatus,
   checkIsBooked,
-<<<<<<< HEAD
   getUserDetailsByRideId,
-=======
   checkPendingRides,
->>>>>>> 8aa4548e2622a9fe42efb0d9cd46572d160342a6
 };
