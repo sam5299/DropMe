@@ -14,6 +14,7 @@ export default function TripsTopBar() {
           tabBarLabelStyle: { fontSize: 12 },
           tabBarStyle: { backgroundColor: "#F0F8FF" },
         }}
+        initialRouteName="Booked Trips"
       >
         <Tab.Screen name="Booked Trips" component={TripBooked} />
         <Tab.Screen name="History" component={TripHistory} />

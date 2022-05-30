@@ -12,7 +12,7 @@ const SliderStack = createNativeStackNavigator();
 const WalletStack = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }} collapsable={false}>
-      <SliderStack.Navigator>
+      <SliderStack.Navigator initialRouteName="Balance">
         <SliderStack.Screen
           name="Balance"
           component={Balance}

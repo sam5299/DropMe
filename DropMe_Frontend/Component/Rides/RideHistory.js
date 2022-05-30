@@ -5,10 +5,13 @@ import { Rating, AirbnbRating } from "react-native-ratings";
 import axios from "axios";
 import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 
 const RideHistory = () => {
   const [rideHistoryList, setRideHistory] = useState([]);
   const [userToken, setToken] = useState(null);
+
+  const isFocused = useIsFocused();
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
@@ -40,7 +43,7 @@ const RideHistory = () => {
 
     getHistory();
     return () => (mounted = false);
-  }, []);
+  }, [isFocused]);
 
   function getHistory() {
     return (

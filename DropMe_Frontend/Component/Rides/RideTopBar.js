@@ -15,6 +15,7 @@ export default function RideTopBar() {
           tabBarLabelStyle: { fontSize: 12 },
           tabBarStyle: { backgroundColor: "#F0F8FF" },
         }}
+        initialRouteName="Rides"
       >
         <Tab.Screen name="Rides" component={RideStack} />
         <Tab.Screen name="Booked Rides" component={BookedRides} />

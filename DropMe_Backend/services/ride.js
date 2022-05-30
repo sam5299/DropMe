@@ -209,6 +209,18 @@ function convertToDate(dateString) {
 // To save image of vehicle after creating ride
 function savePicture(fileName) {}
 
+// function to check for pending rides
+async function checkPendingRides(userId, date) {
+  //console.log("Check pending is called", userId, date);
+  return await Ride.findOne({
+    User: userId,
+    rideDate: date,
+    status: "Created",
+  }).find({
+    $or: [{ status: "Created" }, { status: "Initiated" }],
+  });
+}
+
 module.exports = {
   createRide,
   getCreatedRides,
@@ -224,5 +236,9 @@ module.exports = {
   convertToDate,
   updateRideStatus,
   checkIsBooked,
+<<<<<<< HEAD
   getUserDetailsByRideId,
+=======
+  checkPendingRides,
+>>>>>>> 8aa4548e2622a9fe42efb0d9cd46572d160342a6
 };

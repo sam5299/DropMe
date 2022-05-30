@@ -21,6 +21,7 @@ export default function BottomBar() {
         activeColor="white"
         inactiveColor="#36454f"
         barStyle={{ backgroundColor: "rgba(6,182,212,1.00)" }}
+        initialRouteName="Create Ride"
       >
         <Tab.Screen
           name="Create Ride"

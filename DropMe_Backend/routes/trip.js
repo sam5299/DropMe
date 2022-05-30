@@ -60,7 +60,7 @@ router.post("/requestRide", auth, async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
   //console.log("USER:" + req.body.User);
 
-  //check if passenger has sufficent balance for booking ride.
+  //check if passenger has sufficient balance for booking ride.
   let balance = await getWallet(req.body.User);
   // console.log("balance:" + balance);
   // console.log("ride amount:" + req.body.amount);
