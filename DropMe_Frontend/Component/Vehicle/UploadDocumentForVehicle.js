@@ -15,6 +15,7 @@ import {
   useToast,
   Spinner,
 } from "native-base";
+import { AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useValidation } from "react-native-form-validator";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -274,12 +275,16 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
       <Box ml={3} w={"95%"} flexDir={"row"}>
         <Box mt="5" w={"95%"} flexDir={"row"} alignItems="center">
           <Avatar
-            bg="green.500"
             size="xl"
             source={{
               uri: licenseImage,
             }}
+            borderRadius="100"
+            bg="white"
+            borderColor="gray.400"
+            borderWidth={0.5}
           >
+            <AntDesign name="upload" size={30} color="rgba(6,182,212,0.70)" />
             <Text fontSize={"sm"}>License Image</Text>
           </Avatar>
           <Button
@@ -353,12 +358,20 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
                     justifyContent={"flex-start"}
                   >
                     <Avatar
-                      bg="green.500"
                       size="xl"
                       source={{
                         uri: rcBookImage,
                       }}
+                      borderRadius="100"
+                      bg="white"
+                      borderColor="gray.400"
+                      borderWidth={0.5}
                     >
+                      <AntDesign
+                        name="upload"
+                        size={30}
+                        color="rgba(6,182,212,0.70)"
+                      />
                       <Text fontSize={"sm"}>RC Book</Text>
                     </Avatar>
                     <Button
@@ -393,12 +406,20 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
                     justifyContent={"flex-start"}
                   >
                     <Avatar
-                      bg="green.500"
                       size="xl"
                       source={{
                         uri: pucImage,
                       }}
+                      borderRadius="100"
+                      bg="white"
+                      borderColor="gray.400"
+                      borderWidth={0.5}
                     >
+                      <AntDesign
+                        name="upload"
+                        size={30}
+                        color="rgba(6,182,212,0.70)"
+                      />
                       <Text fontSize={"sm"}>PUC Image</Text>
                     </Avatar>
                     <Button

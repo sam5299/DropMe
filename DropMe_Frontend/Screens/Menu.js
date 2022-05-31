@@ -1,5 +1,13 @@
 import React, { useContext } from "react";
-import { Box, Heading, Pressable, Stack, Text, VStack } from "native-base";
+import {
+  Badge,
+  Box,
+  Heading,
+  Pressable,
+  Stack,
+  Text,
+  VStack,
+} from "native-base";
 import { AuthContext } from "../Component/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
@@ -204,7 +212,24 @@ const Menu = ({ navigation }) => {
         onPress={() => navigation.navigate("Notifications")}
       >
         <Box flexDir={"row"} alignItems={"center"} p="5">
-          <FontAwesome5 name="bell" size={40} color="rgba(6,182,212,1.00)" />
+          <VStack>
+            <Badge // bg="red.400"
+              colorScheme="green"
+              rounded="full"
+              mb={-4}
+              mr={-4}
+              zIndex={1}
+              variant="solid"
+              alignSelf="flex-end"
+              _text={{
+                fontSize: 12,
+              }}
+            >
+              10
+            </Badge>
+            <FontAwesome5 name="bell" size={40} color="rgba(6,182,212,1.00)" />
+          </VStack>
+
           <Stack ml={"5"} space={1} m={1}>
             <Heading size="md">Notifications</Heading>
             <Text>View Notification</Text>

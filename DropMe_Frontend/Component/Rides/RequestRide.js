@@ -161,11 +161,11 @@ const RequestRides = ({ navigation }) => {
                 }}
                 alt="Alternate Text"
                 size={"xl"}
-                borderRadius={100}
+                borderRadius={10}
                 bg="red.100"
               />
 
-              <Text fontSize={25}>{ride.vehicleNumber}</Text>
+              <Text fontSize={22}>{ride.vehicleNumber}</Text>
               {ride.amount > 0 ? (
                 <Text fontSize={18} fontWeight="bold">
                   <FontAwesome name="rupee" size={18} color="black" />
