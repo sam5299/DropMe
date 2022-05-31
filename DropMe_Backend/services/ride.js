@@ -149,7 +149,7 @@ async function getUserDetailsByRideId(rid) {
   // path: 'key_with_ref',
   // model: 'model_name',
   // select: { 'field_name': 1,'field_name':1},
-  console.log("ride id:", rid);
+  // console.log("ride id:", rid);
   return await Ride.findOne({ _id: rid }, { _id: 0, User: 1 }).populate({
     path: "User",
     model: User,

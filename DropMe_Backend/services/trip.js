@@ -28,10 +28,12 @@ async function requestRide(tripBody, rid) {
   let tripId = null;
   //console.log(tripBody);
   let trip = await getTrip(tripBody);
-  //console.log(trip);
+  //console.log("in request ride", trip);
   if (trip) {
+    // console.log("previous trip found");
     tripId = trip._id;
     trip.requestedRideList.push(rid);
+    trip.status = "Requested";
     let result = await trip.save();
   } else tripId = await addNewTrip(tripBody, rid);
   //console.log("tripId which is to store:"+tripId);
