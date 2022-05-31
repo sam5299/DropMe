@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
@@ -16,6 +16,7 @@ import {
   CloseIcon,
 } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import * as Notifications from 'expo-notifications';
 
 import { AuthContext } from "../Context";
 import axios from "axios";
@@ -71,6 +72,26 @@ const Login = ({ navigation }) => {
     const details = { mobileNumber: userName, password: userPassword };
     try {
       setIsLoading(true);
+      async function requestPermissionsAsync() {
+        return await Notifications.requestPermissionsAsync({
+          android: {
+            allowAlert: true,
+            allowBadge: true,
+            allowSound: true,
+            allowAnnouncements: true,
+          },
+        });
+      }
+      let notificationResult = await requestPermissionsAsync();
+      console.log(notificationResult.status);
+      //create new token for login user
+      // let registerForPushNotificationsAsync = async()=> {
+        //console.log("in registerForPushNofications");
+        const token = await Notifications.getExpoPushTokenAsync();
+        console.log(token);
+        details.notificationToken = token.data;
+      // }
+      // registerForPushNotificationsAsync();
       const result = await axios.post(url + "/user/login", details);
       console.log("Token", result.headers["x-auth-token"]);
 
@@ -93,25 +114,16 @@ const Login = ({ navigation }) => {
       alignItems={"center"}
       justifyContent={"center"}
       flex="1"
-      bg={"#F0F8FF"}
+      bg={"#e7feff"}
     >
       <Box
         width={"90%"}
         rounded="lg"
         overflow="hidden"
-        borderColor="coolGray.200"
+        borderColor="white"
         borderWidth="1"
-        _dark={{
-          borderColor: "coolGray.600",
-          backgroundColor: "gray.700",
-        }}
-        _web={{
-          shadow: 2,
-          borderWidth: 0,
-        }}
-        _light={{
-          backgroundColor: "gray.50",
-        }}
+        backgroundColor={"white"}
+        shadow={3}
       >
         {showAlert ? AlertField : null}
         <FormControl m="5" isInvalid={error}>
@@ -198,6 +210,7 @@ const Login = ({ navigation }) => {
             </Text>
           </Text>
           <Text
+            bold
             m="2"
             color="rgba(6,182,212,1.00)"
             onPress={() => navigation.navigate("Forgot Password")}

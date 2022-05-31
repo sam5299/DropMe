@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RequestBookedHistory from "./RequestBookedHistory";
 import TripRequest from "./TripRequest";
@@ -10,7 +10,14 @@ import TripHistory from "./TripHistory";
 import RequestedTrips from "./RequestedTrips";
 const SliderStack = createNativeStackNavigator();
 
-const TripsStack = ({ navigation }) => {
+const TripsStack = ({ route, navigation }) => {
+
+  useEffect(()=> {
+    if(route.params) {
+      navigation.navigate("TripRequest");
+    }
+  },[])
+
   return (
     <View style={{ flex: 1 }} collapsable={false}>
       <SliderStack.Navigator>

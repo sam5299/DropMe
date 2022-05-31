@@ -27,8 +27,8 @@ export default function BottomBar() {
           backgroundColor: "white",
           position: "absolute",
           overflow: "hidden",
-          borderTopLeftRadius: 25,
-          borderTopRightRadius: 25,
+          borderRadius: 15,
+          margin: 10,
         }}
         initialRouteName="Create Ride"
       >
@@ -36,8 +36,9 @@ export default function BottomBar() {
           name="Create Ride"
           component={CreateRide}
           options={{
+            tabBarActiveBackgroundColor: "red",
             tabBarLabel: "Create Ride",
-            tabBarIcon: ({ color }) => (
+            tabBarIcon: ({ color, focused }) => (
               <MaterialCommunityIcons
                 name="bike-fast"
                 color={color}
@@ -56,6 +57,7 @@ export default function BottomBar() {
             ),
           }}
         />
+
         <Tab.Screen
           name="Notification"
           component={Notification}

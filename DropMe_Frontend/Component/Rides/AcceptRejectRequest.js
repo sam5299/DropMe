@@ -60,7 +60,8 @@ const AcceptRejectRequest = ({ route, navigation }) => {
     raiderName,
     perSeatAmount,
     vehicleNumber,
-    seatRequest
+    seatRequest,
+    notificationToken
   ) => {
     try {
       setButtonDisabled(true);
@@ -68,7 +69,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
       //  console.log(amount);
       const result = await axios.post(
         url + "/ride/acceptTripRequest",
-        { tripId, rideId, raiderName, amount, vehicleNumber },
+        { tripId, rideId, raiderName, amount, vehicleNumber,notificationToken },
         { headers: { "x-auth-token": token } }
       );
       {
@@ -119,7 +120,8 @@ const AcceptRejectRequest = ({ route, navigation }) => {
     raiderName,
     source,
     destination,
-    passengerId
+    passengerId,
+    notificationToken
   ) => {
     try {
       setButtonDisabled(true);
@@ -132,6 +134,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
           raiderName,
           source,
           destination,
+          notificationToken
         },
         { headers: { "x-auth-token": token } }
       );
@@ -146,6 +149,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
         placement: "top",
       });
 
+      //filter rejected trip request and create new list
       let newTripRequestList = [];
       tripRequestList.forEach((tripObj) => {
         if (tripObj._id != tripId) {
@@ -173,7 +177,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
 
   function viewRequest() {
     return (
-      <ScrollView>
+      <ScrollView mb="10%">
         {tripRequestList.map((list) => (
           <Box
             key={list._id}
@@ -243,7 +247,8 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                       name,
                       amount,
                       vehicleNumber,
-                      list.seatRequest
+                      list.seatRequest,
+                      list.User.notificationToken
                     )
                   }
                   px={5}
@@ -260,7 +265,8 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                       name,
                       list.source,
                       list.destination,
-                      list.User._id
+                      list.User._id,
+                      list.User.notificationToken
                     )
                   }
                   px={5}

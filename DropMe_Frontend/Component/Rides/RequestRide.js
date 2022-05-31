@@ -126,7 +126,7 @@ const RequestRides = ({ navigation }) => {
 
   function allUserRides() {
     return (
-      <ScrollView>
+      <ScrollView flex={1} mb="12%">
         {allRides.map((ride) => (
           <Box
             key={ride._id}

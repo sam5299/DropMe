@@ -18,6 +18,7 @@ import { useValidation } from "react-native-form-validator";
 import { AuthContext } from "../Component/Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import * as Notifications from 'expo-notifications';
 
 const initialState = {
   source: "",
@@ -103,7 +104,9 @@ const reducer = (state, action) => {
   }
 };
 
-const BookRide = ({ navigation }) => {
+
+
+const BookRide = ({route,navigation}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [gender, setGender] = useState("");
   const [token, setToken] = useState("");
@@ -117,6 +120,22 @@ const BookRide = ({ navigation }) => {
   const { validate, isFieldInError } = useValidation({
     state: { source, destination, pickupPoint },
   });
+
+  //handle push notification thing
+  let handleNotificationResponse = response => {
+    console.log("handle notification response called in book ride..");
+    let notificationType = response.notification.request.content.data.notificationType;
+    console.log("notification object in book ride.js:",notificationType);
+    if(notificationType!="Login") {
+      navigation.navigate("Slide",{
+       notificationType:notificationType
+      });
+    } //else {
+      // navigation.navigate("Slide",{
+      //   notificationType:notificationType
+      //  });
+    //}
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -138,6 +157,8 @@ const BookRide = ({ navigation }) => {
 
           dispatch({ type: "date", payload: todaysDate.toDateString() });
           dispatch({ type: "time", payload: time });
+          //handling notification
+          Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
         }
       } catch (error) {
         console.log("BookRide: ", error.response.data);

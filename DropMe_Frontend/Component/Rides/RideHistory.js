@@ -60,7 +60,7 @@ const RideHistory = () => {
 
   function getHistory() {
     return (
-      <ScrollView m="2">
+      <ScrollView flex={1} mb="15%">
         {rideHistoryList.map((trip) => (
           <Box alignItems="center" key={trip._id} my={7}>
             <Box
@@ -176,135 +176,6 @@ const RideHistory = () => {
               </Stack>
             </Box>
           </Box>
-
-          // <Center w="100%">
-          //   <HStack
-          //     w="90%"
-          //     maxW="400"
-          //     borderWidth="1"
-          //     space={8}
-          //     rounded="md"
-          //     p="4"
-          //   >
-          //     <Skeleton flex="1" h="150" rounded="md" />
-          //     <VStack flex="3" space="4">
-          //       <Skeleton />
-          //       <Skeleton.Text />
-          //       <HStack space="2" alignItems="center">
-          //         <Skeleton size="5" rounded="full" />
-          //         <Skeleton h="3" flex="2" rounded="full" />
-          //         <Skeleton h="3" flex="1" rounded="full" />
-          //       </HStack>
-          //     </VStack>
-          //   </HStack>
-          // </Center>
-
-          // <Box
-          //   key={trip._id}
-          //   borderRadius={10}
-          //   display="flex"
-          //   flexDirection={"row"}
-          //   alignItems={"center"}
-          //   justifyContent={"space-between"}
-          //   p={4}
-          //   my={5}
-          //   borderColor="coolGray.200"
-          //   borderWidth="1"
-          //   _dark={{
-          //     borderColor: "coolGray.600",
-          //     backgroundColor: "gray.700",
-          //   }}
-          //   _web={{
-          //     shadow: 2,
-          //     borderWidth: 0,
-          //   }}
-          //   _light={{
-          //     backgroundColor: "gray.50",
-          //   }}
-          // >
-          //   <Box flex={1} justifyContent={"center"} alignItems={"center"}>
-          //     <Image
-          //       source={{
-          //         uri: trip.PassengerId.profile,
-          //       }}
-          //       size={"xl"}
-          //       alt="Image not available"
-          //       borderRadius={10}
-          //     />
-          //     {trip.status == "Completed" ? (
-          //       <AirbnbRating
-          //         count={5}
-          //         reviews={[
-          //           "Average",
-          //           "Good",
-          //           "Very Good",
-          //           "Amazing",
-          //           "Excellent",
-          //         ]}
-          //         readonly={true}
-          //         size={15}
-          //         reviewColor={"black"}
-          //         reviewSize={20}
-          //         isDisabled={true}
-          //         defaultRating={trip.tripRating || 0}
-          //       />
-          //     ) : null}
-
-          //     {trip.amount > 0 ? (
-          //       <Text fontSize={18} fontWeight="bold">
-          //         <FontAwesome name="rupee" size={18} color="black" />
-          //         {trip.amount}
-          //       </Text>
-          //     ) : (
-          //       <Text fontSize={18} fontWeight="bold" color={"green.500"}>
-          //         Free
-          //       </Text>
-          //     )}
-          //   </Box>
-          //   <Box flex={1} justifyContent={"center"} alignItems={"center"}>
-          //     <Stack direction={"column"} alignItems="center" space={3} m={2}>
-          //       <Stack direction={"row"}>
-          //         <Text fontSize={18} fontWeight="bold" color="black">
-          //           From:
-          //         </Text>
-          //         <Text fontSize={18}> {trip.tripId.source}</Text>
-          //       </Stack>
-
-          //       <Stack direction={"row"}>
-          //         <Text fontSize={18} fontWeight="bold" color="black">
-          //           To:
-          //         </Text>
-          //         <Text fontSize={18}> {trip.tripId.destination}</Text>
-          //       </Stack>
-
-          //       <Stack direction={"row"}>
-          //         <Text fontSize={18} fontWeight="bold" color="black">
-          //           Pickup Point:
-          //         </Text>
-          //         <Text fontSize={18}> {trip.tripId.pickupPoint}</Text>
-          //       </Stack>
-
-          //       <Stack direction={"row"}>
-          //         <Text fontSize={18} fontWeight="bold" color="black">
-          //           Date:
-          //         </Text>
-          //         <Text fontSize={18}> {trip.tripId.date}</Text>
-          //       </Stack>
-
-          //       <Stack direction={"row"} space={2}>
-          //         {trip.status === "Completed" ? (
-          //           <Text fontSize={18} fontWeight="bold" color={"green.500"}>
-          //             {trip.status}
-          //           </Text>
-          //         ) : (
-          //           <Text fontSize={18} fontWeight="bold" color={"red.500"}>
-          //             {trip.status}
-          //           </Text>
-          //         )}
-          //       </Stack>
-          //     </Stack>
-          //   </Box>
-          // </Box>
 
           // <Box
           //   key={trip._id}

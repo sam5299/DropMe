@@ -14,11 +14,12 @@ import {
   WarningOutlineIcon,
   useToast,
   Select,
-  Slider,
+  Slider, 
   Spinner,
 } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import * as Notifications from 'expo-notifications';
 import { AuthContext } from "../Component/Context";
 import { useValidation } from "react-native-form-validator";
 import { useIsFocused } from "@react-navigation/native";
@@ -154,6 +155,44 @@ const CreateRide = ({ navigation }) => {
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
+  let registerForPushNotificationsAsync = async () => {
+   
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    const token = (await Notifications.getExpoPushTokenAsync()).data;
+    //console.log(token);
+    
+  
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  } 
+  };
+  let handleNotificationResponse = response => {
+    //console.log("handle notification response called in create ride..");
+    let notificationType = response.notification.request.content.data.notificationType;
+    //console.log("notification type:",notificationType);
+    if(notificationType!="Login") {
+      //console.log("navigating to slide");
+      navigation.navigate("Slide",{
+       notificationType:notificationType
+      });
+    }
+  };
+
 
   useEffect(() => {
     let mounted = true;
@@ -181,9 +220,22 @@ const CreateRide = ({ navigation }) => {
           dispatch({ type: "time", payload: time });
           setPageLoaded(false);
         }
+        registerForPushNotificationsAsync();
+        //Notifications.addNotificationReceivedListener(handleNotification);
+    
+        Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
+
+        Notifications.setNotificationHandler({
+          handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: false,
+            shouldSetBadge: false,
+          }),
+        });
+        
       } catch (error) {
         console.log("in catch of createRide");
-        console.log(error.response.data);
+        console.log(error);
         setPageLoaded(false);
       }
     };
@@ -260,7 +312,7 @@ const CreateRide = ({ navigation }) => {
           placement: "top",
         });
       } catch (error) {
-        console.log("While creating ride", error.response.data);
+       // console.log("While creating ride", error.response.data);
         setLoading(false);
         toast.show({
           render: () => {
@@ -283,6 +335,7 @@ const CreateRide = ({ navigation }) => {
         <Select
           mr="1"
           w="100%"
+          backgroundColor={"white"}
           selectedValue={vehicle}
           placeholder={
             vehicles.length
@@ -354,10 +407,18 @@ const CreateRide = ({ navigation }) => {
     );
   } else {
     return (
-      <Box flex={1} bg={"#F0F8FF"} justifyContent="center">
-        <Box>
+      <Box flex={1} bg={"#e7feff"} justifyContent="center">
+        <Box
+          bg="white"
+          py={"5"}
+          mx={2}
+          borderRadius="10"
+          borderWidth={1}
+          borderColor={"white"}
+          shadow={3}
+        >
           <ScrollView>
-            <FormControl p={1}>
+            <FormControl>
               <SourceDestination dispatch={dispatch} />
               <Box
                 ml="5"

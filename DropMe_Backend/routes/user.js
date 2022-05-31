@@ -18,11 +18,13 @@ const {
   validatePassword,
   loadProfile,
 } = require("../services/user");
+const { sendPushNotification } = require("../services/notification");
 const { isUserDataValidate, User } = require("../models/user");
-const {
-  uploadFile,
-  uploadFileWithParam,
-} = require("../middleware/upload_file");
+// const {
+//   uploadFile,
+//   uploadFileWithParam,
+// } = require("../middleware/upload_file");
+
 const { Notification } = require("../models/notification");
 
 const { createWallet } = require("../services/wallet");
@@ -32,6 +34,7 @@ const { WalletHistory } = require("../models/wallet_history");
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(fileUpload({ useTempFiles: true, tempFileDir: "../image_files" }));
+
 
 //register user route
 router.post("/register", async (req, res) => {
@@ -96,6 +99,7 @@ router.post("/register", async (req, res) => {
 //endpoint for user login
 router.post("/login", async (req, res) => {
   console.log("Called login route!");
+  console.log(req.body.notificationToken);
   let { error } = await validateLogin(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -117,6 +121,11 @@ router.post("/login", async (req, res) => {
   //console.log(token);
   //  let notifications=await getNotification(user._id)
   // if(notifications)console.log("@@@"+notifications);
+
+  //save notification
+  user.notificationToken = req.body.notificationToken;
+  user = await user.save();
+
   user = _.pick(user, [
     "name",
     "email",
@@ -126,6 +135,17 @@ router.post("/login", async (req, res) => {
     "sumOfRating",
     "totalNumberOfRatedRides",
   ]);
+
+  let message = {
+    to: req.body.notificationToken,
+    sound: "default",
+    title: "Welcome note",
+    body: `Welcome ${user.name}!`,
+    data: {notificationType:"Login"}
+  };
+  //sending push notification to user
+  sendPushNotification(req.body.notificationToken, message);
+
   return res.header("x-auth-token", token).status(200).send(user);
 });
 

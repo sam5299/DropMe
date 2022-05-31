@@ -18,7 +18,7 @@ const { getWallet, updateUsedCredit } = require("../services/wallet");
 const { getUser, loadProfile } = require("../services/user");
 router.use(express.json());
 const { Ride } = require("../models/ride");
-const { createNotification } = require("../services/notification");
+const { createNotification, sendPushNotification } = require("../services/notification");
 const {
   getAllBookedTrips,
   getPassengerHistory,
@@ -53,7 +53,9 @@ router.get("/searchForRide", auth, async (req, res) => {
 router.post("/requestRide", auth, async (req, res) => {
   delete req.body.userId;
   let rideId = req.body.rideId;
+  let notificationToken = req.body.notificationToken;
   delete req.body.rideId;
+  delete req.body.notificationToken;
   // console.log("body for request ride:", req.body);
   console.log("Sending trip request..");
   let { error } = validateTrip(req.body);
@@ -90,11 +92,21 @@ router.post("/requestRide", auth, async (req, res) => {
     fromUser: req.body.User,
     toUser: rideDetails.User,
     notificationType: "Ride",
-    message: `You got trip request from passenger ${user.name} for your ride from ${req.body.source} to ${req.body.destination} on date ${req.body.date} `,
+    message: `You got trip request from passenger ${user.name} for your ride from ${req.body.source} to ${req.body.destination} on date ${req.body.date}`,
   };
 
   let notificationResult = await createNotification(notificationObj);
   console.log("Sending notification to rider for the request...");
+
+  //sending push notification 
+  let message = {
+    to: notificationToken,
+    sound: "default",
+    title: "New trip request",
+    body: `You got trip request from passenger ${user.name} for your ride from ${req.body.source} to ${req.body.destination} on date ${req.body.date}`,
+    data: {notificationType:"Ride"}
+  }
+  sendPushNotification(notificationToken, message);
 
   return res.status(200).send(requestedRide);
 });
@@ -229,9 +241,10 @@ router.get("/getPassengerHistory", auth, async (req, res) => {
 });
 
 // route to reject booked trip
-router.delete("/deleteBookedTrip/:tripRideId", auth, async (req, res) => {
+router.delete("/deleteBookedTrip/:tripRideId/:notificationToken", auth, async (req, res) => {
   let tripRideId = req.params.tripRideId;
-  let deleteResult = await deleteBookedTrip(tripRideId);
+  let notificationToken = req.params.notificationToken;
+  let deleteResult = await deleteBookedTrip(tripRideId, notificationToken);
   if (!deleteResult) return res.status(400).send("Error in deleting");
 
   return res.status(200).send("Trip deleted");
@@ -239,12 +252,16 @@ router.delete("/deleteBookedTrip/:tripRideId", auth, async (req, res) => {
 
 //endpoint to update the status of particular trip initiated/completed/ Rejected/canceled
 router.put("/updateTripStatus", auth, async (req, res) => {
+  console.log(req.body)
   let tripRideId = req.body.tripRideId;
   let tripId = req.body.tripId;
   let status = req.body.status;
+  let notificationToken = req.body.notificationToken;
+  console.log("update trip status notificationToken:",notificationToken);
+  
 
   console.log("Update trip status is called");
-  let TripRideObj = await updateTripStatus(tripRideId, tripId, status);
+  let TripRideObj = await updateTripStatus(tripRideId, tripId, status,notificationToken);
 
   // let saveResult = await TripRideObj.save();
 

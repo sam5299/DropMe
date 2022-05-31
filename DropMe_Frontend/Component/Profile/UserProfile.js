@@ -1,6 +1,14 @@
 import { StyleSheet } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Stack, Text, Image, Spinner } from "native-base";
+import {
+  Box,
+  Stack,
+  Text,
+  Image,
+  Spinner,
+  Heading,
+  Divider,
+} from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { AuthContext } from "../Context";
@@ -40,11 +48,15 @@ const UserProfile = () => {
     );
   } else {
     return (
-      <Box flex={1} bg={"#F0F8FF"} justifyContent="center">
+      <Box
+        flex={1}
+        bg={"#F0F8FF"}
+        justifyContent="center"
+        alignItems={"center"}
+      >
         <Box
           alignItems={"center"}
           m="5"
-          p="2"
           borderColor="coolGray.200"
           borderRadius={10}
           borderWidth="1"
@@ -59,8 +71,72 @@ const UserProfile = () => {
           _light={{
             backgroundColor: "gray.50",
           }}
-          height={"50%"}
-        ></Box>
+          shadow="5"
+          height="50%"
+          width={"75%"}
+        >
+          <Box
+            borderColor="#48b1bf"
+            borderTopRadius={10}
+            borderWidth="1"
+            backgroundColor={"#48b1bf"}
+            width="100%"
+            height="35%"
+          >
+            <Image
+              source={{
+                uri: userDetails.profile,
+              }}
+              alt="Image not available"
+              borderRadius={100}
+              size={"xl"}
+              position="absolute"
+              top="30%"
+              left="30%"
+            />
+          </Box>
+          <Box
+            height={"30%"}
+            width="100%"
+            marginTop="15%"
+            alignItems={"center"}
+            justifyContent="space-around"
+          >
+            <Heading size="md">{userDetails.name}</Heading>
+            <Text fontSize={"15"}>{userDetails.mobileNumber}</Text>
+            <Text fontSize={"15"}>{userDetails.email}</Text>
+          </Box>
+          <Divider />
+          <Stack
+            borderColor="white"
+            borderBottomRadius={10}
+            borderWidth="1"
+            direction={"row"}
+            width={"100%"}
+            height="21%"
+          >
+            <Box
+              width={"50%"}
+              flexDirection="column"
+              justifyContent={"space-around"}
+              alignItems="center"
+              p="2"
+            >
+              <Heading size="md">{userDetails.totalNumberOfRides}</Heading>
+              <Text fontSize={"15"}>Rides</Text>
+            </Box>
+            <Box
+              width={"50%"}
+              flexDirection="column"
+              justifyContent={"space-around"}
+              alignItems="center"
+              p="2"
+            >
+              <Heading size="md">{userDetails.sumOfRating}</Heading>
+              <Text fontSize={"15"}>Rating</Text>
+            </Box>
+          </Stack>
+        </Box>
       </Box>
     );
   }

@@ -60,7 +60,8 @@ const BookedRides = ({ navigation }) => {
     return () => (mounted = false);
   }, [isTripStarted, isFocused]);
 
-  const startTrip = async (tripRideId, tripId, status, token) => {
+  const startTrip = async (tripRideId, tripId, status, token, notificationToken) => {
+    
     if (passengerToken === "" || passengerToken != token) {
       console.log(passengerToken);
       toast.show({
@@ -77,9 +78,10 @@ const BookedRides = ({ navigation }) => {
     }
     try {
       setIsButtonDisabled(true);
+      //send notification to route in body
       const result = await axios.put(
         url + "/trip/updateTripStatus",
-        { tripRideId, tripId, status, token },
+        { tripRideId, tripId, status, token, notificationToken },
         { headers: { "x-auth-token": userToken } }
       );
       setStarted("Accepted");
@@ -113,12 +115,13 @@ const BookedRides = ({ navigation }) => {
     }
   };
 
-  const endTrip = async (tripRideId, tripId, status, token) => {
+  const endTrip = async (tripRideId, tripId, status, token, notificationToken) => {
     try {
       setIsButtonDisabled(true);
+      //send notification to route in body
       const result = await axios.put(
         url + "/trip/updateTripStatus",
-        { tripRideId, tripId, status, token },
+        { tripRideId, tripId, status, token, notificationToken },
         { headers: { "x-auth-token": userToken } }
       );
 
@@ -150,7 +153,7 @@ const BookedRides = ({ navigation }) => {
     }
   };
 
-  const showConfirmDialog = (tripRideId, tripId, status, amount) => {
+  const showConfirmDialog = (tripRideId, tripId, status, amount, notificationToken) => {
     return NewAlert.alert(
       "Are your sure?",
       `Canceling a ride will reduce your safety points by ${parseInt(
@@ -161,7 +164,7 @@ const BookedRides = ({ navigation }) => {
         {
           text: "Yes",
           onPress: () => {
-            cancelTrip(tripRideId, tripId, status);
+            cancelTrip(tripRideId, tripId, status, notificationToken);
           },
         },
         // The "No" button
@@ -172,13 +175,14 @@ const BookedRides = ({ navigation }) => {
       ]
     );
   };
-  const cancelTrip = async (tripRideId, tripId, status) => {
+  const cancelTrip = async (tripRideId, tripId, status, notificationToken) => {
     // let inp = confirmDelete();
     // if(inp){
     try {
+      //send notification to route in body
       const result = await axios.put(
         url + "/trip/updateTripStatus",
-        { tripRideId, tripId, status },
+        { tripRideId, tripId, status, notificationToken },
         { headers: { "x-auth-token": userToken } }
       );
 
@@ -213,7 +217,7 @@ const BookedRides = ({ navigation }) => {
 
   function allUserRides() {
     return (
-      <ScrollView w={"80%"} m={2}>
+      <ScrollView w={"80%"} mb={"10%"}>
         {bookedRides.map((ride) => (
           <Box
             flex={1}
@@ -234,7 +238,7 @@ const BookedRides = ({ navigation }) => {
               backgroundColor: "gray.50",
             }}
           >
-            {console.log(ride.status, ride.token)}
+            {/* {console.log(ride.PassengerId.notificationToken)} */}
             <Stack
               direction={"column"}
               alignItems="center"
@@ -294,7 +298,8 @@ const BookedRides = ({ navigation }) => {
                         ride._id,
                         ride.tripId._id,
                         "Initiated",
-                        ride.token
+                        ride.token,
+                        ride.PassengerId.notificationToken
                       )
                     }
                     px={5}
@@ -310,7 +315,8 @@ const BookedRides = ({ navigation }) => {
                         ride._id,
                         ride.tripId._id,
                         "Cancelled",
-                        ride.amount
+                        ride.amount,
+                        ride.PassengerId.notificationToken
                       )
                     }
                   >
@@ -322,7 +328,7 @@ const BookedRides = ({ navigation }) => {
                   bg={"#03c03c"}
                   w={"100%"}
                   onPress={() =>
-                    endTrip(ride._id, ride.tripId._id, "Completed", ride.token)
+                    endTrip(ride._id, ride.tripId._id, "Completed", ride.token,ride.PassengerId.notificationToken)
                   }
                 >
                   <Text color="white">End Trip</Text>

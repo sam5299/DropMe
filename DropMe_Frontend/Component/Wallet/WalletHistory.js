@@ -41,7 +41,7 @@ const WalletHistory = () => {
 
   function getHistory() {
     return (
-      <ScrollView w={"100%"}>
+      <ScrollView w={"100%"} mb="15%">
         {historyList.map((transaction) => (
           <Box
             key={transaction._id}
