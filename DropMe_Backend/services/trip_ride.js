@@ -4,7 +4,7 @@ const { Trip } = require("../models/trip");
 const { TripRide } = require("../models/trip_ride");
 const { User } = require("../models/user");
 const { WalletHistory } = require("../models/wallet_history");
-const { createNotification } = require("./notification");
+const { createNotification,sendPushNotification } = require("./notification");
 const {
   getTimeDifference,
   reduceAvailableSeats,
@@ -24,11 +24,11 @@ async function addAcceptedTrip(body) {
 }
 
 async function getTripDetailsByRideIdAndStatus(rid, status) {
-  return await TripRide.find({ rideId: rid, status: status }).populate(
-    "tripId",
-    "-_id User source destination",
-    Trip
-  );
+  return await TripRide.find({ rideId: rid, status: status }).populate({
+    path:"tripId",
+    model:Trip,
+    select:"-_id User source destination",
+})
 }
 
 // return all booked rides of the raider
@@ -37,7 +37,7 @@ async function getAllBookedRides(raiderId) {
     RaiderId: raiderId,
     $or: [{ status: "Booked" }, { status: "Initiated" }],
   })
-    .populate("PassengerId", "_id profile name mobileNumber", User)
+    .populate("PassengerId", "_id profile name mobileNumber notificationToken", User)
     .populate("tripId", "_id source destination pickupPoint date", Trip)
     .sort({ _id: -1 });
 }
@@ -48,7 +48,7 @@ async function getAllBookedTrips(passengerId) {
     PassengerId: passengerId,
     $or: [{ status: "Booked" }, { status: "Initiated" }],
   })
-    .populate("RaiderId", "_id profile name mobileNumber", User)
+    .populate("RaiderId", "_id profile name mobileNumber notificationToken", User)
     .populate("tripId", "_id source destination pickupPoint date time", Trip)
     .sort({ _id: -1 });
 }
@@ -85,7 +85,7 @@ async function getRiderHistory(riderId) {
 }
 
 // if the trip is canceled by passenger
-async function deleteBookedTrip(tripRideId) {
+async function deleteBookedTrip(tripRideId, notificationToken) {
   let tripRideObj = await TripRide.findOne({ _id: tripRideId })
     .populate("rideId", "source destination pickupPoint date", Ride)
     .populate("PassengerId", "name", User);
@@ -154,6 +154,18 @@ async function deleteBookedTrip(tripRideId) {
     console.log("failed to send notification.");
     return newNotification;
   }
+  //create and send push notification
+  let message = {
+    to: notificationToken,
+    sound: "default",
+    title: "Trip cancelled",
+    body: `Your booked trip from ${tripRideObj.rideId.source} to ${tripRideObj.rideId.destination} is cancelled by ${tripRideObj.PassengerId.name}. `,
+    data: {notificationType:"Ride"}
+  };
+
+  //send push notification
+  await sendPushNotification(notificationToken, message);
+
   let tripObj = await Trip.findOne({ _id: tripRideObj.tripId._id });
   let updateRideResult = await reduceAvailableSeats(
     tripRideObj.rideId._id,
@@ -167,7 +179,7 @@ async function deleteBookedTrip(tripRideId) {
 }
 
 // get trip ride details by TripRideId and tripId
-async function updateTripStatus(tripRideId, tripId, status) {
+async function updateTripStatus(tripRideId, tripId, status, notificationToken) {
   let TripRideObj = await TripRide.findOne({
     _id: tripRideId,
     tripId: tripId,
@@ -198,7 +210,7 @@ async function updateTripStatus(tripRideId, tripId, status) {
     (messageContent = `Your trip from ${TripRideObj.rideId.source} to ${TripRideObj.rideId.destination} is initiated.`),
       (notificationTypeName = "Trip");
   } else if (status == "Completed") {
-    console.log("In Completd...!");
+    // console.log("In Completd...!");
     TripRideObj.endTime = currentTime;
     fromUserId = TripRideObj.RaiderId._id;
     toUserId = TripRideObj.PassengerId._id;
@@ -327,6 +339,18 @@ async function updateTripStatus(tripRideId, tripId, status) {
   let notificationResult = await newNotification.save();
   if (!notificationResult)
     console.log("error while creating notification in updateRideStatus.");
+
+  //create and send push notification to passenger
+  //create push notification
+  let message = {
+    to: notificationToken,
+    sound: "default",
+    title: "Trip "+status,
+    body: messageContent,
+  };
+
+  //send push notification
+  await sendPushNotification(notificationToken, message);
 
   return await TripRideObj.save();
 }

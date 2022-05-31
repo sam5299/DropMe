@@ -29,7 +29,7 @@ function TripBooked() {
   //toast field
   const toast = useToast();
 
-  const showConfirmDialog = (tripRideId, amount) => {
+  const showConfirmDialog = (tripRideId, amount, notificationToken) => {
     return NewAlert.alert(
       "Are your sure?",
       `Canceling a trip reduce your credit points by Rs.${parseInt(
@@ -40,7 +40,7 @@ function TripBooked() {
         {
           text: "Yes",
           onPress: () => {
-            CancelTrip(tripRideId);
+            CancelTrip(tripRideId,notificationToken);
           },
         },
         // The "No" button
@@ -52,14 +52,15 @@ function TripBooked() {
     );
   };
 
-  async function CancelTrip(tripRideId) {
+  async function CancelTrip(tripRideId, notificationToken) {
     try {
       setIsButtonDisabled(true);
+      console.log('notification token:',notificationToken);
       const User = await AsyncStorage.getItem("User");
       const parseUser = JSON.parse(User);
       //console.log("deleting booked ride");
       let result = await axios.delete(
-        url + `/trip/deleteBookedTrip/${tripRideId}`,
+        url + `/trip/deleteBookedTrip/${tripRideId}/${notificationToken}`,
         {
           headers: {
             "x-auth-token": parseUser.userToken,
@@ -130,7 +131,7 @@ function TripBooked() {
     return (
       <ScrollView w={"85%"} bg={"#F0F8FF"}>
         {bookedTripList.map((trip) => (
-          // console.log(trip.amount)
+          
           <Box
             key={trip._id}
             display={"flex"}
@@ -197,9 +198,10 @@ function TripBooked() {
                           bg={"#e8000d"}
                           px={5}
                           disabled={isButtonDisabled}
-                          onPress={() =>
-                            showConfirmDialog(trip._id, trip.amount)
-                          }
+                          onPress={() =>{
+                          
+                            showConfirmDialog(trip._id, trip.amount,trip.RaiderId.notificationToken)
+                          }}
                         >
                           Cancel trip
                         </Button>

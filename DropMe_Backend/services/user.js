@@ -76,6 +76,7 @@ async function validateLogin(loginData) {
       .pattern(/[7-9]{1}[0-9]{9}/)
       .required(),
     password: Joi.string().required(),
+    notificationToken: Joi.string()
   });
   return await schema.validate(loginData);
 }

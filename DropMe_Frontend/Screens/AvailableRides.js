@@ -55,7 +55,7 @@ const AvailableRides = ({ route, navigation }) => {
     tripDetails["distance"] = ride.distance;
     tripDetails["amount"] = parseInt(ride.amount * seats);
     tripDetails["rideId"] = ride._id;
-
+    tripDetails["notificationToken"] = ride.User.notificationToken;
     try {
       const result = await axios.post(url + "/trip/requestRide", tripDetails, {
         headers: {

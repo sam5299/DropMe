@@ -1,11 +1,19 @@
 import { View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RequestRide from "./RequestRide";
 import AcceptRejectRequest from "./AcceptRejectRequest";
 const rideStack = createNativeStackNavigator();
 
-const RideStack = ({ navigation }) => {
+const RideStack = ({ route,navigation }) => {
+
+  useEffect(()=> {
+    if(route.params) {
+      console.log("in RideStack.js");
+      navigation.navigate("RequestRide");
+    }
+  })
+
   return (
     <View style={{ flex: 1 }} collapsable={false}>
       <rideStack.Navigator>

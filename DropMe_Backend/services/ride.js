@@ -53,7 +53,7 @@ async function getCreatedRides(
   })
     .populate(
       "User",
-      "_id profile name sumOfRating totalNumberOfRatedRides",
+      "_id profile name sumOfRating totalNumberOfRatedRides notificationToken",
       User
     )
     .populate(

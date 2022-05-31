@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, minlength: 6, maxlength: 1024, require: true },
   licenseNumber: { type: String, minlength: 16, maxlength: 16, default: null },
   licenseImage: { type: String, default: null },
+  notificationToken: {type:String, default:null},
   sumOfRating: { type: Number, default: 0 },
   totalNumberOfRides: { type: Number, default: 0 },
   totalNumberOfRatedRides: { type: Number, default: 0 },
@@ -50,7 +51,7 @@ async function isUserDataValidate(userData) {
       requirementCount: 4,
     }).required(),
     profile: Joi.string(),
-    //expoToken:Joi.string()
+    notificationToken: Joi.string()
   });
   return joiSchema.validate(userData);
 }
