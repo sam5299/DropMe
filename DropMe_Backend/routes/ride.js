@@ -35,9 +35,13 @@ const {
 } = require("../services/trip_ride");
 const { Trip } = require("../models/trip");
 const { updateUsedCredit, addPenalty } = require("../services/wallet");
-const { createNotification } = require("../services/notification");
+const {
+  createNotification,
+  sendPushNotification,
+} = require("../services/notification");
 const { Wallet } = require("../models/wallet");
 const { User } = require("../models/user");
+const { getUser } = require("../services/user");
 router.use(express.json());
 
 //ride creat route
@@ -205,6 +209,8 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
   delete req.body.userId;
   let riderName = req.body.raiderName;
   delete req.body.raiderName;
+  let notificationToken = req.body.notificationToken;
+  delete req.body.notificationToken;
   //get vehicle details of ride
   let vehicle = await Ride.findOne(
     { _id: req.body.rideId },
@@ -265,6 +271,17 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
     return res.status(400).send("something failed.");
   }
 
+  //create push notification
+  //sending push notification
+  let message = {
+    to: notificationToken,
+    sound: "default",
+    title: "Trip request accepted",
+    body: `Your trip request from ${trip.source} to ${trip.destination} is accepted by ${riderName}`,
+    data: {notificationType:"Trip"}
+  };
+  sendPushNotification(notificationToken, message);
+
   //update the availableSeats and reduce number of seats for accepted trip
   //console.log("trip seat request:", trip.seatRequest);
   let updatedAvailableSeatResult = await reduceAvailableSeats(
@@ -289,6 +306,8 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
 //route to accept/reject trip request
 router.put("/rejectTripRequest", auth, async (req, res) => {
   let rideObj = await removeTripId(req.body.rideId, req.body.tripId);
+  let notificationToken = req.body.notificationToken;
+  //console.log(notificationToken);
   let notificationDetails = {
     fromUser: req.body.User,
     toUser: req.body.passengerId,
@@ -312,10 +331,24 @@ router.put("/rejectTripRequest", auth, async (req, res) => {
   }
 
   let newNotification = await createNotification(notificationDetails);
+
   if (!newNotification) {
     console.log("failed to send notification.");
     return res.status(400).send("something failed.");
   }
+
+  //create push notification
+  let message = {
+    to: notificationToken,
+    sound: "default",
+    title: "Trip request rejected",
+    body: `Your trip request from ${req.body.source} to ${req.body.destination} is rejected by ${req.body.raiderName}`,
+    data: {notificationType:"Trip"}
+  };
+
+  //send push notification
+  sendPushNotification(notificationToken, message);
+
   return res.status(200).send(rideObj);
 });
 
@@ -331,6 +364,7 @@ router.get("/getBookedRides", auth, async (req, res) => {
 // endpoint to cancel ride
 router.put("/cancelRide/:rid", auth, async (req, res) => {
   console.log("Cancel ride is called...");
+
   try {
     let ride = await getRideDetails(req.params.rid, req.body.User);
     if (!ride) return res.status(400).send("Invalid ride to delete");
@@ -341,16 +375,35 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
     let userDetails = await User.findOne({ _id: req.body.User }, { name: 1 });
     if (!userDetails)
       console.log("Error in getting user details in cancel ride..");
+
     //first get the list of requests for trip and auto reject it also send notification to user
     ride.requestedTripList.forEach(async (trip) => {
-      let tripObj = await Trip.findOne({ _id: trip });
+      let tripObj = await Trip.findOne({ _id: trip }).populate(
+        "User",
+        "notificationToken",
+        User
+      );
+      //console.log("tripObj while cancelling ride:",tripObj);
       let notificationResult = await createNotification({
         fromUser: req.body.User.toString(),
-        toUser: tripObj.User.toString(),
+        toUser: tripObj.User._id.toString(),
         message: `Your trip request from ${tripObj.source} to ${tripObj.destination} is cancelled by ${userDetails.name}.`,
         notificationType: "Trip",
       });
       if (!notificationResult) console.log("error while sending notification");
+
+      //create push notification and sent to passenger
+      //create push notification
+      let message = {
+        to: tripObj.User.notificationToken,
+        sound: "default",
+        title: "Trip cancelled",
+        body: `Your trip request from ${tripObj.source} to ${tripObj.destination} is cancelled by ${userDetails.name}.`,
+        data: {notificationType:"Trip"}
+      };
+
+      //send push notification
+      sendPushNotification(tripObj.User.notificationToken, message);
     });
 
     //second check if is there any trip pending for same ride and if yes get the tid's
@@ -358,11 +411,13 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
       req.params.rid,
       "Booked"
     );
-
+    
     //loop over the bookTrip find tripId.User and update the usedCreditPoint by amount and
     //change status of trip
     if (bookedTrip) {
       bookedTrip.forEach(async (trip) => {
+        let userDetails = await getUser(trip.tripId.User);
+        let notificationToken = userDetails.notificationToken;
         let notificationResult = await createNotification({
           fromUser: req.body.User.toString(),
           toUser: trip.tripId.User.toString(),
@@ -372,36 +427,47 @@ router.put("/cancelRide/:rid", auth, async (req, res) => {
         if (!notificationResult)
           console.log("error while sending notification");
 
-        let usedCreditUpdate = await updateUsedCredit(
-          trip.PassengerId._id,
-          trip.amount * -1
-        );
-        if (!usedCreditUpdate)
-          console.log("error while updating the credit balance of User.");
+        //create push notification for passenger to let him know about trip cancellation
+        let message = {
+          to: notificationToken,
+          sound: "default",
+          title: "Trip cancelled",
+          body: `Your booked trip from ${trip.tripId.source} to ${trip.tripId.destination} has been cancelled by ${userDetails.name}.!\nYour credit points will be added to your wallet shortly.`,
+          data: {notificationType:"Trip"}
+        };
 
-        //update wallet notification for passenger and update wallet history
+        //send push notification
+        sendPushNotification(notificationToken, message);
 
-        trip.status = "Cancelled";
-        let result = await trip.save();
-        if (!result) return console.log("error while changing status of trip");
+          let usedCreditUpdate = await updateUsedCredit(
+            trip.PassengerId._id,
+            trip.amount * -1
+          );
+          if (!usedCreditUpdate)
+            console.log("error while updating the credit balance of User.");
 
-        //check if cancellation time is below 10hrs if yes apply safety point penalty
-        if (timeDifference <= 10) {
-          let penalty = trip.amount * 0.1;
-          //console.log("penalty");
-          let result = await addPenalty(userDetails._id, penalty);
-          if (!result) console.log("error while applying penalty");
-        }
+          //update wallet notification for passenger and update wallet history
+
+          trip.status = "Cancelled";
+          let result = await trip.save();
+          if (!result) return console.log("error while changing status of trip");
+
+          //check if cancellation time is below 10hrs if yes apply safety point penalty
+          if (timeDifference <= 10) {
+            let penalty = trip.amount * 0.1;
+            //console.log("penalty");
+            let result = await addPenalty(userDetails._id, penalty);
+            if (!result) console.log("error while applying penalty");
+          }
       });
     }
     ride.status = "Cancelled";
-    // ride.requestedTripList=[];
-    // ride.requestedUserList=[];
     let result = await ride.save();
     if (!result)
       return res
         .status(400)
         .send("error while cancelling ride, cannot cancel ride.");
+
     return res.status(200).send("Ride cancelled successfully");
   } catch (ex) {
     console.log("Exception in ride route" + ex);

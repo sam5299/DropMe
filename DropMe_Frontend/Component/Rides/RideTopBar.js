@@ -7,7 +7,16 @@ import RideStack from "./RideStack";
 
 const Tab = createMaterialTopTabNavigator();
 
-export default function RideTopBar() {
+export default function RideTopBar({route,navigation}) {
+
+  React.useEffect(()=> {
+    if(route.params){
+      console.log("navigated to RideStack")
+      navigation.navigate("RideStack");
+    }
+  },[]);
+  
+
   return (
     <Box flex={1} mt={"1"}>
       <Tab.Navigator

@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
@@ -16,6 +16,7 @@ import {
   CloseIcon,
 } from "native-base";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import * as Notifications from 'expo-notifications';
 
 import { AuthContext } from "../Context";
 import axios from "axios";
@@ -71,6 +72,26 @@ const Login = ({ navigation }) => {
     const details = { mobileNumber: userName, password: userPassword };
     try {
       setIsLoading(true);
+      async function requestPermissionsAsync() {
+        return await Notifications.requestPermissionsAsync({
+          android: {
+            allowAlert: true,
+            allowBadge: true,
+            allowSound: true,
+            allowAnnouncements: true,
+          },
+        });
+      }
+      let notificationResult = await requestPermissionsAsync();
+      console.log(notificationResult.status);
+      //create new token for login user
+      // let registerForPushNotificationsAsync = async()=> {
+        //console.log("in registerForPushNofications");
+        const token = await Notifications.getExpoPushTokenAsync();
+        console.log(token);
+        details.notificationToken = token.data;
+      // }
+      // registerForPushNotificationsAsync();
       const result = await axios.post(url + "/user/login", details);
       console.log("Token", result.headers["x-auth-token"]);
 
