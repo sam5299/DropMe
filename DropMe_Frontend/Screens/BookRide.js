@@ -199,84 +199,78 @@ const BookRide = ({ navigation }) => {
   };
 
   return (
-    <View
-      style={{
-        width: "100%",
-        backgroundColor: "#F0F8FF",
-        height: "100%",
-        flexDirection: "column",
-      }}
-    >
-      <GoogleMap />
-      <ScrollView>
-        <FormControl p={1}>
-          <SourceDestination dispatch={dispatch} />
-          <Box flexDirection={"row"} justifyContent="space-around">
-            {isFieldInError("source") && (
-              <FormControl.ErrorMessage
-                isInvalid={true}
-                leftIcon={<WarningOutlineIcon size="xs" />}
+    <Box flex={1} bg={"#F0F8FF"} justifyContent="center">
+      <Box>
+        <ScrollView>
+          <FormControl p={1}>
+            <SourceDestination dispatch={dispatch} />
+            <Box flexDirection={"row"} justifyContent="space-around">
+              {isFieldInError("source") && (
+                <FormControl.ErrorMessage
+                  isInvalid={true}
+                  leftIcon={<WarningOutlineIcon size="xs" />}
+                >
+                  Please enter source field
+                </FormControl.ErrorMessage>
+              )}
+              {isFieldInError("destination") && (
+                <FormControl.ErrorMessage
+                  isInvalid={true}
+                  leftIcon={<WarningOutlineIcon size="xs" />}
+                >
+                  Please enter destination field
+                </FormControl.ErrorMessage>
+              )}
+            </Box>
+            <DateTime dispatch={dispatch} />
+            <PickupPoint dispatch={dispatch} />
+            <Box ml={4}>
+              {isFieldInError("pickupPoint") && (
+                <FormControl.ErrorMessage
+                  isInvalid={true}
+                  leftIcon={<WarningOutlineIcon size="xs" />}
+                >
+                  Please enter Pickup Point
+                </FormControl.ErrorMessage>
+              )}
+            </Box>
+            <Box mt={5} alignItems={"center"}>
+              <Text textAlign="center">Selected Seats: {state.seats}</Text>
+              <Slider
+                isDisabled={false}
+                mt={"2"}
+                w="300"
+                maxW="300"
+                defaultValue={1}
+                minValue={1}
+                maxValue={8}
+                accessibilityLabel="Available Seats"
+                step={1}
+                onChange={(v) => dispatch({ type: "seats", payload: v })}
               >
-                Please enter source field
-              </FormControl.ErrorMessage>
-            )}
-            {isFieldInError("destination") && (
-              <FormControl.ErrorMessage
-                isInvalid={true}
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                Please enter destination field
-              </FormControl.ErrorMessage>
-            )}
-          </Box>
-          <DateTime dispatch={dispatch} />
-          <PickupPoint dispatch={dispatch} />
-          <Box ml={4}>
-            {isFieldInError("pickupPoint") && (
-              <FormControl.ErrorMessage
-                isInvalid={true}
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                Please enter Pickup Point
-              </FormControl.ErrorMessage>
-            )}
-          </Box>
-          <Box mt={5} alignItems={"center"}>
-            <Text textAlign="center">Selected Seats: {state.seats}</Text>
-            <Slider
-              isDisabled={false}
-              mt={"2"}
-              w="300"
-              maxW="300"
-              defaultValue={1}
-              minValue={1}
-              maxValue={8}
-              accessibilityLabel="Available Seats"
-              step={1}
-              onChange={(v) => dispatch({ type: "seats", payload: v })}
+                <Slider.Track>
+                  <Slider.FilledTrack />
+                </Slider.Track>
+                <Slider.Thumb />
+              </Slider>
+            </Box>
+            <Button
+              isLoading={isLoading}
+              isLoadingText="Searching for rides.."
+              size="md"
+              mt={"5"}
+              w="95%"
+              ml={2}
+              onPress={handleForm}
             >
-              <Slider.Track>
-                <Slider.FilledTrack />
-              </Slider.Track>
-              <Slider.Thumb />
-            </Slider>
-          </Box>
-          <Button
-            isLoading={isLoading}
-            isLoadingText="Searching for rides.."
-            size="md"
-            mt={"5"}
-            w="95%"
-            ml={2}
-            onPress={handleForm}
-          >
-            <Text fontSize={"lg"} color="white">
-              Search Rides
-            </Text>
-          </Button>
-        </FormControl>
-      </ScrollView>
-    </View>
+              <Text fontSize={"lg"} color="white">
+                Search Rides
+              </Text>
+            </Button>
+          </FormControl>
+        </ScrollView>
+      </Box>
+    </Box>
   );
 };
 
