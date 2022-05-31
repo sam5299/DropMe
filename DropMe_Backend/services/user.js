@@ -54,7 +54,7 @@ async function getUser(id) {
   //console.log("called getUser");
   try {
     let user = await User.findOne({ _id: id }, { userId: 0, __v: 0 });
-    if (user.length === 0) return "Users not found";
+    if (!user) return "Users not found";
     else return user;
   } catch (ex) {
     return ex;

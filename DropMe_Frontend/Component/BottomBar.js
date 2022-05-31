@@ -1,34 +1,49 @@
-import { View, Text } from "react-native";
 import React from "react";
-import BookRide from "../Screens/BookRide";
 import CreateRide from "../Screens/CreateRide";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Menu from "../Screens/Menu";
 import Slide from "./Drawer/Slide";
 import BookeRideStack from "../Screens/BookeRideStack";
+import Notification from "../Screens/NotificationScreen";
+import { Badge, VStack } from "native-base";
 
 const Tab = createMaterialBottomTabNavigator();
+
+function getNotificationCount() {
+  return 2;
+}
 
 export default function BottomBar() {
   return (
     <>
       <Tab.Navigator
+        activeColor="rgba(6,182,212,1.00)"
+        inactiveColor="rgb(132,132,130)"
         style={{
-          height: 20,
           marginTop: 20,
         }}
-        activeColor="white"
-        inactiveColor="#36454f"
-        barStyle={{ backgroundColor: "rgba(6,182,212,1.00)" }}
+        barStyle={{
+          height: 60,
+          backgroundColor: "white",
+          position: "absolute",
+          overflow: "hidden",
+          borderRadius: 15,
+          margin: 10,
+        }}
+        initialRouteName="Create Ride"
       >
         <Tab.Screen
           name="Create Ride"
           component={CreateRide}
           options={{
+            tabBarActiveBackgroundColor: "red",
             tabBarLabel: "Create Ride",
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="car" color={color} size={26} />
+            tabBarIcon: ({ color, focused }) => (
+              <MaterialCommunityIcons
+                name="bike-fast"
+                color={color}
+                size={25}
+              />
             ),
           }}
         />
@@ -38,7 +53,34 @@ export default function BottomBar() {
           options={{
             tabBarLabel: "Book Ride",
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="bell" color={color} size={26} />
+              <MaterialCommunityIcons name="car" color={color} size={26} />
+            ),
+          }}
+        />
+
+        <Tab.Screen
+          name="Notification"
+          component={Notification}
+          options={{
+            tabBarLabel: "Notifications",
+            tabBarIcon: ({ color }) => (
+              <VStack>
+                <Badge // bg="red.400"
+                  colorScheme="green"
+                  rounded="full"
+                  mb={-4}
+                  mr={-4}
+                  zIndex={1}
+                  variant="solid"
+                  alignSelf="flex-end"
+                  _text={{
+                    fontSize: 10,
+                  }}
+                >
+                  {getNotificationCount()}
+                </Badge>
+                <MaterialCommunityIcons name="bell" color={color} size={26} />
+              </VStack>
             ),
           }}
         />

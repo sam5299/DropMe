@@ -53,6 +53,7 @@ const DateTime = ({ dispatch }) => {
       <Button
         w={"100%"}
         variant="outline"
+        backgroundColor={"white"}
         rightIcon={
           <Icon
             as={<MaterialCommunityIcons name="calendar-arrow-left" />}

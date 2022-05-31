@@ -23,6 +23,7 @@ const {
   generateTripToken,
   calculateTripAmount,
   getAllRequest,
+  removeRideId,
 } = require("../services/trip");
 const { validateTripRide } = require("../models/trip_ride");
 const { func } = require("joi");
@@ -92,6 +93,7 @@ router.get(
   auth,
   async (req, res) => {
     let body = req.params;
+    //console.log("parameters for searching ride:", body);
     console.log("Search a ride is called");
     if (
       !(
@@ -247,6 +249,14 @@ router.post("/acceptTripRequest", auth, async (req, res) => {
     return res.status(400).send("something failed!");
   }
 
+  //change trip status of trip in trip table change status to Booked
+  trip.status = "Booked";
+  let tripUpdateResult = await trip.save();
+  if (!tripUpdateResult)
+    console.log(
+      "******************************\n error while changing status of trip ******************"
+    );
+
   // create notification to passenger
   let notificationDetails = {
     fromUser: req.body.RaiderId,
@@ -304,6 +314,21 @@ router.put("/rejectTripRequest", auth, async (req, res) => {
     message: `Your trip request from ${req.body.source} to ${req.body.destination} is rejected by ${req.body.raiderName}`,
     notificationType: "Trip",
   };
+
+  //get trip details of trip which gonna be reject
+  let trip = await Trip.findOne({ _id: req.body.tripId });
+  //remove the ride id from requestedRideId array
+  trip = await removeRideId(req.body.rideId, req.body.tripId);
+  //check if requestedRideList is empty and then change status
+  if (trip.requestedRideList.length === 0) {
+    //change trip status of trip in trip table change status to Booked
+    trip.status = "Rejected";
+    let tripUpdateResult = await trip.save();
+    if (!tripUpdateResult)
+      console.log(
+        "******************************\n error while changing status of trip ******************"
+      );
+  }
 
   let newNotification = await createNotification(notificationDetails);
 

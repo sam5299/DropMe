@@ -217,7 +217,7 @@ const BookedRides = ({ navigation }) => {
 
   function allUserRides() {
     return (
-      <ScrollView w={"80%"} m={2}>
+      <ScrollView w={"80%"} mb={"10%"}>
         {bookedRides.map((ride) => (
           <Box
             flex={1}

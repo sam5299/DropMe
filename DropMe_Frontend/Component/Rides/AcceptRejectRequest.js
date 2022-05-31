@@ -177,7 +177,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
 
   function viewRequest() {
     return (
-      <ScrollView>
+      <ScrollView mb="10%">
         {tripRequestList.map((list) => (
           <Box
             key={list._id}

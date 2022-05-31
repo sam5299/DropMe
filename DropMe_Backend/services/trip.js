@@ -15,9 +15,11 @@ async function getTrip(tripBody) {
 }
 
 //function to add newTrip into Trip collection
-async function addNewTrip(tripBody) {
+async function addNewTrip(tripBody, rid) {
   let NewTrip = new Trip(tripBody);
   let trip = await NewTrip.save();
+  trip.requestedRideList.push(rid);
+  let result = await trip.save();
   return trip._id;
 }
 
@@ -26,9 +28,14 @@ async function requestRide(tripBody, rid) {
   let tripId = null;
   //console.log(tripBody);
   let trip = await getTrip(tripBody);
-  //console.log(trip);
-  if (trip) tripId = trip._id;
-  else tripId = await addNewTrip(tripBody);
+  //console.log("in request ride", trip);
+  if (trip) {
+    // console.log("previous trip found");
+    tripId = trip._id;
+    trip.requestedRideList.push(rid);
+    trip.status = "Requested";
+    let result = await trip.save();
+  } else tripId = await addNewTrip(tripBody, rid);
   //console.log("tripId which is to store:"+tripId);
   let requestedTrip = await addTripRequest(tripBody.User, rid, tripId);
   //console.log(requestedTrip);
@@ -43,6 +50,22 @@ async function getTripDetails(tripId) {
   //.select("source destination distance seatRequest ");
 }
 
+//function to return requested trip list
+async function getUserRequestedTrips(User) {
+  return await Trip.find({ User: User, status: "Requested" });
+}
+
+//remove ride id from requestedRideList array of Ride
+async function removeRideId(rideId, tripId) {
+  // let rideObj = await Ride.findOne({ _id: rideId });
+  let tripObj = await Trip.findOne({ _id: tripId });
+
+  //console.log(rideObj.requestedTripList);
+  let index = tripObj.requestedRideList.indexOf(rideId);
+  tripObj.requestedRideList.splice(index, 1);
+  // rideObj.availableSeats += tripObj.seatRequest;
+  return tripObj.save();
+}
 
 //function to generate 4 digit trip token for each accepted trip request
 function generateTripToken() {
@@ -106,4 +129,6 @@ module.exports = {
   getTripDetails,
   generateTripToken,
   calculateTripAmount,
+  getUserRequestedTrips,
+  removeRideId,
 };

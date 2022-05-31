@@ -3,12 +3,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Menu from "../../Screens/Menu";
 import { View } from "native-base";
 import ViewProfile from "../Profile/ViewProfile";
-import NotificationScreen from "../../Screens/NotificationScreen";
 import WalletStack from "../Wallet/WalletStack";
 import RideTopBar from "../Rides/RideTopBar";
 import TripsTopBar from "../Trips/TripsTopBar";
 import VehicleTopBar from "../Vehicle/VehicleTopBar";
 import HelpPage from "../../Screens/HelpPage";
+import UserProfile from "../Profile/UserProfile";
 const SliderStack = createNativeStackNavigator();
 
 const Slide = ({route,navigation}) => {
@@ -44,7 +44,7 @@ const Slide = ({route,navigation}) => {
 
   return (
     <View style={{ flex: 1 }} collapsable={false}>
-      <SliderStack.Navigator>
+      <SliderStack.Navigator initialRouteName="Menu">
         <SliderStack.Screen
           name="Menu"
           component={Menu}
@@ -70,18 +70,12 @@ const Slide = ({route,navigation}) => {
           component={TripsTopBar}
           options={{ headerShown: false }}
         />
-        <SliderStack.Screen 
-        name="Profile" 
-        component={ViewProfile} 
-        />
         <SliderStack.Screen
-          name="Notifications"
-          component={NotificationScreen}
+          name="Profile"
+          component={UserProfile}
+          options={{ headerShown: false }}
         />
-        <SliderStack.Screen
-          name="Help"
-          component={HelpPage}
-        />
+        <SliderStack.Screen name="Help" component={HelpPage} />
       </SliderStack.Navigator>
     </View>
   );

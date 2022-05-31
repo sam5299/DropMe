@@ -14,6 +14,7 @@ export default function VehicleTopBar() {
           tabBarLabelStyle: { fontSize: 12 },
           tabBarStyle: { backgroundColor: "#F0F8FF" },
         }}
+        initialRouteName="Vehicles"
       >
         <Tab.Screen name="Vehicles" component={ViewVehicles} />
         <Tab.Screen name="Add Vehicle" component={AddRemoveStack} />
