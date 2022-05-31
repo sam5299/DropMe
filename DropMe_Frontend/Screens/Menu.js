@@ -1,5 +1,13 @@
 import React, { useContext } from "react";
-import { Box, Heading, Pressable, Stack, Text, VStack } from "native-base";
+import {
+  Badge,
+  Box,
+  Heading,
+  Pressable,
+  Stack,
+  Text,
+  VStack,
+} from "native-base";
 import { AuthContext } from "../Component/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";

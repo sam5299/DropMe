@@ -89,6 +89,7 @@ router.get(
   auth,
   async (req, res) => {
     let body = req.params;
+    //console.log("parameters for searching ride:", body);
     console.log("Search a ride is called");
     if (
       !(

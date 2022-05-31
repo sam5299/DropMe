@@ -170,7 +170,7 @@ const AvailableRides = ({ route, navigation }) => {
                 }}
                 alt="Image not found"
                 size={"xl"}
-                borderRadius={50}
+                borderRadius={10}
               />
               <Text fontWeight={"bold"} color={"black"} fontSize={18}>
                 {ride.Vehicle.vehicleName}

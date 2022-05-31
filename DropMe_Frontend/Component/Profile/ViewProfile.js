@@ -1,6 +1,15 @@
 import { StyleSheet } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Stack, Text, Image, Spinner } from "native-base";
+import {
+  Box,
+  Stack,
+  Text,
+  Image,
+  Spinner,
+  Divider,
+  Heading,
+  Flex,
+} from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { AuthContext } from "../Context";
@@ -71,11 +80,30 @@ const ViewProfile = () => {
                 size={"xl"}
               />
               <Text style={styles.details}>{userDetails.name}</Text>
-              <Text style={styles.details}>{userDetails.mobileNumber}</Text>
-              <Text style={styles.details}>{userDetails.email}</Text>
+              <Text>{userDetails.mobileNumber}</Text>
+              <Text>{userDetails.email}</Text>
               {/* <Text style={styles.details}>{userDetails.gender}</Text> */}
             </Stack>
-            <Box
+            <Box alignItems="center">
+              <Flex direction="row" h="58" p="4">
+                <Text>{userDetails.totalNumberOfRatedRides}</Text>
+                <Divider
+                  bg="black"
+                  thickness="2"
+                  mx="2"
+                  orientation="vertical"
+                />
+                <Text>
+                  {userDetails.totalNumberOfRatedRides == 0
+                    ? 0.0
+                    : (
+                        userDetails.sumOfRating /
+                        userDetails.totalNumberOfRatedRides
+                      ).toPrecision(2)}
+                </Text>
+              </Flex>
+            </Box>
+            {/* <Box
               display={"flex"}
               flexDirection={"row"}
               justifyContent={"space-between"}
@@ -90,7 +118,7 @@ const ViewProfile = () => {
                 <Text style={styles.details}>
                   {userDetails.totalNumberOfRatedRides}
                 </Text>
-                <Text style={styles.details}>Total Rides</Text>
+                <Text>Total Rides</Text>
               </Box>
               <Box
                 alignItems={"center"}
@@ -107,9 +135,9 @@ const ViewProfile = () => {
                       ).toPrecision(2)}
                 </Text>
 
-                <Text style={styles.details}>Average Rating</Text>
+                <Text>Average Rating</Text>
               </Box>
-            </Box>
+            </Box> */}
           </Stack>
         </Box>
       </Box>
@@ -121,7 +149,7 @@ export default ViewProfile;
 
 const styles = StyleSheet.create({
   details: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: "bold",
     margin: 3,
   },

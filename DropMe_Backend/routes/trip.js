@@ -36,7 +36,7 @@ router.get("/searchForRide", auth, async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
   // let userObj= await User.findOne({_id:req.body.userId});
   let userObj = await getUser(req.body.User);
-  console.log("User:" + userObj);
+  //console.log("User:" + userObj);
   let gender = userObj.gender;
   let rides = await getRides(
     req.body.source,
@@ -101,11 +101,13 @@ router.post("/requestRide", auth, async (req, res) => {
 
 //endpoint to get users requested trip
 router.get("/getUserRequestedTrip", auth, async (req, res) => {
+  console.log("get User Requested Trip is called...");
+
   let User = req.body.User;
-  console.log("user object:", User);
+  // console.log("user object:", User);
 
   let userRequestedTripList = await getUserRequestedTrips(User);
-  console.log(userRequestedTripList);
+  // console.log(userRequestedTripList);
   return res.status(200).send(userRequestedTripList);
 });
 
@@ -130,43 +132,57 @@ router.get("/getBookedTrips", auth, async (req, res) => {
 
 //route to cancel trip by unsending request to all rides
 router.put("/cancelTrip", auth, async (req, res) => {
-  let trip = await Trip.findOne({ _id: req.body.tripId });
-  //if passenger has requested to no rides.
-  if (trip.requestedRideList.length === 0) {
-    trip.status = "Cancelled";
-    let result = await trip.save();
-    if (!result) console.log("Error while cancelling trip.");
+  console.log("Cancel trip is called...");
+  try {
+    let tripId = req.body.tripId;
+    // console.log("Trip Id", req.body, tripId);
+
+    let trip = await Trip.findOne({ _id: tripId });
+    //if passenger has requested to no rides.
+    // console.log("Trip Data-", trip);
+    // return;
+    if (trip.requestedRideList.length === 0) {
+      // console.log("empty list");
+      trip.status = "Cancelled";
+      let result = await trip.save();
+      if (!result) console.log("Error while cancelling trip.");
+      return res.status(200).send("Trip cancelled successfully!");
+    } else {
+      //get user detail's
+      let user = await loadProfile(req.body.User);
+
+      trip.requestedRideList.forEach(async (ride) => {
+        // get rider detail's
+        // console.log(" removing ride from request list:", ride);
+        let riderDetails = await getUserDetailsByRideId(ride);
+        //console.log("rider details", riderDetails.User);
+        //create notification object
+        let notificationObj = {
+          fromUser: req.body.User,
+          toUser: riderDetails.User,
+          notificationType: "Ride",
+          message: `Your request for ride ${trip.source} to ${trip.destination} on date ${trip.date} is cancelled by passenger ${user.name}. `,
+        };
+        let notificationResult = await createNotification(notificationObj);
+
+        //remove trip id and userid from Ride collection
+        let rideObj = await removeTripId(ride, req.body.tripId);
+        // rideObj = await rideObj.save();
+        if (!rideObj)
+          console.log(
+            "trip id and userid removed from tripRequestList, tripRequestUser list in ride"
+          );
+      });
+      trip.status = "Cancelled";
+      trip.requestedRideList = [];
+      trip = await trip.save();
+      if (!trip) return res.status(400).send("Error while cancelling trip!");
+    }
     return res.status(200).send("Trip cancelled successfully!");
-  } else {
-    //get user detail's
-    let user = await loadProfile(req.body.User);
-
-    trip.requestedRideList.forEach(async (ride) => {
-      // get rider detail's
-      console.log("ride:", ride);
-      let riderDetails = await getUserDetailsByRideId(ride);
-      console.log("rider details", riderDetails.User);
-      //create notification object
-      let notificationObj = {
-        fromUser: req.body.User,
-        toUser: riderDetails.User,
-        notificationType: "Ride",
-        message: `Your request for ride ${trip.source} to ${trip.destination} on date ${trip.date} is cancelled by passenger ${user.name}. `,
-      };
-      let notificationResult = await createNotification(notificationObj);
-
-      //remove trip id and userid from Ride collection
-      let rideObj = await removeTripId(ride, req.body.tripId);
-      if (!rideObj)
-        console.log(
-          "trip id and userid removed from tripRequestList, tripRequestUser list in ride"
-        );
-    });
-    trip.status = "Cancelled";
-    trip = await trip.save();
-    if (!trip) return res.status(400).send("Error while cancelling trip!");
+  } catch (error) {
+    console.log("Cancel trip exception error ", error);
+    return res.status(400).send("Error in cancel trip ...!");
   }
-  return res.status(200).send("Trip cancelled successfully!");
 });
 
 //route to cancel trip by unsending request to all rides
