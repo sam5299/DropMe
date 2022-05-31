@@ -15,24 +15,22 @@ const Menu = ({ navigation }) => {
   const { signOut } = useContext(AuthContext);
 
   return (
-    <VStack flex={1} space={0.5} mt={1} bg={"#F0F8FF"}>
+    <VStack flex={1} mt={1} bg={"#F0F8FF"}>
       <Pressable
         justifyContent={"space-between"}
         w="100%"
-        h="12%"
+        h="11%"
         bg="white"
-        rounded="md"
-        shadow={3}
         flexDir="row"
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
         onPress={() => navigation.navigate("RideStack")}
       >
-        <Box flexDir={"row"} alignItems={"center"} p="5">
+        <Box flexDir={"row"} alignItems={"center"} pl="5">
           <MaterialCommunityIcons
             name="bike"
-            size={40}
+            size={30}
             color="rgba(6,182,212,1.00)"
           />
           <Stack ml={"5"} space={1}>
@@ -49,20 +47,18 @@ const Menu = ({ navigation }) => {
       <Pressable
         justifyContent={"space-between"}
         w="100%"
-        h="12%"
+        h="11%"
         bg="white"
-        rounded="md"
-        shadow={3}
         flexDir="row"
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
         onPress={() => navigation.navigate("TripsStack")}
       >
-        <Box flexDir={"row"} alignItems={"center"} p="5">
+        <Box flexDir={"row"} alignItems={"center"} pl="5">
           <MaterialCommunityIcons
             name="car-settings"
-            size={40}
+            size={30}
             color="rgba(6,182,212,1.00)"
           />
           <Stack ml={"5"} space={1}>
@@ -79,20 +75,18 @@ const Menu = ({ navigation }) => {
       <Pressable
         justifyContent={"space-between"}
         w="100%"
-        h="12%"
+        h="11%"
         bg="white"
-        rounded="md"
-        shadow={3}
         flexDir="row"
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
         onPress={() => navigation.navigate("Vehicle")}
       >
-        <Box flexDir={"row"} alignItems={"center"} p="5">
+        <Box flexDir={"row"} alignItems={"center"} pl="5">
           <MaterialCommunityIcons
             name="car-multiple"
-            size={40}
+            size={30}
             color="rgba(6,182,212,1.00)"
           />
           <Stack ml={"5"} space={1}>
@@ -109,20 +103,18 @@ const Menu = ({ navigation }) => {
       <Pressable
         justifyContent={"space-between"}
         w="100%"
-        h="12%"
+        h="11%"
         bg="white"
-        rounded="md"
-        shadow={3}
         flexDir="row"
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
         onPress={() => navigation.navigate("Profile")}
       >
-        <Box flexDir={"row"} alignItems={"center"} p="5">
+        <Box flexDir={"row"} alignItems={"center"} pl="5">
           <MaterialCommunityIcons
             name="account-box-outline"
-            size={40}
+            size={30}
             color="rgba(6,182,212,1.00)"
           />
           <Stack ml={"5"} space={1}>
@@ -139,20 +131,18 @@ const Menu = ({ navigation }) => {
       <Pressable
         justifyContent={"space-between"}
         w="100%"
-        h="12%"
+        h="11%"
         bg="white"
-        rounded="md"
-        shadow={3}
         flexDir="row"
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
         onPress={() => navigation.navigate("WalletStack")}
       >
-        <Box flexDir={"row"} alignItems={"center"} p="5">
+        <Box flexDir={"row"} alignItems={"center"} pl="5">
           <MaterialCommunityIcons
             name="wallet-outline"
-            size={40}
+            size={30}
             color="rgba(6,182,212,1.00)"
           />
           <Stack ml={"5"} space={1}>
@@ -169,20 +159,18 @@ const Menu = ({ navigation }) => {
       <Pressable
         justifyContent={"space-between"}
         w="100%"
-        h="12%"
+        h="11%"
         bg="white"
-        rounded="md"
-        shadow={3}
         flexDir="row"
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
         onPress={() => navigation.navigate("Help")}
       >
-        <Box flexDir={"row"} alignItems={"center"} p="5">
+        <Box flexDir={"row"} alignItems={"center"} pl="5">
           <MaterialCommunityIcons
             name="help-rhombus-outline"
-            size={40}
+            size={30}
             color="rgba(6,182,212,1.00)"
           />
           <Stack ml={"5"} space={1}>
@@ -196,66 +184,20 @@ const Menu = ({ navigation }) => {
           color="rgba(6,182,212,1.00)"
         />
       </Pressable>
+
       <Pressable
         justifyContent={"space-between"}
         w="100%"
-        h="12%"
+        h="11%"
         bg="white"
-        rounded="md"
-        shadow={3}
-        flexDir="row"
-        alignItems={"center"}
-        borderColor="#D0CFCF"
-        borderWidth={1}
-        //onPress={() => alert("notification")}
-
-        onPress={() => navigation.navigate("Notifications")}
-      >
-        <Box flexDir={"row"} alignItems={"center"} p="5">
-          <VStack>
-            <Badge // bg="red.400"
-              colorScheme="green"
-              rounded="full"
-              mb={-4}
-              mr={-4}
-              zIndex={1}
-              variant="solid"
-              alignSelf="flex-end"
-              _text={{
-                fontSize: 12,
-              }}
-            >
-              10
-            </Badge>
-            <FontAwesome5 name="bell" size={40} color="rgba(6,182,212,1.00)" />
-          </VStack>
-
-          <Stack ml={"5"} space={1} m={1}>
-            <Heading size="md">Notifications</Heading>
-            <Text>View Notification</Text>
-          </Stack>
-        </Box>
-        <MaterialIcons
-          name="keyboard-arrow-right"
-          size={40}
-          color="rgba(6,182,212,1.00)"
-        />
-      </Pressable>
-      <Pressable
-        justifyContent={"space-between"}
-        w="100%"
-        h="12%"
-        bg="white"
-        rounded="md"
-        shadow={3}
         flexDir="row"
         alignItems={"center"}
         borderColor="#D0CFCF"
         borderWidth={1}
         onPress={() => signOut()}
       >
-        <Box flexDir={"row"} alignItems={"center"} p="5">
-          <MaterialIcons name="logout" size={40} color="rgba(6,182,212,1.00)" />
+        <Box flexDir={"row"} alignItems={"center"} pl="5">
+          <MaterialIcons name="logout" size={30} color="rgba(6,182,212,1.00)" />
           <Stack ml={"5"} space={1}>
             <Heading size="md">Logout</Heading>
             <Text>Logout From Device </Text>

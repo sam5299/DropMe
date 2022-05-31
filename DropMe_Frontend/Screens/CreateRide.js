@@ -198,22 +198,24 @@ const CreateRide = ({ navigation }) => {
       destination: { required: true },
       Vehicle: { required: true },
     });
-    if (state.source === state.destination) {
-      toast.show({
-        render: () => {
-          return (
-            <Box bg="red.400" px="10" py="3" rounded="sm">
-              <Text fontSize={"15"}>Source and destination cannot be same</Text>
-            </Box>
-          );
-        },
-        placement: "top",
-      });
-      setLoading(false);
-      return;
-    }
     if (isTrue) {
-      // console.log(state);
+      if (state.source === state.destination) {
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="red.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>
+                  Source and destination cannot be same
+                </Text>
+              </Box>
+            );
+          },
+          placement: "top",
+        });
+        setLoading(false);
+        return;
+      }
+
       let distance = null;
       try {
         //call api to get exact latitude longitude of source,destination lat,log
@@ -352,57 +354,62 @@ const CreateRide = ({ navigation }) => {
     );
   } else {
     return (
-      <Box flex={1} bg={"#F0F8FF"} flexDirection="column">
-        <GoogleMap />
-        <ScrollView>
-          <FormControl p={1}>
-            <SourceDestination dispatch={dispatch} />
-            <Box ml="5" flexDirection={"row"} justifyContent={"space-between"}>
-              {isFieldInError("source") && (
-                <FormControl.ErrorMessage
-                  isInvalid={true}
-                  leftIcon={<WarningOutlineIcon size="xs" />}
-                >
-                  Please Enter Source
-                </FormControl.ErrorMessage>
-              )}
-              {isFieldInError("destination") && (
-                <FormControl.ErrorMessage
-                  isInvalid={true}
-                  leftIcon={<WarningOutlineIcon size="xs" />}
-                >
-                  Please Enter Destination
-                </FormControl.ErrorMessage>
-              )}
-            </Box>
-            {/* < dispatch={dispatch} /> */}
-            {VehiclenClass}
-            <Box ml={5}>
-              {isFieldInError("Vehicle") && (
-                <FormControl.ErrorMessage
-                  isInvalid={true}
-                  leftIcon={<WarningOutlineIcon size="xs" />}
-                >
-                  Please Select Vehicle
-                </FormControl.ErrorMessage>
-              )}
-            </Box>
-            <RideForType type={{ dispatch: dispatch, rideFor: gender }} />
-            <Button
-              isLoading={isLoading}
-              isLoadingText="Creating ride.."
-              size="md"
-              mt={"5"}
-              w="95%"
-              ml={2}
-              onPress={handleForm}
-            >
-              <Text fontSize={"lg"} color="white">
-                Create Ride
-              </Text>
-            </Button>
-          </FormControl>
-        </ScrollView>
+      <Box flex={1} bg={"#F0F8FF"} justifyContent="center">
+        <Box>
+          <ScrollView>
+            <FormControl p={1}>
+              <SourceDestination dispatch={dispatch} />
+              <Box
+                ml="5"
+                flexDirection={"row"}
+                justifyContent={"space-between"}
+              >
+                {isFieldInError("source") && (
+                  <FormControl.ErrorMessage
+                    isInvalid={true}
+                    leftIcon={<WarningOutlineIcon size="xs" />}
+                  >
+                    Please Enter Source
+                  </FormControl.ErrorMessage>
+                )}
+                {isFieldInError("destination") && (
+                  <FormControl.ErrorMessage
+                    isInvalid={true}
+                    leftIcon={<WarningOutlineIcon size="xs" />}
+                  >
+                    Please Enter Destination
+                  </FormControl.ErrorMessage>
+                )}
+              </Box>
+              <DateTime dispatch={dispatch} />
+              {VehiclenClass}
+              <Box ml={5}>
+                {isFieldInError("Vehicle") && (
+                  <FormControl.ErrorMessage
+                    isInvalid={true}
+                    leftIcon={<WarningOutlineIcon size="xs" />}
+                  >
+                    Please Select Vehicle
+                  </FormControl.ErrorMessage>
+                )}
+              </Box>
+              <RideForType type={{ dispatch: dispatch, rideFor: gender }} />
+              <Button
+                isLoading={isLoading}
+                isLoadingText="Creating ride.."
+                size="md"
+                mt={"5"}
+                w="95%"
+                ml={2}
+                onPress={handleForm}
+              >
+                <Text fontSize={"lg"} color="white">
+                  Create Ride
+                </Text>
+              </Button>
+            </FormControl>
+          </ScrollView>
+        </Box>
       </Box>
     );
   }

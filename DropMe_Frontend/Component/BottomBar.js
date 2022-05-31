@@ -1,12 +1,10 @@
-import { View, Text } from "react-native";
 import React from "react";
-import BookRide from "../Screens/BookRide";
 import CreateRide from "../Screens/CreateRide";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Menu from "../Screens/Menu";
 import Slide from "./Drawer/Slide";
 import BookeRideStack from "../Screens/BookeRideStack";
+import Notification from "../Screens/NotificationScreen";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -14,13 +12,19 @@ export default function BottomBar() {
   return (
     <>
       <Tab.Navigator
+        activeColor="rgba(6,182,212,1.00)"
+        inactiveColor="rgb(132,132,130)"
         style={{
-          height: 20,
           marginTop: 20,
         }}
-        activeColor="white"
-        inactiveColor="#36454f"
-        barStyle={{ backgroundColor: "rgba(6,182,212,1.00)" }}
+        barStyle={{
+          height: 60,
+          backgroundColor: "white",
+          position: "absolute",
+          overflow: "hidden",
+          borderTopLeftRadius: 25,
+          borderTopRightRadius: 25,
+        }}
         initialRouteName="Create Ride"
       >
         <Tab.Screen
@@ -29,7 +33,11 @@ export default function BottomBar() {
           options={{
             tabBarLabel: "Create Ride",
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="car" color={color} size={26} />
+              <MaterialCommunityIcons
+                name="bike-fast"
+                color={color}
+                size={25}
+              />
             ),
           }}
         />
@@ -38,6 +46,16 @@ export default function BottomBar() {
           component={BookeRideStack}
           options={{
             tabBarLabel: "Book Ride",
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="car" color={color} size={26} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Notification"
+          component={Notification}
+          options={{
+            tabBarLabel: "Notifications",
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="bell" color={color} size={26} />
             ),

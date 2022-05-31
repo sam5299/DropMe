@@ -3,12 +3,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Menu from "../../Screens/Menu";
 import { View } from "native-base";
 import ViewProfile from "../Profile/ViewProfile";
-import NotificationScreen from "../../Screens/NotificationScreen";
 import WalletStack from "../Wallet/WalletStack";
 import RideTopBar from "../Rides/RideTopBar";
 import TripsTopBar from "../Trips/TripsTopBar";
 import VehicleTopBar from "../Vehicle/VehicleTopBar";
 import HelpPage from "../../Screens/HelpPage";
+import UserProfile from "../Profile/UserProfile";
 const SliderStack = createNativeStackNavigator();
 
 const Slide = () => {
@@ -41,10 +41,6 @@ const Slide = () => {
           options={{ headerShown: false }}
         />
         <SliderStack.Screen name="Profile" component={ViewProfile} />
-        <SliderStack.Screen
-          name="Notifications"
-          component={NotificationScreen}
-        />
         <SliderStack.Screen name="Help" component={HelpPage} />
       </SliderStack.Navigator>
     </View>

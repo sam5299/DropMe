@@ -196,6 +196,7 @@ const NotificationScreen = ({ navigation }) => {
         flexDirection={"column"}
         alignItems={"center"}
         bg={"#F0F8FF"}
+        mb={"11%"}
       >
         {notificationList.length != 0 ? (
           getNotification()
