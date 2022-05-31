@@ -40,7 +40,11 @@ const Slide = () => {
           component={TripsTopBar}
           options={{ headerShown: false }}
         />
-        <SliderStack.Screen name="Profile" component={ViewProfile} />
+        <SliderStack.Screen
+          name="Profile"
+          component={UserProfile}
+          options={{ headerShown: false }}
+        />
         <SliderStack.Screen name="Help" component={HelpPage} />
       </SliderStack.Navigator>
     </View>

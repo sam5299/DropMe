@@ -283,6 +283,7 @@ const CreateRide = ({ navigation }) => {
         <Select
           mr="1"
           w="100%"
+          backgroundColor={"white"}
           selectedValue={vehicle}
           placeholder={
             vehicles.length
@@ -354,10 +355,18 @@ const CreateRide = ({ navigation }) => {
     );
   } else {
     return (
-      <Box flex={1} bg={"#F0F8FF"} justifyContent="center">
-        <Box>
+      <Box flex={1} bg={"#e7feff"} justifyContent="center">
+        <Box
+          bg="white"
+          py={"5"}
+          mx={2}
+          borderRadius="10"
+          borderWidth={1}
+          borderColor={"white"}
+          shadow={3}
+        >
           <ScrollView>
-            <FormControl p={1}>
+            <FormControl>
               <SourceDestination dispatch={dispatch} />
               <Box
                 ml="5"

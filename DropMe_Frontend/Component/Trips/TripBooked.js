@@ -128,7 +128,7 @@ function TripBooked() {
 
   function getBookedTrips() {
     return (
-      <ScrollView w={"85%"} bg={"#F0F8FF"}>
+      <ScrollView w={"85%"} bg={"#F0F8FF"} mb="10%">
         {bookedTripList.map((trip) => (
           // console.log(trip.amount)
           <Box

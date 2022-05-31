@@ -114,6 +114,7 @@ const SourceDestination = ({ dispatch }) => {
     <Box flexDirection="column">
       <Input
         mx="3"
+        backgroundColor={"white"}
         placeholder="Source"
         value={startLocation}
         w="95%"
@@ -134,6 +135,7 @@ const SourceDestination = ({ dispatch }) => {
       {showFlatList ? (startOrEnd === 0 ? flatList : null) : null}
       <Input
         mt={5}
+        backgroundColor={"white"}
         mx="3"
         placeholder="Destination"
         value={endLocation}

@@ -45,7 +45,7 @@ const TripHistory = () => {
 
   function getHistory() {
     return (
-      <ScrollView bg={"#F0F8FF"}>
+      <ScrollView bg={"#F0F8FF"} mb="12%">
         {passengerHistory.map((trip) => (
           <Box
             key={trip._id}
@@ -55,7 +55,7 @@ const TripHistory = () => {
             alignItems={"center"}
             justifyContent={"space-between"}
             p={4}
-            my={10}
+            my={5}
             borderColor="coolGray.200"
             borderWidth="1"
             _dark={{

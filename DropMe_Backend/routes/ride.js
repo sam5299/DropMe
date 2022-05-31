@@ -44,13 +44,16 @@ router.use(express.json());
 router.post("/createRide", auth, async (req, res) => {
   console.log("create ride called");
   let userId = req.body.User;
-  let inpDate=convertToDate( req.body.date);
-  let checkResult=await checkPendingRides(userId,inpDate);
+  let inpDate = convertToDate(req.body.date);
+  let checkResult = await checkPendingRides(userId, inpDate);
   //console.log("Check result result:",checkResult);
-  if(checkResult.length){
-  //console.log("Ride present");
-  return res.status(400).send("Sorry you cannot create the ride on this day because your ride is pending please Complete/Cancel the ride");
-
+  if (checkResult.length) {
+    //console.log("Ride present");
+    return res
+      .status(400)
+      .send(
+        "Sorry you cannot create the ride on this day because your ride is pending please Complete/Cancel the ride"
+      );
   }
 
   delete req.body.userId;

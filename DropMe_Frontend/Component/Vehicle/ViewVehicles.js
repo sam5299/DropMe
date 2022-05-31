@@ -119,7 +119,7 @@ const ViewVehicles = () => {
 
   function getVehicle() {
     return (
-      <ScrollView>
+      <ScrollView mb="12%">
         {vehicleDetails.map((vehicle) => (
           <Stack
             key={vehicle._id}

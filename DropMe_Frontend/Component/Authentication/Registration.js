@@ -190,27 +190,18 @@ const Registration = ({ navigation }) => {
       alignItems={"center"}
       justifyContent={"center"}
       flex="1"
-      bg={"#F0F8FF"}
+      bg={"#e7feff"}
       minH="20%"
     >
       <Box
         width={"90%"}
         rounded="lg"
         overflow="hidden"
-        borderColor="coolGray.200"
+        borderColor="white"
         borderWidth="1"
-        _dark={{
-          borderColor: "coolGray.600",
-          backgroundColor: "gray.700",
-        }}
-        _web={{
-          shadow: 2,
-          borderWidth: 0,
-        }}
-        _light={{
-          backgroundColor: "gray.50",
-        }}
+        backgroundColor={"white"}
         alignItems={"center"}
+        shadow={3}
       >
         {showAlert ? AlertField : ""}
         <FormControl m={5} alignItems={"center"}>
@@ -234,7 +225,6 @@ const Registration = ({ navigation }) => {
                 uri: state.profile,
               }}
             >
-              Vehicle Image
               <Avatar.Badge bg="green.500" />
             </Avatar>
           </TouchableHighlight>
