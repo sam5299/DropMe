@@ -13,7 +13,12 @@ import {
   AspectRatio,
   Heading,
 } from "native-base";
-import { FontAwesome, Entypo } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  Entypo,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { Rating, AirbnbRating } from "react-native-ratings";
 import axios from "axios";
 import { AuthContext } from "../Context";
@@ -93,7 +98,7 @@ const RideHistory = () => {
                 </AspectRatio>
               </Box>
               <Stack p="4" space={3}>
-                <Stack space={2}>
+                <Stack>
                   {trip.status == "Completed" ? (
                     <AirbnbRating
                       count={5}
@@ -106,8 +111,8 @@ const RideHistory = () => {
                       ]}
                       readonly={true}
                       size={15}
-                      reviewColor={"black"}
-                      reviewSize={20}
+                      reviewColor={"green"}
+                      reviewSize={18}
                       isDisabled={true}
                       defaultRating={trip.tripRating || 0}
                     />
@@ -121,12 +126,18 @@ const RideHistory = () => {
                   fontWeight="400"
                 >
                   {trip.amount > 0 ? (
-                    <Text fontWeight="bold" fontSize={22} color={"green"}>
+                    <Stack
+                      direction={"row"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                    >
                       <FontAwesome name="rupee" size={20} color="green" />
-                      {trip.amount}
-                    </Text>
+                      <Text fontSize={20} fontWeight="bold" color={"green.800"}>
+                        {trip.amount}
+                      </Text>
+                    </Stack>
                   ) : (
-                    <Text fontSize={18} fontWeight="bold" color={"green.500"}>
+                    <Text fontSize={18} fontWeight="bold" color={"green.600"}>
                       Free
                     </Text>
                   )}
@@ -134,15 +145,36 @@ const RideHistory = () => {
 
                 <Text fontWeight="400">
                   <Text fontSize={18} fontWeight="bold" color="black">
-                    From:
+                    {/* From: */}
+                    <MaterialCommunityIcons
+                      name="ray-start-arrow"
+                      size={20}
+                      color="green"
+                    />
                   </Text>
                   <Text fontSize={15}> {trip.tripId.source}</Text>
                 </Text>
                 <Text fontWeight="400">
                   <Text fontSize={18} fontWeight="bold" color="black">
-                    To:
+                    {/* To: */}
+                    <MaterialCommunityIcons
+                      name="ray-start-end"
+                      size={20}
+                      color="green"
+                    />
                   </Text>
                   <Text fontSize={15}> {trip.tripId.destination}</Text>
+                </Text>
+                <Text fontWeight="400">
+                  <Text fontSize={18} fontWeight="bold" color="black">
+                    {/* Pickup: */}
+                    <Ionicons
+                      name="ios-location-outline"
+                      size={20}
+                      color="green"
+                    />
+                  </Text>
+                  <Text fontSize={15}> {trip.tripId.pickupPoint}</Text>
                 </Text>
                 <HStack
                   alignItems="center"
