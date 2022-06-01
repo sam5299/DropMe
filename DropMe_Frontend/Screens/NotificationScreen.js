@@ -79,25 +79,34 @@ const NotificationScreen = ({ navigation }) => {
   const redirectToPage = (notificationObj) => {
     let notificationType = notificationObj.notificationType;
     // alert(notificationType);
-    switch (notificationType) {
-      case "Wallet":
-        navigation.navigate("WalletStack");
-        return;
-      case "Ride":
-        navigation.navigate("RideStack");
-        return;
-      case "Trip":
-        navigation.navigate("TripsStack");
-        return;
-      case "Trip Completed":
-        setTripRideId(notificationObj.tripRideId);
+    // switch (notificationType) {
+    //   case "Wallet": 
+        if(notificationType!="Trip Completed") {
+          navigation.navigate("Slide",{notificationType:notificationType});
+          return;
+        } else {
+          setTripRideId(notificationObj.tripRideId);
         setMarkReadNotificationObject(notificationObj._id);
         console.log(notificationObj.tripRideId);
         setModalVisible(true);
         return;
-      default:
-        return;
-    }
+        }
+       
+    //   case "Ride":
+    //     navigation.navigate("RideStack");
+    //     return;
+    //   case "Trip":
+    //     navigation.navigate("TripsStack");
+    //     return;
+    //   case "Trip Completed":
+    //     setTripRideId(notificationObj.tripRideId);
+    //     setMarkReadNotificationObject(notificationObj._id);
+    //     console.log(notificationObj.tripRideId);
+    //     setModalVisible(true);
+    //     return;
+    //   default:
+    //     return;
+    // }
   };
 
   useEffect(() => {

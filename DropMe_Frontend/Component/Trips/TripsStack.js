@@ -14,7 +14,9 @@ const TripsStack = ({ route, navigation }) => {
 
   useEffect(()=> {
     if(route.params) {
-      navigation.navigate("TripRequest");
+      console.log("route parameters available.");
+      //navigation.navigate("TripRequest");
+      navigation.navigate("TripBooked");
     }
   },[])
 

@@ -42,9 +42,9 @@ const Slide = ({ route, navigation }) => {
           break;
       }
     }
-    return () => (mounted = false);
-  }, [route.params]);
-
+    return() => (mounted=false);
+  },[route.params])
+  // 
   return (
     <View style={{ flex: 1 }} collapsable={false}>
       <SliderStack.Navigator initialRouteName="Menu">
