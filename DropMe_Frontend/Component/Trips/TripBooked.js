@@ -15,6 +15,7 @@ import {
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
+import { useIsFocused } from "@react-navigation/native";
 
 function TripBooked() {
   const [bookedTripList, setBookedTripList] = useState([]);
@@ -25,6 +26,8 @@ function TripBooked() {
   const [showModal, setShowModal] = useState(false);
   const [isBookedTripFetchingDone, setIsBookedTripFetchDone] = useState(true);
   let [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  const isFocused = useIsFocused();
 
   //toast field
   const toast = useToast();
@@ -40,7 +43,7 @@ function TripBooked() {
         {
           text: "Yes",
           onPress: () => {
-            CancelTrip(tripRideId,notificationToken);
+            CancelTrip(tripRideId, notificationToken);
           },
         },
         // The "No" button
@@ -55,7 +58,7 @@ function TripBooked() {
   async function CancelTrip(tripRideId, notificationToken) {
     try {
       setIsButtonDisabled(true);
-      console.log('notification token:',notificationToken);
+      console.log("notification token:", notificationToken);
       const User = await AsyncStorage.getItem("User");
       const parseUser = JSON.parse(User);
       //console.log("deleting booked ride");
@@ -120,18 +123,16 @@ function TripBooked() {
         console.log("Exception", ex.response.data);
         setIsBookedTripFetchDone(false);
       }
-      return () => (mounted = false);
     }
 
     loadBookedList();
     return () => (mounted = false);
-  }, []);
+  }, [isFocused]);
 
   function getBookedTrips() {
     return (
       <ScrollView w={"85%"} bg={"#F0F8FF"} mb="10%">
         {bookedTripList.map((trip) => (
-          
           <Box
             key={trip._id}
             display={"flex"}
@@ -198,9 +199,12 @@ function TripBooked() {
                           bg={"#e8000d"}
                           px={5}
                           disabled={isButtonDisabled}
-                          onPress={() =>{
-                          
-                            showConfirmDialog(trip._id, trip.amount,trip.RaiderId.notificationToken)
+                          onPress={() => {
+                            showConfirmDialog(
+                              trip._id,
+                              trip.amount,
+                              trip.RaiderId.notificationToken
+                            );
                           }}
                         >
                           Cancel trip

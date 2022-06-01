@@ -1,6 +1,7 @@
 import { View, Text, ImageBackground, StyleSheet } from "react-native";
 import React from "react";
 import dropme from "../assets/dropme1.jpg";
+import Screenshot1 from "../assets/Screenshot1.png";
 
 const Splash = () => {
   const image = {
@@ -9,13 +10,11 @@ const Splash = () => {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={image}
+        source={Screenshot1}
         style={styles.image}
         imageStyle={{ opacity: 0.8 }}
         resizeMode="cover"
-      >
-        <Text style={styles.text}>Welcome To DropMe</Text>
-      </ImageBackground>
+      ></ImageBackground>
     </View>
   );
 };
