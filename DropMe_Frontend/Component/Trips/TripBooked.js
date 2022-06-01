@@ -237,8 +237,7 @@ function TripBooked() {
                             />
                             <Text fontSize={18}>{trip.token}</Text>
                           </Stack>
-
-                          {trip.status === "Booked" ? (
+                          {showButton && trip.status === "Booked" ? (
                             <Button
                               size={"lg"}
                               bg={"#e8000d"}
