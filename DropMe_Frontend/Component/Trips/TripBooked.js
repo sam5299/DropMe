@@ -3,15 +3,30 @@ import { Alert as NewAlert } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
 import {
   Box,
-  Button,
-  Image,
-  ScrollView,
-  Stack,
   Text,
+  Stack,
+  Image,
+  Button,
+  ScrollView,
+  Input,
   Spinner,
   useToast,
+  AspectRatio,
+  HStack,
+  Heading,
+  Divider,
+  Center,
   Modal,
 } from "native-base";
+import {
+  FontAwesome,
+  Entypo,
+  MaterialCommunityIcons,
+  Ionicons,
+  AntDesign,
+  EvilIcons,
+} from "@expo/vector-icons";
+
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
@@ -157,107 +172,210 @@ function TripBooked() {
     return (
       <ScrollView w={"85%"} bg={"#F0F8FF"} mb="10%">
         {bookedTripList.map((trip) => (
-          <Box
-            key={trip._id}
-            display={"flex"}
-            flexDirection={"column"}
-            borderRadius={10}
-            my={5}
-            p={5}
-            borderColor="coolGray.200"
-            borderWidth="1"
-            _dark={{
-              borderColor: "coolGray.600",
-              backgroundColor: "gray.700",
-            }}
-            _web={{
-              shadow: 2,
-              borderWidth: 0,
-            }}
-            _light={{
-              backgroundColor: "gray.50",
-            }}
-          >
-            {showModal ? (
-              <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-                <Modal.Content width={"90%"} p={2}>
-                  <Modal.CloseButton />
-                  <Modal.Header>
-                    <Text fontWeight={"bold"} fontSize={20}>
-                      Rider Details
-                    </Text>
-                  </Modal.Header>
-                  <ScrollView>
-                    <Stack direction={"column"} alignItems={"center"} space={2}>
-                      <Image
-                        source={{
-                          uri: trip.RaiderId.profile,
-                        }}
-                        alt="image not available"
-                        size="xl"
-                        borderRadius={100}
-                      />
-                      <Text style={styles.riderDetails}>
-                        {trip.RaiderId.name}
+          <Box alignItems="center" key={trip._id} my={7} flex={1}>
+            <Box
+              flex={1}
+              rounded="lg"
+              overflow="hidden"
+              borderColor="coolGray.200"
+              borderWidth="1"
+              _dark={{
+                borderColor: "coolGray.600",
+                backgroundColor: "gray.700",
+              }}
+              _web={{
+                shadow: 2,
+                borderWidth: 0,
+              }}
+              _light={{
+                backgroundColor: "gray.50",
+              }}
+            >
+              {showModal ? (
+                <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+                  <Modal.Content width={"90%"} p={2}>
+                    <Modal.CloseButton />
+                    <Modal.Header>
+                      <Text fontWeight={"bold"} fontSize={20}>
+                        Rider Details
                       </Text>
-                      <Text style={styles.riderDetails}>
-                        Mobile Number: {trip.RaiderId.mobileNumber}
-                      </Text>
-                      <Text style={styles.riderDetails}>
-                        Vehicle Number: {trip.vehicleNumber}
-                      </Text>
-                      {trip.amount == 0 ? (
-                        <Text color={"green.500"}>Free</Text>
-                      ) : (
-                        <Text style={styles.riderDetails} color={"green.500"}>
-                          Amount: {trip.amount}
-                        </Text>
-                      )}
-                      <Text style={styles.riderDetails}>
-                        Token: {trip.token}
-                      </Text>
-
-                      {showButton ? (
-                        <Button
-                          size={"lg"}
-                          bg={"#e8000d"}
-                          px={5}
-                          disabled={isButtonDisabled}
-                          onPress={() => {
-                            showConfirmDialog(
-                              trip._id,
-                              trip.amount,
-                              trip.RaiderId.notificationToken
-                            );
+                    </Modal.Header>
+                    <ScrollView>
+                      <Stack
+                        direction={"column"}
+                        alignItems={"center"}
+                        space={2}
+                      >
+                        <Image
+                          source={{
+                            uri: trip.RaiderId.profile,
                           }}
-                        >
-                          Cancel trip
-                        </Button>
-                      ) : (
-                        <Button size={"lg"} px={10} isDisabled={true}>
-                          Trip initiated
-                        </Button>
-                      )}
-                    </Stack>
-                  </ScrollView>
-                </Modal.Content>
-              </Modal>
-            ) : null}
-            <Box>
-              <Stack direction={"column"} space={2}>
-                <Text style={styles.details}>Source: </Text>
-                <Text style={styles.TripDetails}>{trip.tripId.source}</Text>
-                <Text style={styles.details}>Destination :</Text>
-                <Text style={styles.TripDetails}>
-                  {trip.tripId.destination}
+                          alt="image not available"
+                          size="xl"
+                          borderRadius={100}
+                        />
+                        <Text fontWeight={"bold"} fontSize={20}>
+                          {trip.RaiderId.name}
+                        </Text>
+                        <Stack direction={"column"} space={3}>
+                          <Box
+                            display={"flex"}
+                            flexDirection={"row"}
+                            alignItems={"center"}
+                          >
+                            <AntDesign name="mobile1" size={20} color="green" />
+                            <Text fontSize={18}>
+                              {trip.RaiderId.mobileNumber}
+                            </Text>
+                          </Box>
+
+                          <Box
+                            display={"flex"}
+                            flexDirection={"row"}
+                            alignItems={"center"}
+                          >
+                            <FontAwesome name="car" size={20} color="green" />
+                            <Text fontSize={18}>{trip.vehicleNumber}</Text>
+                          </Box>
+
+                          <Box
+                            display={"flex"}
+                            flexDirection={"row"}
+                            alignItems={"center"}
+                          >
+                            {trip.amount > 0 ? (
+                              <>
+                                <FontAwesome
+                                  name="rupee"
+                                  size={19}
+                                  color="green"
+                                />
+                                <Text color={"green.800"} fontSize={20}>
+                                  {trip.amount}
+                                </Text>
+                              </>
+                            ) : (
+                              <Text color={"green.800"} fontSize={20}>
+                                Free
+                              </Text>
+                            )}
+                          </Box>
+
+                          <Box display={"flex"} flexDirection={"row"}>
+                            <MaterialCommunityIcons
+                              name="form-textbox-password"
+                              size={20}
+                              color="green"
+                            />
+                            <Text fontSize={18}>{trip.token}</Text>
+                          </Box>
+
+                          {showButton ? (
+                            <Button
+                              size={"lg"}
+                              bg={"#e8000d"}
+                              px={5}
+                              disabled={isButtonDisabled}
+                              onPress={() => {
+                                showConfirmDialog(
+                                  trip._id,
+                                  trip.amount,
+                                  trip.RaiderId.notificationToken
+                                );
+                              }}
+                            >
+                              Cancel trip
+                            </Button>
+                          ) : (
+                            <Button size={"lg"} px={10} isDisabled={true}>
+                              Trip initiated
+                            </Button>
+                          )}
+                        </Stack>
+                        {/* <Text style={styles.riderDetails}>
+                          Vehicle Number: {trip.vehicleNumber}
+                        </Text>
+                        {trip.amount == 0 ? (
+                          <Text color={"green.500"}>Free</Text>
+                        ) : (
+                          <Text
+                            style={styles.riderDetails}
+                            color={"green"}
+                            fontSize={20}
+                          >
+                            <FontAwesome name="rupee" size={20} color="green" />
+                            {trip.amount}
+                          </Text>
+                        )}
+                        <Text style={styles.riderDetails}>
+                          Token: {trip.token}
+                        </Text> */}
+
+                        {/* {trip.status === "Booked" ? (
+                          <Button
+                            size={"lg"}
+                            bg={"#e8000d"}
+                            px={5}
+                            disabled={isButtonDisabled}
+                            onPress={() => {
+                              showConfirmDialog(
+                                trip._id,
+                                trip.amount,
+                                trip.RaiderId.notificationToken
+                              );
+                            }}
+                          >
+                            Cancel trip
+                          </Button>
+                        ) : (
+                          <Button size={"lg"} px={10} isDisabled={true}>
+                            Trip initiated
+                          </Button>
+                        )} */}
+                      </Stack>
+                    </ScrollView>
+                  </Modal.Content>
+                </Modal>
+              ) : null}
+
+              <Stack p="4" space={3}>
+                <Text fontWeight="400">
+                  <Text fontSize={15} fontWeight="bold" color="black">
+                    <MaterialCommunityIcons
+                      name="ray-start-arrow"
+                      size={20}
+                      color="green"
+                    />
+                  </Text>
+                  <Text fontSize={15}>{trip.tripId.source}</Text>
                 </Text>
-                <Text style={styles.details}>Pickup Point:</Text>
-                <Text style={styles.TripDetails}>
-                  {trip.tripId.pickupPoint}
+                <Text fontWeight="400">
+                  <Text fontSize={20} fontWeight="bold" color="black">
+                    <MaterialCommunityIcons
+                      name="ray-start-end"
+                      size={18}
+                      color="green"
+                    />
+                  </Text>
+                  <Text fontSize={15}> {trip.tripId.destination}</Text>
                 </Text>
-                <Text style={styles.details}>Date: </Text>
-                <Text style={styles.TripDetails}>
-                  {trip.tripId.date} : {trip.tripId.time}
+                <Text fontWeight="400">
+                  <Text fontSize={18} fontWeight="bold" color="black">
+                    <Ionicons
+                      name="ios-location-outline"
+                      size={20}
+                      color="green"
+                    />
+                  </Text>
+                  <Text fontSize={15}> {trip.tripId.pickupPoint}</Text>
+                </Text>
+                <Text fontWeight="400">
+                  <Text fontSize={20} fontWeight="bold">
+                    <EvilIcons name="calendar" size={20} color="green" />
+                  </Text>
+                  <Text fontSize={15}>
+                    {trip.tripId.date}:{trip.tripId.time}
+                  </Text>
                 </Text>
                 <Button
                   size={"md"}
@@ -270,6 +388,120 @@ function TripBooked() {
               </Stack>
             </Box>
           </Box>
+
+          // <Box
+          //   key={trip._id}
+          //   display={"flex"}
+          //   flexDirection={"column"}
+          //   borderRadius={10}
+          //   my={5}
+          //   p={5}
+          //   borderColor="coolGray.200"
+          //   borderWidth="1"
+          //   _dark={{
+          //     borderColor: "coolGray.600",
+          //     backgroundColor: "gray.700",
+          //   }}
+          //   _web={{
+          //     shadow: 2,
+          //     borderWidth: 0,
+          //   }}
+          //   _light={{
+          //     backgroundColor: "gray.50",
+          //   }}
+          // >
+          //   {showModal ? (
+          //     <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+          //       <Modal.Content width={"90%"} p={2}>
+          //         <Modal.CloseButton />
+          //         <Modal.Header>
+          //           <Text fontWeight={"bold"} fontSize={20}>
+          //             Rider Details
+          //           </Text>
+          //         </Modal.Header>
+          //         <ScrollView>
+          //           <Stack direction={"column"} alignItems={"center"} space={2}>
+          //             <Image
+          //               source={{
+          //                 uri: trip.RaiderId.profile,
+          //               }}
+          //               alt="image not available"
+          //               size="xl"
+          //               borderRadius={100}
+          //             />
+          //             <Text style={styles.riderDetails}>
+          //               {trip.RaiderId.name}
+          //             </Text>
+          //             <Text style={styles.riderDetails}>
+          //               Mobile Number: {trip.RaiderId.mobileNumber}
+          //             </Text>
+          //             <Text style={styles.riderDetails}>
+          //               Vehicle Number: {trip.vehicleNumber}
+          //             </Text>
+          //             {trip.amount == 0 ? (
+          //               <Text color={"green.500"}>Free</Text>
+          //             ) : (
+          //               <Text style={styles.riderDetails} color={"green.500"}>
+          //                 Amount: {trip.amount}
+          //               </Text>
+          //             )}
+          //             <Text style={styles.riderDetails}>
+          //               Token: {trip.token}
+          //             </Text>
+
+          //             {trip.status === "Booked" ? (
+          //               <Button
+          //                 size={"lg"}
+          //                 bg={"#e8000d"}
+          //                 px={5}
+          //                 disabled={isButtonDisabled}
+          //                 onPress={() => {
+          //                   showConfirmDialog(
+          //                     trip._id,
+          //                     trip.amount,
+          //                     trip.RaiderId.notificationToken
+          //                   );
+          //                 }}
+          //               >
+          //                 Cancel trip
+          //               </Button>
+          //             ) : (
+          //               <Button size={"lg"} px={10} isDisabled={true}>
+          //                 Trip initiated
+          //               </Button>
+          //             )}
+          //           </Stack>
+          //         </ScrollView>
+          //       </Modal.Content>
+          //     </Modal>
+          //   ) : null}
+          //   <Box>
+          //     <Stack direction={"column"} space={2}>
+          //       <Text style={styles.details}>Source: </Text>
+          //       <Text style={styles.TripDetails}>{trip.tripId.source}</Text>
+          //       <Text style={styles.details}>Destination :</Text>
+          //       <Text style={styles.TripDetails}>
+          //         {trip.tripId.destination}
+          //       </Text>
+          //       <Text style={styles.details}>Pickup Point:</Text>
+          //       <Text style={styles.TripDetails}>
+          //         {trip.tripId.pickupPoint}
+          //       </Text>
+          //       <Text style={styles.details}>Date: </Text>
+          //       <Text style={styles.TripDetails}>
+          //         {trip.tripId.date} : {trip.tripId.time}
+          //       </Text>
+          //       <Button
+          //         size={"md"}
+          //         px={10}
+          //         disabled={isButtonDisabled}
+          //         onPress={() => setShowModal(true)}
+          //       >
+          //         Show More
+          //       </Button>
+          //     </Stack>
+          //   </Box>
+          // </Box>
         ))}
       </ScrollView>
     );
@@ -295,15 +527,4 @@ function TripBooked() {
 
 export default TripBooked;
 
-const styles = StyleSheet.create({
-  details: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  riderDetails: {
-    fontSize: 16,
-    fontWeight: "bold",
-    margin: 3,
-  },
-  TripDetails: { fontSize: 15 },
-});
+
