@@ -194,25 +194,17 @@ function TripBooked() {
                           {trip.RaiderId.name}
                         </Text>
                         <Stack direction={"column"} space={3}>
-                          <Box
-                            display={"flex"}
-                            flexDirection={"row"}
-                            alignItems={"center"}
-                          >
+                          <Stack space={2} direction={"row"}>
                             <AntDesign name="mobile1" size={20} color="green" />
                             <Text fontSize={18}>
                               {trip.RaiderId.mobileNumber}
                             </Text>
-                          </Box>
+                          </Stack>
 
-                          <Box
-                            display={"flex"}
-                            flexDirection={"row"}
-                            alignItems={"center"}
-                          >
+                          <Stack space={2} direction={"row"}>
                             <FontAwesome name="car" size={20} color="green" />
                             <Text fontSize={18}>{trip.vehicleNumber}</Text>
-                          </Box>
+                          </Stack>
 
                           <Box
                             display={"flex"}
@@ -226,7 +218,7 @@ function TripBooked() {
                                   size={19}
                                   color="green"
                                 />
-                                <Text color={"green.800"} fontSize={20}>
+                                <Text color={"green.700"} fontSize={20} bold>
                                   {trip.amount}
                                 </Text>
                               </>
@@ -237,20 +229,21 @@ function TripBooked() {
                             )}
                           </Box>
 
-                          <Box display={"flex"} flexDirection={"row"}>
+                          <Stack space={2} direction={"row"}>
                             <MaterialCommunityIcons
-                              name="form-textbox-password"
+                              name="keyboard"
                               size={20}
                               color="green"
                             />
                             <Text fontSize={18}>{trip.token}</Text>
-                          </Box>
+                          </Stack>
 
                           {trip.status === "Booked" ? (
                             <Button
                               size={"lg"}
                               bg={"#e8000d"}
                               px={5}
+                              borderRadius={10}
                               disabled={isButtonDisabled}
                               onPress={() => {
                                 showConfirmDialog(
@@ -260,7 +253,9 @@ function TripBooked() {
                                 );
                               }}
                             >
-                              Cancel trip
+                              <Text color={"white"} bold fontSize={15}>
+                                Cancel trip
+                              </Text>
                             </Button>
                           ) : (
                             <Button size={"lg"} px={10} isDisabled={true}>
@@ -354,6 +349,7 @@ function TripBooked() {
                   </Text>
                 </Text>
                 <Button
+                  borderRadius={10}
                   size={"md"}
                   px={10}
                   disabled={isButtonDisabled}

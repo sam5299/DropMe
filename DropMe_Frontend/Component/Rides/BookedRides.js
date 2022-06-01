@@ -255,6 +255,7 @@ const BookedRides = ({ navigation }) => {
               overflow="hidden"
               borderColor="coolGray.200"
               borderWidth="1"
+              shadow={2}
               _dark={{
                 borderColor: "coolGray.600",
                 backgroundColor: "gray.700",
@@ -335,8 +336,9 @@ const BookedRides = ({ navigation }) => {
                   {ride.status === "Booked" ? (
                     <Stack direction={"row"} space={5} mt={2}>
                       <Button
+                        borderRadius={10}
                         isDisabled={isButtonDisabled}
-                        bg={"#03c03c"}
+                        bg={"green.600"}
                         onPress={() =>
                           startTrip(
                             ride._id,
@@ -346,14 +348,18 @@ const BookedRides = ({ navigation }) => {
                             ride.PassengerId.notificationToken
                           )
                         }
-                        px={5}
+                        px={6}
                       >
-                        <Text color="white"> Start Trip</Text>
+                        <Text color="white" fontSize={15} bold>
+                          Start Trip
+                        </Text>
                       </Button>
                       <Button
+                        borderRadius={10}
                         px={5}
                         bg={"#e8000d"}
                         isDisabled={isButtonDisabled}
+                        variant="outline"
                         onPress={() =>
                           showConfirmDialog(
                             ride._id,
@@ -364,13 +370,16 @@ const BookedRides = ({ navigation }) => {
                           )
                         }
                       >
-                        <Text color="white">Cancel Trip</Text>
+                        <Text color="white" fontSize={15} bold>
+                          Cancel Trip
+                        </Text>
                       </Button>
                     </Stack>
                   ) : (
                     <Button
-                      bg={"#03c03c"}
+                      bg={"green.600"}
                       w={"100%"}
+                      borderRadius={10}
                       onPress={() =>
                         endTrip(
                           ride._id,

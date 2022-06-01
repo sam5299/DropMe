@@ -11,6 +11,7 @@ import {
   useToast,
   Spinner,
 } from "native-base";
+import { Ionicons } from "@expo/vector-icons";
 
 const AcceptRejectRequest = ({ route, navigation }) => {
   const { rideId, token, amount, name, vehicleNumber } = route.params;
@@ -191,6 +192,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
             my={5}
             mx={5}
             rounded="lg"
+            shadow={2}
             borderColor="coolGray.200"
             borderWidth="1"
             _dark={{
@@ -227,8 +229,12 @@ const AcceptRejectRequest = ({ route, navigation }) => {
               </Text>
               <Stack direction={"column"} space={2}>
                 <Box flexDir={"row"}>
-                  <Text bold fontSize={18}>
-                    Pickup Point:
+                  <Text fontSize={18} fontWeight="bold" color="black">
+                    <Ionicons
+                      name="ios-location-outline"
+                      size={20}
+                      color="green"
+                    />
                   </Text>
                   <Text ml={2} fontSize={18}>
                     {list.pickupPoint}
@@ -243,9 +249,10 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                   </Text>
                 </Box>
               </Stack>
-              <Stack direction={"row"} space={10} mt={2}>
+              <Stack direction={"row"} space={8} mt={2}>
                 <Button
-                  bg={"#03c03c"}
+                  bg={"green.600"}
+                  borderRadius={10}
                   isDisabled={buttonDisabled}
                   onPress={() =>
                     acceptRequest(
@@ -258,12 +265,15 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                       list.User.notificationToken
                     )
                   }
-                  px={5}
+                  px={6}
                 >
-                  <Text color="white">Accept</Text>
+                  <Text color="white" bold>
+                    Accept
+                  </Text>
                 </Button>
                 <Button
                   bg={"#e8000d"}
+                  borderRadius={10}
                   isDisabled={buttonDisabled}
                   onPress={() =>
                     rejectRequest(
@@ -276,9 +286,11 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                       list.User.notificationToken
                     )
                   }
-                  px={5}
+                  px={6}
                 >
-                  <Text color="white">Reject</Text>
+                  <Text color="white" bold>
+                    Reject
+                  </Text>
                 </Button>
               </Stack>
             </Stack>

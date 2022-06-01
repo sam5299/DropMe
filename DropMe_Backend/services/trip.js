@@ -52,7 +52,7 @@ async function getTripDetails(tripId) {
 
 //function to return requested trip list
 async function getUserRequestedTrips(User) {
-  return await Trip.find({ User: User, status: "Requested" });
+  return await Trip.find({ User: User, status: "Requested" }).sort({ _id: -1 });
 }
 
 //remove ride id from requestedRideList array of Ride

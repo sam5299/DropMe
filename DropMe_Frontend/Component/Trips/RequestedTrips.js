@@ -145,7 +145,7 @@ function RequestedTrips() {
 
   function getBookedTrips() {
     return (
-      <ScrollView w={"85%"} bg={"#e7feff"}>
+      <ScrollView w={"85%"} bg={"#e7feff"} mb={"15%"}>
         {requestedTripList.map((trip) => (
           // console.log(trip.amount)
           <Box
@@ -157,6 +157,7 @@ function RequestedTrips() {
             p={5}
             borderColor="coolGray.200"
             borderWidth="1"
+            shadow={2}
             _dark={{
               borderColor: "coolGray.600",
               backgroundColor: "gray.700",
@@ -206,17 +207,20 @@ function RequestedTrips() {
                     <EvilIcons name="calendar" size={20} color="green" />
                   </Text>
                   <Text fontSize={15}>
-                    {trip.date}:{trip.time}
+                    {trip.date} {trip.time}
                   </Text>
                 </Text>
                 <Button
+                  borderRadius={10}
                   size={"md"}
                   px={10}
-                  bg={"red.500"}
+                  bg={"#e8000d"}
                   onPress={() => showConfirmDialog(trip._id)}
                   isDisabled={isButtonDisabled}
                 >
-                  Cancel Request
+                  <Text bold color={"white"}>
+                    Cancel Request
+                  </Text>
                 </Button>
               </Stack>
 
