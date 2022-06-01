@@ -7,7 +7,16 @@ import RideStack from "./RideStack";
 
 const Tab = createMaterialTopTabNavigator();
 
-export default function RideTopBar() {
+export default function RideTopBar({route,navigation}) {
+
+  React.useEffect(()=> {
+    if(route.params){
+      console.log("navigated to RideStack")
+      navigation.navigate("RideStack");
+    }
+  },[]);
+  
+
   return (
     <Box flex={1} mt={"1"}>
       <Tab.Navigator
@@ -15,6 +24,7 @@ export default function RideTopBar() {
           tabBarLabelStyle: { fontSize: 12 },
           tabBarStyle: { backgroundColor: "#F0F8FF" },
         }}
+        initialRouteName="Rides"
       >
         <Tab.Screen name="Rides" component={RideStack} />
         <Tab.Screen name="Booked Rides" component={BookedRides} />

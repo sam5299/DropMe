@@ -4,7 +4,7 @@ const { User } = require("../models/user");
 const fs = require("fs");
 const req = require("express/lib/request");
 const { Vehicle } = require("../models/vehicle");
-const { trip_ride } = require("../models/trip_ride");
+const { trip_ride, TripRide } = require("../models/trip_ride");
 const { Trip } = require("../models/trip");
 
 // create ride function
@@ -53,7 +53,7 @@ async function getCreatedRides(
   })
     .populate(
       "User",
-      "_id profile name sumOfRating totalNumberOfRatedRides",
+      "_id profile name sumOfRating totalNumberOfRatedRides notificationToken",
       User
     )
     .populate(
@@ -78,7 +78,7 @@ async function getUserRides(userId) {
   return await Ride.find({
     User: userId,
     status: "Created",
-    availableSeats: { $gt: 0 },
+    availableSeats: { $gte: 0 },
   })
     .populate("Vehicle", "_id  vehicleImage ", Vehicle)
     .populate("User", "_id name", User)
@@ -140,6 +140,23 @@ function getTimeDifference(rideDate) {
   return hrs;
 }
 
+async function checkIsBooked(rideId) {
+  return await TripRide.find({ rideId: rideId, status: "Booked" });
+}
+
+//function to get User's detail's from rid
+async function getUserDetailsByRideId(rid) {
+  // path: 'key_with_ref',
+  // model: 'model_name',
+  // select: { 'field_name': 1,'field_name':1},
+  // console.log("ride id:", rid);
+  return await Ride.findOne({ _id: rid }, { _id: 0, User: 1 }).populate({
+    path: "User",
+    model: User,
+    select: { _id: 1, name: 1 },
+  });
+}
+
 //function which return date object of date string
 function convertToDate(dateString) {
   let splitResult = dateString.split(" ");
@@ -192,6 +209,18 @@ function convertToDate(dateString) {
 // To save image of vehicle after creating ride
 function savePicture(fileName) {}
 
+// function to check for pending rides
+async function checkPendingRides(userId, date) {
+  //console.log("Check pending is called", userId, date);
+  return await Ride.findOne({
+    User: userId,
+    rideDate: date,
+    status: "Created",
+  }).find({
+    $or: [{ status: "Created" }, { status: "Initiated" }],
+  });
+}
+
 module.exports = {
   createRide,
   getCreatedRides,
@@ -206,4 +235,7 @@ module.exports = {
   getTimeDifference,
   convertToDate,
   updateRideStatus,
+  checkIsBooked,
+  getUserDetailsByRideId,
+  checkPendingRides,
 };

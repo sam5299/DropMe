@@ -6,11 +6,23 @@ import {
   Image,
   Button,
   ScrollView,
-  Divider,
   Input,
   Spinner,
   useToast,
+  AspectRatio,
+  HStack,
+  Heading,
+  Divider,
+  Center,
 } from "native-base";
+import {
+  FontAwesome,
+  Entypo,
+  MaterialCommunityIcons,
+  Ionicons,
+  AntDesign,
+} from "@expo/vector-icons";
+
 import { Alert as NewAlert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -60,7 +72,13 @@ const BookedRides = ({ navigation }) => {
     return () => (mounted = false);
   }, [isTripStarted, isFocused]);
 
-  const startTrip = async (tripRideId, tripId, status, token) => {
+  const startTrip = async (
+    tripRideId,
+    tripId,
+    status,
+    token,
+    notificationToken
+  ) => {
     if (passengerToken === "" || passengerToken != token) {
       console.log(passengerToken);
       toast.show({
@@ -77,9 +95,10 @@ const BookedRides = ({ navigation }) => {
     }
     try {
       setIsButtonDisabled(true);
+      //send notification to route in body
       const result = await axios.put(
         url + "/trip/updateTripStatus",
-        { tripRideId, tripId, status, token },
+        { tripRideId, tripId, status, token, notificationToken },
         { headers: { "x-auth-token": userToken } }
       );
       setStarted("Accepted");
@@ -113,12 +132,19 @@ const BookedRides = ({ navigation }) => {
     }
   };
 
-  const endTrip = async (tripRideId, tripId, status, token) => {
+  const endTrip = async (
+    tripRideId,
+    tripId,
+    status,
+    token,
+    notificationToken
+  ) => {
     try {
       setIsButtonDisabled(true);
+      //send notification to route in body
       const result = await axios.put(
         url + "/trip/updateTripStatus",
-        { tripRideId, tripId, status, token },
+        { tripRideId, tripId, status, token, notificationToken },
         { headers: { "x-auth-token": userToken } }
       );
 
@@ -150,7 +176,13 @@ const BookedRides = ({ navigation }) => {
     }
   };
 
-  const showConfirmDialog = (tripRideId, tripId, status, amount) => {
+  const showConfirmDialog = (
+    tripRideId,
+    tripId,
+    status,
+    amount,
+    notificationToken
+  ) => {
     return NewAlert.alert(
       "Are your sure?",
       `Canceling a ride will reduce your safety points by ${parseInt(
@@ -161,7 +193,7 @@ const BookedRides = ({ navigation }) => {
         {
           text: "Yes",
           onPress: () => {
-            cancelTrip(tripRideId, tripId, status);
+            cancelTrip(tripRideId, tripId, status, notificationToken);
           },
         },
         // The "No" button
@@ -172,18 +204,16 @@ const BookedRides = ({ navigation }) => {
       ]
     );
   };
-  const cancelTrip = async (tripRideId, tripId, status) => {
+  const cancelTrip = async (tripRideId, tripId, status, notificationToken) => {
     // let inp = confirmDelete();
     // if(inp){
     try {
+      //send notification to route in body
       const result = await axios.put(
         url + "/trip/updateTripStatus",
-        { tripRideId, tripId, status },
+        { tripRideId, tripId, status, notificationToken },
         { headers: { "x-auth-token": userToken } }
       );
-
-      let updatedRides = bookedRides.filter((ride) => ride._id != tripRideId);
-      setBookedRides(updatedRides);
 
       toast.show({
         render: () => {
@@ -195,6 +225,9 @@ const BookedRides = ({ navigation }) => {
         },
         placement: "top",
       });
+      let updatedRides = bookedRides.filter((ride) => ride._id != tripRideId);
+      setBookedRides(updatedRides);
+
       // setStarted("Ended");
     } catch (error) {
       toast.show({
@@ -213,120 +246,266 @@ const BookedRides = ({ navigation }) => {
 
   function allUserRides() {
     return (
-      <ScrollView>
+      <ScrollView w={"90%"} mb={"10%"}>
         {bookedRides.map((ride) => (
-          <Box
-            key={ride._id}
-            my={5}
-            mx={5}
-            rounded="lg"
-            borderColor="coolGray.200"
-            borderWidth="1"
-            _dark={{
-              borderColor: "coolGray.600",
-              backgroundColor: "gray.700",
-            }}
-            _web={{
-              shadow: 2,
-              borderWidth: 0,
-            }}
-            _light={{
-              backgroundColor: "gray.50",
-            }}
-          >
-            {/* {console.log(ride.status, ride.token)} */}
-            <Stack
-              direction={"column"}
-              alignItems="center"
-              space={2}
-              borderRadius={10}
-              p={5}
+          <Box alignItems="center" key={ride._id} my={7} flex={1}>
+            <Box
+              flex={1}
+              rounded="lg"
+              overflow="hidden"
+              borderColor="coolGray.200"
+              borderWidth="1"
+              _dark={{
+                borderColor: "coolGray.600",
+                backgroundColor: "gray.700",
+              }}
+              _web={{
+                shadow: 2,
+                borderWidth: 0,
+              }}
+              _light={{
+                backgroundColor: "gray.50",
+              }}
             >
-              <Image
-                source={{
-                  uri: ride.PassengerId.profile,
-                  //uri: "https://stimg.cardekho.com/images/carexteriorimages/630x420/Maruti/Swift-Dzire-Tour/8862/1646139841911/front-left-side-47.jpg?tr=h-140",
-                }}
-                alt="Alternate Text"
-                size={"xl"}
-                borderRadius={100}
-                bg="red.100"
-              />
-              <Text fontSize={18} fontWeight="bold">
-                {ride.PassengerId.name}
-              </Text>
-              <Box justifyContent={"flex-start"}>
-                <Text fontSize={18} fontWeight="bold">
-                  From:
-                </Text>
-                <Text fontSize={15}>{ride.tripId.source}</Text>
-                <Text fontSize={18} fontWeight="bold">
-                  To:
-                </Text>
-                <Text fontSize={15}>{ride.tripId.destination}</Text>
-
-                <Text fontSize={18} fontWeight="bold">
-                  Mobile No:
-                </Text>
-                <Text fontSize={15}>{ride.PassengerId.mobileNumber}</Text>
-                <Text fontSize={18} fontWeight="bold">
-                  Pickup Point:
-                </Text>
-                <Text fontSize={15}>{ride.tripId.pickupPoint}</Text>
+              <Box alignItems={"center"} justifyContent={"center"}>
+                <AspectRatio w={"70%"} mt={3}>
+                  <Image
+                    source={{
+                      uri: ride.PassengerId.profile,
+                    }}
+                    alt="image"
+                    borderRadius={10}
+                  />
+                </AspectRatio>
               </Box>
-              <Input
-                isDisabled={ride.status === "Booked" ? false : true}
-                maxLength={6}
-                variant={"outline"}
-                keyboardType="numeric"
-                placeholder="Enter the token"
-                onChangeText={(value) => setPassengerToken(value)}
-              />
+              <Stack p="4" space={3}>
+                <Center>
+                  <Heading size="md" ml="-1">
+                    {ride.PassengerId.name}
+                  </Heading>
+                </Center>
+                <Text fontWeight="400">
+                  <Text fontSize={18} fontWeight="bold" color="black">
+                    <AntDesign name="mobile1" size={20} color="green" />
+                  </Text>
+                  <Text fontSize={15}> {ride.PassengerId.mobileNumber}</Text>
+                </Text>
 
-              <Divider color={"black"} mb={2} />
-              {ride.status === "Booked" ? (
-                <Stack direction={"row"} space={5} mt={2}>
-                  <Button
-                    isDisabled={isButtonDisabled}
-                    onPress={() =>
-                      startTrip(
-                        ride._id,
-                        ride.tripId._id,
-                        "Initiated",
-                        ride.token
-                      )
-                    }
-                    px={5}
-                  >
-                    Start Trip
-                  </Button>
-                  <Button
-                    colorScheme="secondary"
-                    isDisabled={isButtonDisabled}
-                    onPress={() =>
-                      showConfirmDialog(
-                        ride._id,
-                        ride.tripId._id,
-                        "Cancelled",
-                        ride.amount
-                      )
-                    }
-                  >
-                    Cancel Trip
-                  </Button>
-                </Stack>
-              ) : (
-                <Button
-                  w={"100%"}
-                  onPress={() =>
-                    endTrip(ride._id, ride.tripId._id, "Completed", ride.token)
-                  }
-                >
-                  End Trip
-                </Button>
-              )}
-            </Stack>
+                <Text fontWeight="400">
+                  <Text fontSize={15} fontWeight="bold" color="black">
+                    <MaterialCommunityIcons
+                      name="ray-start-arrow"
+                      size={20}
+                      color="green"
+                    />
+                  </Text>
+                  <Text fontSize={15}> {ride.tripId.source}</Text>
+                </Text>
+                <Text fontWeight="400">
+                  <Text fontSize={20} fontWeight="bold" color="black">
+                    <MaterialCommunityIcons
+                      name="ray-start-end"
+                      size={18}
+                      color="green"
+                    />
+                  </Text>
+                  <Text fontSize={15}> {ride.tripId.destination}</Text>
+                </Text>
+                <Text fontWeight="400">
+                  <Text fontSize={18} fontWeight="bold" color="black">
+                    <Ionicons
+                      name="ios-location-outline"
+                      size={20}
+                      color="green"
+                    />
+                  </Text>
+                  <Text fontSize={15}> {ride.tripId.pickupPoint}</Text>
+                </Text>
+
+                <Input
+                  isDisabled={ride.status === "Booked" ? false : true}
+                  maxLength={6}
+                  variant={"outline"}
+                  keyboardType="numeric"
+                  placeholder="Enter the token"
+                  onChangeText={(value) => setPassengerToken(value)}
+                />
+                <Divider color={"black"} mb={2} />
+                <Center>
+                  {ride.status === "Booked" ? (
+                    <Stack direction={"row"} space={5} mt={2}>
+                      <Button
+                        isDisabled={isButtonDisabled}
+                        bg={"#03c03c"}
+                        onPress={() =>
+                          startTrip(
+                            ride._id,
+                            ride.tripId._id,
+                            "Initiated",
+                            ride.token,
+                            ride.PassengerId.notificationToken
+                          )
+                        }
+                        px={5}
+                      >
+                        <Text color="white"> Start Trip</Text>
+                      </Button>
+                      <Button
+                        px={5}
+                        bg={"#e8000d"}
+                        isDisabled={isButtonDisabled}
+                        onPress={() =>
+                          showConfirmDialog(
+                            ride._id,
+                            ride.tripId._id,
+                            "Cancelled",
+                            ride.amount,
+                            ride.PassengerId.notificationToken
+                          )
+                        }
+                      >
+                        <Text color="white">Cancel Trip</Text>
+                      </Button>
+                    </Stack>
+                  ) : (
+                    <Button
+                      bg={"#03c03c"}
+                      w={"100%"}
+                      onPress={() =>
+                        endTrip(
+                          ride._id,
+                          ride.tripId._id,
+                          "Completed",
+                          ride.token,
+                          ride.PassengerId.notificationToken
+                        )
+                      }
+                    >
+                      <Text color="white">End Trip</Text>
+                    </Button>
+                  )}
+                </Center>
+              </Stack>
+            </Box>
           </Box>
+
+          //  <Box
+          //   flex={1}
+          //   my={5}
+          //   key={ride._id}
+          //   rounded="lg"
+          //   borderColor="coolGray.200"
+          //   borderWidth="1"
+          //   _dark={{
+          //     borderColor: "coolGray.600",
+          //     backgroundColor: "gray.700",
+          //   }}
+          //   _web={{
+          //     shadow: 2,
+          //     borderWidth: 0,
+          //   }}
+          //   _light={{
+          //     backgroundColor: "gray.50",
+          //   }}
+          // >
+          //   {/* {console.log(ride.PassengerId.notificationToken)} */}
+          //   <Stack
+          //     direction={"column"}
+          //     alignItems="center"
+          //     space={2}
+          //     borderRadius={10}
+          //     p={5}
+          //   >
+          //     <Image
+          //       source={{
+          //         uri: ride.PassengerId.profile,
+          //         //uri: "https://stimg.cardekho.com/images/carexteriorimages/630x420/Maruti/Swift-Dzire-Tour/8862/1646139841911/front-left-side-47.jpg?tr=h-140",
+          //       }}
+          //       alt="Alternate Text"
+          //       size={"xl"}
+          //       borderRadius={100}
+          //       bg="red.100"
+          //     />
+          //     <Text fontSize={18} fontWeight="bold">
+          //       {ride.PassengerId.name}
+          //     </Text>
+          //     <Stack justifyContent={"flex-start"} space={1}>
+          //       <Text fontSize={18} fontWeight="bold">
+          //         From:
+          //       </Text>
+          //       <Text fontSize={15}>{ride.tripId.source}</Text>
+          //       <Text fontSize={18} fontWeight="bold">
+          //         To:
+          //       </Text>
+          //       <Text fontSize={15}>{ride.tripId.destination}</Text>
+
+          //       <Text fontSize={18} fontWeight="bold">
+          //         Mobile No:
+          //       </Text>
+          //       <Text fontSize={15}>{ride.PassengerId.mobileNumber}</Text>
+          //       <Text fontSize={18} fontWeight="bold">
+          //         Pickup Point:
+          //       </Text>
+          //       <Text fontSize={15}>{ride.tripId.pickupPoint}</Text>
+          //     </Stack>
+          //     <Input
+          //       isDisabled={ride.status === "Booked" ? false : true}
+          //       maxLength={6}
+          //       variant={"outline"}
+          //       keyboardType="numeric"
+          //       placeholder="Enter the token"
+          //       onChangeText={(value) => setPassengerToken(value)}
+          //     />
+
+          //     <Divider color={"black"} mb={2} />
+          //     {ride.status === "Booked" ? (
+          //       <Stack direction={"row"} space={5} mt={2}>
+          //         <Button
+          //           isDisabled={isButtonDisabled}
+          //           bg={"#03c03c"}
+          //           onPress={() =>
+          //             startTrip(
+          //               ride._id,
+          //               ride.tripId._id,
+          //               "Initiated",
+          //               ride.token,
+          //               ride.PassengerId.notificationToken
+          //             )
+          //           }
+          //           px={5}
+          //         >
+          //           <Text color="white"> Start Trip</Text>
+          //         </Button>
+          //         <Button
+          //           px={5}
+          //           bg={"#e8000d"}
+          //           isDisabled={isButtonDisabled}
+          //           onPress={() =>
+          //             showConfirmDialog(
+          //               ride._id,
+          //               ride.tripId._id,
+          //               "Cancelled",
+          //               ride.amount,
+          //               ride.PassengerId.notificationToken
+          //             )
+          //           }
+          //         >
+          //           <Text color="white">Cancel Trip</Text>
+          //         </Button>
+          //       </Stack>
+          //     ) : (
+          //       <Button
+          //         bg={"#03c03c"}
+          //         w={"100%"}
+          //         onPress={() =>
+          //           endTrip(ride._id, ride.tripId._id, "Completed", ride.token,ride.PassengerId.notificationToken)
+          //         }
+          //       >
+          //         <Text color="white">End Trip</Text>
+          //       </Button>
+          //     )}
+          //   </Stack>
+          // </Box>
         ))}
       </ScrollView>
     );
@@ -346,20 +525,18 @@ const BookedRides = ({ navigation }) => {
   } else {
     return (
       <Box flex={1} alignItems={"center"} pb={"5"} bg={"#F0F8FF"}>
-        <Box mt={2}>
-          {bookedRides.length ? (
-            allUserRides()
-          ) : (
-            <Box
-              flex={1}
-              justifyContent="center"
-              alignItems={"center"}
-              bg={"#F0F8FF"}
-            >
-              <Text>No Booked Rides</Text>
-            </Box>
-          )}
-        </Box>
+        {bookedRides.length ? (
+          allUserRides()
+        ) : (
+          <Box
+            flex={1}
+            justifyContent="center"
+            alignItems={"center"}
+            bg={"#F0F8FF"}
+          >
+            <Text>No Booked Rides</Text>
+          </Box>
+        )}
       </Box>
     );
   }

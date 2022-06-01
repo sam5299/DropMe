@@ -60,7 +60,8 @@ const AcceptRejectRequest = ({ route, navigation }) => {
     raiderName,
     perSeatAmount,
     vehicleNumber,
-    seatRequest
+    seatRequest,
+    notificationToken
   ) => {
     try {
       setButtonDisabled(true);
@@ -68,11 +69,18 @@ const AcceptRejectRequest = ({ route, navigation }) => {
       //  console.log(amount);
       const result = await axios.post(
         url + "/ride/acceptTripRequest",
-        { tripId, rideId, raiderName, amount, vehicleNumber },
+        {
+          tripId,
+          rideId,
+          raiderName,
+          amount,
+          vehicleNumber,
+          notificationToken,
+        },
         { headers: { "x-auth-token": token } }
       );
       {
-        console.log("showing toast");
+        //console.log("showing toast");
       }
       toast.show({
         render: () => {
@@ -94,6 +102,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
         }
       });
       setTripRequestList(newTripRequestList);
+      navigation.goBack();
 
       setButtonDisabled(false);
     } catch (error) {
@@ -118,7 +127,8 @@ const AcceptRejectRequest = ({ route, navigation }) => {
     raiderName,
     source,
     destination,
-    passengerId
+    passengerId,
+    notificationToken
   ) => {
     try {
       setButtonDisabled(true);
@@ -131,7 +141,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
           raiderName,
           source,
           destination,
-          passengerId,
+          notificationToken,
         },
         { headers: { "x-auth-token": token } }
       );
@@ -146,6 +156,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
         placement: "top",
       });
 
+      //filter rejected trip request and create new list
       let newTripRequestList = [];
       tripRequestList.forEach((tripObj) => {
         if (tripObj._id != tripId) {
@@ -154,6 +165,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
       });
       setTripRequestList(newTripRequestList);
       setButtonDisabled(false);
+      navigation.goBack();
     } catch (error) {
       toast.show({
         render: () => {
@@ -172,7 +184,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
 
   function viewRequest() {
     return (
-      <ScrollView>
+      <ScrollView mb="10%">
         {tripRequestList.map((list) => (
           <Box
             key={list._id}
@@ -233,9 +245,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
               </Stack>
               <Stack direction={"row"} space={10} mt={2}>
                 <Button
-                  _text={{
-                    color: "white",
-                  }}
+                  bg={"#03c03c"}
                   isDisabled={buttonDisabled}
                   onPress={() =>
                     acceptRequest(
@@ -244,15 +254,16 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                       name,
                       amount,
                       vehicleNumber,
-                      list.seatRequest
+                      list.seatRequest,
+                      list.User.notificationToken
                     )
                   }
                   px={5}
                 >
-                  Accept
+                  <Text color="white">Accept</Text>
                 </Button>
                 <Button
-                  colorScheme="secondary"
+                  bg={"#e8000d"}
                   isDisabled={buttonDisabled}
                   onPress={() =>
                     rejectRequest(
@@ -261,12 +272,13 @@ const AcceptRejectRequest = ({ route, navigation }) => {
                       name,
                       list.source,
                       list.destination,
-                      list.User._id
+                      list.User._id,
+                      list.User.notificationToken
                     )
                   }
                   px={5}
                 >
-                  Reject
+                  <Text color="white">Reject</Text>
                 </Button>
               </Stack>
             </Stack>

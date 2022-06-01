@@ -54,7 +54,7 @@ async function getUser(id) {
   //console.log("called getUser");
   try {
     let user = await User.findOne({ _id: id }, { userId: 0, __v: 0 });
-    if (user.length === 0) return "Users not found";
+    if (!user) return "Users not found";
     else return user;
   } catch (ex) {
     return ex;
@@ -76,6 +76,7 @@ async function validateLogin(loginData) {
       .pattern(/[7-9]{1}[0-9]{9}/)
       .required(),
     password: Joi.string().required(),
+    notificationToken: Joi.string()
   });
   return await schema.validate(loginData);
 }
@@ -113,9 +114,9 @@ async function isLicenseNumberExists(licenseNum) {
 
 //function to update user's licenseNumber and licenseDocument image path
 async function updateUserLicenseDetails(userId, licenseNumber, licenseImage) {
-  console.log("uploading license image:" + licenseImage);
+  //console.log("uploading license image:" + licenseImage);
   let user = await User.findOne({ userId: userId });
-  console.log("User found:", user);
+ // console.log("User found:", user);
   user.licenseNumber = licenseNumber;
   user.licenseImage = licenseImage;
   return user.save();
@@ -204,17 +205,19 @@ function nodemailerService(mail, message) {
 }
 
 // function to get profile details
-async function loadProfile(userId){
-  return await User.findOne({_id:userId},
+async function loadProfile(userId) {
+  return await User.findOne(
+    { _id: userId },
     {
-      name:1,
-      email:1,
-      mobileNumber:1,
-      profile:1,
-      totalNumberOfRides:1,
-      sumOfRating:1,
-      totalNumberOfRatedRides:1
-    });
+      name: 1,
+      email: 1,
+      mobileNumber: 1,
+      profile: 1,
+      totalNumberOfRides: 1,
+      sumOfRating: 1,
+      totalNumberOfRatedRides: 1,
+    }
+  );
 }
 
 module.exports = {
@@ -232,5 +235,5 @@ module.exports = {
   mailSend,
   encryptPassword,
   validatePassword,
-  loadProfile
+  loadProfile,
 };

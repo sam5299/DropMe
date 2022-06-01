@@ -23,6 +23,7 @@ import {
 
 import { useValidation } from "react-native-form-validator";
 import * as ImagePicker from "expo-image-picker";
+import { AntDesign } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import axios from "axios";
 
@@ -37,8 +38,8 @@ const AddVehicle = ({ route, navigation }) => {
   let [seatingCapacity, setSeatingCapacity] = useState(1);
   let [fuelTypeArray, setFuelTypeArray] = useState(["Petrol", "Electric"]);
   let [vehicleClassArray, setVehicleClassArray] = useState([
-    "NormalBike",
-    "SportBike",
+    "Normal Bike",
+    "Sport Bike",
     "Scooter",
   ]);
   let FuelTypeArray = ["Petrol", "Diesel", "CNG", "Electric"];
@@ -55,9 +56,10 @@ const AddVehicle = ({ route, navigation }) => {
     setFuelType("");
     setSeatingCapacity(1);
     setFuelTypeArray(["Petrol", "Electric"]);
-    setVehicleClassArray(["NormalBike", "SportBike", "Scooter"]);
+    setVehicleClassArray(["Normal Bike", "Sport Bike", "Scooter"]);
     FuelTypeArray = ["Petrol", "Diesel", "CNG", "Electric"];
     setIsLoading(false);
+    setPictureError(false);
   };
 
   if (route.params) {
@@ -92,18 +94,23 @@ const AddVehicle = ({ route, navigation }) => {
     // /^([A-Z]{2}\s{1}\d{2}\s{1}\[A-Z]{1,2}\s{1}\d{1,4})?([A-Z|a-z]{3}\s{1}\d{1,4})?$/;
     console.log("matching vehicle number");
 
+    if (Picture === null) {
+      console.log("Vehicle not available");
+      setPictureError(true);
+      if (!pattern.test(vehicleNumber)) setErrorVehicleNumber(true);
+      return;
+    } else {
+      setPictureError(false);
+    }
     if (!pattern.test(vehicleNumber)) {
       //  console.log("not matched");
       // isFieldInError.vehicleNumber = "Please enter valid vehicle number.";
       setErrorVehicleNumber(true);
       return;
-    }
-    if (Picture === null) {
-      setPictureError(true);
-      return;
     } else {
-      setPictureError(false);
+      setErrorVehicleNumber(false);
     }
+
     if (isTrue) {
       // navigation.setOptions = {
       //   clearFields: (props) => clearFields,
@@ -239,17 +246,28 @@ const AddVehicle = ({ route, navigation }) => {
             <Box>
               <TouchableHighlight
                 onPress={() => uploadImage()}
-                underlayColor="rgba(0,0,0,0)"
+                // underlayColor="rgba(0,0,0,0)"
               >
                 <Avatar
-                  bg="green.500"
                   size="xl"
                   source={{
                     uri: Picture,
                   }}
+                  borderRadius="100"
+                  bg="white"
+                  borderColor="gray.400"
+                  borderWidth={0.5}
                 >
-                  <Text fontSize={"sm"}>Vehicle Image</Text>
-                  <Avatar.Badge bg="green.500" />
+                  <AntDesign
+                    name="upload"
+                    size={30}
+                    color="rgba(6,182,212,0.70)"
+                  />
+                  {/* <MaterialCommunityIcons name="upload" size={30} /> */}
+                  {/* <MaterialCommunityIcons name="cloudupload" size={30} /> */}
+                  <Text fontSize={"sm"}>Upload Image</Text>
+
+                  {/* <Avatar.Badge bg="green.500" /> */}
                 </Avatar>
               </TouchableHighlight>
             </Box>
@@ -269,13 +287,15 @@ const AddVehicle = ({ route, navigation }) => {
                 defaultValue="Bike"
                 accessibilityLabel="Select Vehicle"
                 onChange={(value) => {
+                  //setPic(null);
+                  clearFields();
                   setVehicleType(value);
                   if (value === "Bike") {
                     setFuelTypeArray(["Petrol", "Electric"]);
 
                     setVehicleClassArray([
-                      "NormalBike",
-                      "SportBike",
+                      "Normal Bike",
+                      "Sport Bike",
                       "Scooter",
                     ]);
                   } else {

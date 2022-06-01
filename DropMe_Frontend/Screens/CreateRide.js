@@ -14,10 +14,12 @@ import {
   WarningOutlineIcon,
   useToast,
   Select,
-  Slider,
+  Slider, 
+  Spinner,
 } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import * as Notifications from 'expo-notifications';
 import { AuthContext } from "../Component/Context";
 import { useValidation } from "react-native-form-validator";
 import { useIsFocused } from "@react-navigation/native";
@@ -125,6 +127,7 @@ const CreateRide = ({ navigation }) => {
   const [gender, setGender] = useState("");
   const [userToken, setToken] = useState(null);
   const [isLoading, setLoading] = useState(false);
+  const [pageLoaded, setPageLoaded] = useState(true);
 
   // vehicle and class states
   const [vehicles, setVehicles] = useState([]);
@@ -143,9 +146,6 @@ const CreateRide = ({ navigation }) => {
   const isFocused = useIsFocused();
 
   const todaysDate = new Date();
-  const hourse = todaysDate.getHours();
-  const min = todaysDate.getMinutes();
-  const currentTime = `${hourse}:${min}`;
 
   const toast = useToast();
   const { source, destination, Vehicle } = state;
@@ -155,6 +155,44 @@ const CreateRide = ({ navigation }) => {
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
+  let registerForPushNotificationsAsync = async () => {
+   
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    const token = (await Notifications.getExpoPushTokenAsync()).data;
+    //console.log(token);
+    
+  
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  } 
+  };
+  let handleNotificationResponse = response => {
+    console.log("handle notification response called in create ride..");
+    let notificationType = response.notification.request.content.data.notificationType;
+    //console.log("notification type:",notificationType);
+    if(notificationType!="Login") {
+      //console.log("navigating to slide");
+      navigation.navigate("Slide",{
+       notificationType:notificationType
+      });
+    }
+  };
+
 
   useEffect(() => {
     let mounted = true;
@@ -162,20 +200,43 @@ const CreateRide = ({ navigation }) => {
       try {
         const User = await AsyncStorage.getItem("User");
         const userDetails = JSON.parse(User);
+        setGender(userDetails.gender);
         const list = await axios.get(url + "/vehicle/getVehicleList", {
           headers: { "x-auth-token": userDetails.userToken },
         });
         if (mounted) {
           setVehicles(list.data);
-          console.log(vehicles.length);
           setToken(userDetails.userToken);
-          setGender(userDetails.gender);
+
+          let hours = todaysDate.getHours();
+          let minutes = todaysDate.getMinutes();
+          let ampm = hours >= 12 ? "PM" : "AM";
+          hours = hours % 12;
+          hours = hours ? hours : 12;
+
+          const time = `${hours}:${minutes}:${ampm}`;
+
           dispatch({ type: "date", payload: todaysDate.toDateString() });
-          dispatch({ type: "time", payload: currentTime });
+          dispatch({ type: "time", payload: time });
+          setPageLoaded(false);
         }
+        registerForPushNotificationsAsync();
+        //Notifications.addNotificationReceivedListener(handleNotification);
+    
+        Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
+
+        Notifications.setNotificationHandler({
+          handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: false,
+            shouldSetBadge: false,
+          }),
+        });
+        
       } catch (error) {
         console.log("in catch of createRide");
         console.log(error);
+        setPageLoaded(false);
       }
     };
     createRide();
@@ -190,7 +251,23 @@ const CreateRide = ({ navigation }) => {
       Vehicle: { required: true },
     });
     if (isTrue) {
-      // console.log(state);
+      if (state.source === state.destination) {
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="red.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>
+                  Source and destination cannot be same
+                </Text>
+              </Box>
+            );
+          },
+          placement: "top",
+        });
+        setLoading(false);
+        return;
+      }
+
       let distance = null;
       try {
         //call api to get exact latitude longitude of source,destination lat,log
@@ -235,17 +312,13 @@ const CreateRide = ({ navigation }) => {
           placement: "top",
         });
       } catch (error) {
-        console.log(error.response.data);
+       // console.log("While creating ride", error.response.data);
         setLoading(false);
         toast.show({
           render: () => {
             return (
               <Box bg="red.400" px="10" py="3" rounded="sm">
-                <Text fontSize={"15"}>
-                  {error.name === "AxiosError"
-                    ? "Sorry cannot reach to server!"
-                    : error.response.data}
-                </Text>
+                <Text fontSize={"15"}>{error.response.data}</Text>
               </Box>
             );
           },
@@ -262,6 +335,7 @@ const CreateRide = ({ navigation }) => {
         <Select
           mr="1"
           w="100%"
+          backgroundColor={"white"}
           selectedValue={vehicle}
           placeholder={
             vehicles.length
@@ -270,6 +344,7 @@ const CreateRide = ({ navigation }) => {
                 : vehicle
               : "Please Add Vehicle"
           }
+          // isDisabled={vehicles.length ? false : true}
           onValueChange={(itemValue) => {
             setVehicle(itemValue.vehicleName);
             setVehicleClass(itemValue.vehicleClass);
@@ -284,7 +359,6 @@ const CreateRide = ({ navigation }) => {
             });
           }}
         >
-          <Select.Item label="Select Vehicle" disabled={true} />
           {vehicles.map((item) => (
             <Select.Item
               shadow={2}
@@ -320,60 +394,86 @@ const CreateRide = ({ navigation }) => {
     </Box>
   );
 
-  return (
-    <Box flex={1} bg={"#F0F8FF"} flexDirection="column">
-      <GoogleMap />
-      <ScrollView>
-        <FormControl p={1}>
-          <SourceDestination dispatch={dispatch} />
-          <Box ml="5" flexDirection={"row"} justifyContent={"space-between"}>
-            {isFieldInError("source") && (
-              <FormControl.ErrorMessage
-                isInvalid={true}
-                leftIcon={<WarningOutlineIcon size="xs" />}
+  if (pageLoaded) {
+    return (
+      <Box
+        flex={1}
+        justifyContent="center"
+        alignItems={"center"}
+        bg={"#F0F8FF"}
+      >
+        <Spinner size="lg" />
+      </Box>
+    );
+  } else {
+    return (
+      <Box flex={1} bg={"#e7feff"} justifyContent="center">
+        <Box
+          bg="white"
+          py={"5"}
+          mx={2}
+          borderRadius="10"
+          borderWidth={1}
+          borderColor={"white"}
+          shadow={3}
+        >
+          <ScrollView>
+            <FormControl>
+              <SourceDestination dispatch={dispatch} />
+              <Box
+                ml="5"
+                flexDirection={"row"}
+                justifyContent={"space-between"}
               >
-                Please Enter Source
-              </FormControl.ErrorMessage>
-            )}
-            {isFieldInError("destination") && (
-              <FormControl.ErrorMessage
-                isInvalid={true}
-                leftIcon={<WarningOutlineIcon size="xs" />}
+                {isFieldInError("source") && (
+                  <FormControl.ErrorMessage
+                    isInvalid={true}
+                    leftIcon={<WarningOutlineIcon size="xs" />}
+                  >
+                    Please Enter Source
+                  </FormControl.ErrorMessage>
+                )}
+                {isFieldInError("destination") && (
+                  <FormControl.ErrorMessage
+                    isInvalid={true}
+                    leftIcon={<WarningOutlineIcon size="xs" />}
+                  >
+                    Please Enter Destination
+                  </FormControl.ErrorMessage>
+                )}
+              </Box>
+              <DateTime dispatch={dispatch} />
+              {VehiclenClass}
+              <Box ml={5}>
+                {isFieldInError("Vehicle") && (
+                  <FormControl.ErrorMessage
+                    isInvalid={true}
+                    leftIcon={<WarningOutlineIcon size="xs" />}
+                  >
+                    Please Select Vehicle
+                  </FormControl.ErrorMessage>
+                )}
+              </Box>
+              <RideForType type={{ dispatch: dispatch, rideFor: gender }} />
+              <Button
+                isLoading={isLoading}
+                isLoadingText="Creating ride.."
+                size="md"
+                mt={"5"}
+                w="95%"
+                ml={2}
+                onPress={handleForm}
               >
-                Please Enter Destination
-              </FormControl.ErrorMessage>
-            )}
-          </Box>
-          <DateTime dispatch={dispatch} />
-          {VehiclenClass}
-          <Box ml={5}>
-            {isFieldInError("Vehicle") && (
-              <FormControl.ErrorMessage
-                isInvalid={true}
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                Please Select Vehicle
-              </FormControl.ErrorMessage>
-            )}
-          </Box>
-          <RideForType type={{ dispatch: dispatch, rideFor: gender }} />
-          <Button
-            isLoading={isLoading}
-            isLoadingText="Creating ride.."
-            size="md"
-            mt={"5"}
-            w="95%"
-            ml={2}
-            onPress={handleForm}
-          >
-            <Text fontSize={"lg"} color="white">
-              Create Ride
-            </Text>
-          </Button>
-        </FormControl>
-      </ScrollView>
-    </Box>
-  );
+                <Text fontSize={"lg"} color="white">
+                  Create Ride
+                </Text>
+              </Button>
+            </FormControl>
+          </ScrollView>
+        </Box>
+      </Box>
+    );
+  }
 };
 
 export default CreateRide;

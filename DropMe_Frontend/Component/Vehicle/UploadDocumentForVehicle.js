@@ -15,6 +15,7 @@ import {
   useToast,
   Spinner,
 } from "native-base";
+import { AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useValidation } from "react-native-form-validator";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -145,34 +146,43 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
       let pattern =
         /^(([A-Z]{2}[0-9]{2})( )|([A-Z]{2}-[0-9]{2}))((19|20)[0-9][0-9])[0-9]{7}$/;
       if (!pattern.test(licenseNumber)) {
+        console.log("license number not valid");
         setLicenseNumberError(true);
-        return;
+        //return;
       } else {
         setLicenseNumberError(false);
       }
       if (licenseImage === null) {
         setLicenseImageError(true);
-        return;
+        //return;
       } else {
         setLicenseImageError(false);
       }
       //add license properties
-      body.licenseNumber = licenseNumber;
+      body.licenseNumber = licenseNumber.toUpperCase();
       body.licenseImage = licenseImage;
     }
 
     if (rcBookImage === null) {
       setRcError(true);
+      if (pucImage === null) setPucError(true);
+      else setPucError(false);
       return;
     } else {
       setRcError(false);
     }
     if (pucImage === null) {
+      //console.log("pucImage not present");
       setPucError(true);
       return;
     } else {
       setPucError(false);
     }
+    if (licenseImageError || licenseNumberError) {
+      //console.log("one of the field is with error");
+      return;
+    }
+    console.log("below return");
 
     let isTrue = validate({
       rcBookImage: { required: true, hasLowerCase: true },
@@ -212,6 +222,17 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
         }, 1000);
       } catch (ex) {
         setIsLoading(false);
+        console.log("exception name:" + ex.name);
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="red.400" px="10" py="3" rounded="sm">
+                <Text fontSize={"15"}>{ex.response.data}</Text>
+              </Box>
+            );
+          },
+          placement: "top",
+        });
         console.log(
           "exception in upload vehicle documents:" + ex.response.data
         );
@@ -243,7 +264,7 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
           isInvalid={true}
           leftIcon={<WarningOutlineIcon size="xs" />}
         >
-          Please type valid Number Ex. MH20 20220007722
+          Please type valid Number Ex. MH20 00000000000
         </FormControl.ErrorMessage>
       )}
     </Box>
@@ -254,12 +275,16 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
       <Box ml={3} w={"95%"} flexDir={"row"}>
         <Box mt="5" w={"95%"} flexDir={"row"} alignItems="center">
           <Avatar
-            bg="green.500"
             size="xl"
             source={{
               uri: licenseImage,
             }}
+            borderRadius="100"
+            bg="white"
+            borderColor="gray.400"
+            borderWidth={0.5}
           >
+            <AntDesign name="upload" size={30} color="rgba(6,182,212,0.70)" />
             <Text fontSize={"sm"}>License Image</Text>
           </Avatar>
           <Button
@@ -333,12 +358,20 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
                     justifyContent={"flex-start"}
                   >
                     <Avatar
-                      bg="green.500"
                       size="xl"
                       source={{
                         uri: rcBookImage,
                       }}
+                      borderRadius="100"
+                      bg="white"
+                      borderColor="gray.400"
+                      borderWidth={0.5}
                     >
+                      <AntDesign
+                        name="upload"
+                        size={30}
+                        color="rgba(6,182,212,0.70)"
+                      />
                       <Text fontSize={"sm"}>RC Book</Text>
                     </Avatar>
                     <Button
@@ -373,12 +406,20 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
                     justifyContent={"flex-start"}
                   >
                     <Avatar
-                      bg="green.500"
                       size="xl"
                       source={{
                         uri: pucImage,
                       }}
+                      borderRadius="100"
+                      bg="white"
+                      borderColor="gray.400"
+                      borderWidth={0.5}
                     >
+                      <AntDesign
+                        name="upload"
+                        size={30}
+                        color="rgba(6,182,212,0.70)"
+                      />
                       <Text fontSize={"sm"}>PUC Image</Text>
                     </Avatar>
                     <Button

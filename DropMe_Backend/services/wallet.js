@@ -1,5 +1,6 @@
 const { Wallet } = require("../models/wallet");
 const Joi = require("joi");
+const { addNewHistory } = require("./walletHistory");
 
 // Create a wallet
 async function createWallet(userId) {
@@ -41,9 +42,19 @@ async function updateUsedCredit(userId, amount) {
 async function reedemSafetyPoints(userId) {
   let [walletObj] = await Wallet.find({ User: userId });
   //console.log(walletObj);
+  let addCredit=parseInt(walletObj.safetyPoint / 2);
   walletObj.creditPoint =
-    walletObj.creditPoint + parseInt(walletObj.safetyPoint / 2);
+    walletObj.creditPoint + addCredit;
   walletObj.safetyPoint = 0;
+
+  let walletHistoryDetails={
+    User:userId,
+    amount:addCredit,
+    type:"Credit",
+    message:"Redeem safety points",
+    date:new Date().toDateString(),
+  }
+  let walletResult= await addNewHistory(walletHistoryDetails);
   return await walletObj.save();
 }
 
@@ -59,19 +70,19 @@ async function addPenalty(userId, penalty) {
   let [walletObj] = await Wallet.find({ User: userId });
   //console.log(walletObj);
   // walletObj.creditPoint=walletObj.creditPoint+walletObj.safetyPoint;
-  walletObj.safetyPoint -= parseInt(penalty);
+  walletObj.safetyPoint = walletObj.safetyPoint + parseInt(penalty);
   return await walletObj.save();
 }
 
-//function to validate reedeemSafetyPoint body
-function validationReedeemSafetPointBody(body) {
-  const joiReedeemSafetyPointSchema = new Joi.object({
-    safetyPoint: Joi.number().required(),
-    creditPoint: Joi.number().required(),
-    User: Joi.string().required(),
-  });
-  return joiReedeemSafetyPointSchema.validate(details);
-}
+// //function to validate reedeemSafetyPoint body
+// function validationReedeemSafetPointBody(body) {
+//   const joiReedeemSafetyPointSchema = new Joi.object({
+//     safetyPoint: Joi.number().required(),
+//     creditPoint: Joi.number().required(),
+//     User: Joi.string().required(),
+//   });
+//   return joiReedeemSafetyPointSchema.validate(details);
+// }
 
 module.exports = {
   createWallet,

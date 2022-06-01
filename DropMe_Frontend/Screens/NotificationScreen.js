@@ -14,16 +14,20 @@ import axios from "axios";
 import { AuthContext } from "../Component/Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AcceptRating from "./AcceptRating";
+import { useIsFocused } from "@react-navigation/native";
 
 const NotificationScreen = ({ navigation }) => {
   const [notificationList, setNotification] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [isUpdated, setUpdated] = useState(false);
-  const [tripRideId,setTripRideId] = useState(null)
+  const [tripRideId, setTripRideId] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
-  const [markReadNotificationObject, setMarkReadNotificationObject] = useState(null);
+  const [markReadNotificationObject, setMarkReadNotificationObject] =
+    useState(null);
+
+  const isFocused = useIsFocused();
 
   async function markAllRead() {
     try {
@@ -64,7 +68,7 @@ const NotificationScreen = ({ navigation }) => {
           },
         }
       );
-     // console.log(result.data);
+      // console.log(result.data);
       setUpdated(true);
     } catch (ex) {
       console.log("Exception in mark notification", ex.response);
@@ -73,27 +77,36 @@ const NotificationScreen = ({ navigation }) => {
   }
 
   const redirectToPage = (notificationObj) => {
-    let notificationType=notificationObj.notificationType;
+    let notificationType = notificationObj.notificationType;
     // alert(notificationType);
-    switch (notificationType) {
-      case "Wallet":
-        navigation.navigate("WalletStack");
-        return;
-      case "Ride":
-        navigation.navigate("RideStack");
-        return;
-      case "Trip":
-        navigation.navigate("TripsStack");
-        return;
-      case "Trip Completed":
-        setTripRideId(notificationObj.tripRideId);
+    // switch (notificationType) {
+    //   case "Wallet": 
+        if(notificationType!="Trip Completed") {
+          navigation.navigate("Slide",{notificationType:notificationType});
+          return;
+        } else {
+          setTripRideId(notificationObj.tripRideId);
         setMarkReadNotificationObject(notificationObj._id);
         console.log(notificationObj.tripRideId);
         setModalVisible(true);
         return;
-      default:
-        return;
-    }
+        }
+       
+    //   case "Ride":
+    //     navigation.navigate("RideStack");
+    //     return;
+    //   case "Trip":
+    //     navigation.navigate("TripsStack");
+    //     return;
+    //   case "Trip Completed":
+    //     setTripRideId(notificationObj.tripRideId);
+    //     setMarkReadNotificationObject(notificationObj._id);
+    //     console.log(notificationObj.tripRideId);
+    //     setModalVisible(true);
+    //     return;
+    //   default:
+    //     return;
+    // }
   };
 
   useEffect(() => {
@@ -125,7 +138,7 @@ const NotificationScreen = ({ navigation }) => {
 
     loadNotifications();
     return () => (mounted = false);
-  }, [isUpdated]);
+  }, [isUpdated, isFocused]);
 
   function getNotification() {
     return (
@@ -137,11 +150,12 @@ const NotificationScreen = ({ navigation }) => {
               <Text fontWeight={"bold"}>How was the ride?</Text>
             </Modal.Header>
             <Modal.Body>
-              <AcceptRating tripRideId={tripRideId} 
-              setModalVisible={setModalVisible} 
-              notificationObject={markReadNotificationObject}
-              markReadNotification={markReadNotification}
-                />
+              <AcceptRating
+                tripRideId={tripRideId}
+                setModalVisible={setModalVisible}
+                notificationObject={markReadNotificationObject}
+                markReadNotification={markReadNotification}
+              />
             </Modal.Body>
           </Modal.Content>
         </Modal>
@@ -155,6 +169,7 @@ const NotificationScreen = ({ navigation }) => {
             borderRadius={10}
             bg={"white"}
             w="95%"
+            shadow={2}
           >
             <Box
               alignItems={"center"}
@@ -162,10 +177,7 @@ const NotificationScreen = ({ navigation }) => {
               maxW="90%"
               minWidth={"90%"}
             >
-              <Text
-                fontSize={15}
-                onPress={() => redirectToPage(msg)}
-              >
+              <Text fontSize={15} onPress={() => redirectToPage(msg)}>
                 {msg.message}
               </Text>
             </Box>
@@ -197,6 +209,7 @@ const NotificationScreen = ({ navigation }) => {
         flexDirection={"column"}
         alignItems={"center"}
         bg={"#F0F8FF"}
+        mb={"14%"}
       >
         {notificationList.length != 0 ? (
           getNotification()

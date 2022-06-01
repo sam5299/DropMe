@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useReducer, useEffect } from "react";
+import React, { useMemo, useReducer, useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "../../Screens/Home";
 import Login from "./Login";
@@ -7,6 +7,7 @@ import Splash from "../Splash";
 import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Forgot from "./Forgot";
+import * as Notifications from "expo-notifications";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,7 @@ const Main = () => {
     userToken: null,
     animating: true,
   };
+  let [pushToken, setPushToken] = useState("");
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -83,9 +85,49 @@ const Main = () => {
     []
   );
 
+  let registerForPushNotificationsAsync = async () => {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    const token = (await Notifications.getExpoPushTokenAsync()).data;
+    //console.log(token);
+    setPushToken({ expoPushToken: token });
+
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+  };
+
+  // let handleNotification = notification => {
+  //   console.log("handle notification called in main..");
+  //   //this.setState({ notification: notification });
+  // };
+
+  let handleNotificationResponse = (response) => {
+    //console.log("handle notification response called in main..");
+    //console.log(response);
+  };
+
   useEffect(() => {
     let mounted = true;
     let userToken = null;
+    if (routingPath) {
+      console.log(routingPath);
+    }
+
     setTimeout(async () => {
       try {
         const User = await AsyncStorage.getItem("User");
@@ -93,8 +135,23 @@ const Main = () => {
           const parseUser = JSON.parse(User);
           userToken = parseUser.userToken;
         }
+
+        registerForPushNotificationsAsync();
+        //Notifications.addNotificationReceivedListener(handleNotification);
+
+        Notifications.addNotificationResponseReceivedListener(
+          handleNotificationResponse
+        );
+
+        Notifications.setNotificationHandler({
+          handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: true,
+            shouldSetBadge: false,
+          }),
+        });
       } catch (e) {
-        console.log("main", e.response.data);
+        console.log("main", e);
       }
       if (mounted) {
         dispatch({ type: "RETRIVE_TOKEN", token: userToken });

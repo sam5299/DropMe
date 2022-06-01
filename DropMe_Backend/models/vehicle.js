@@ -12,7 +12,7 @@ const vehicleSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: true },
   vehicleClass: {
     type: String,
-    enum: ["SUV", "HatchBack", "Sedan", "NormalBike", "SportBike", "Scooter"],
+    enum: ["SUV", "HatchBack", "Sedan", "Normal Bike", "Sport Bike", "Scooter"],
     required: true,
   },
   vehicleType: {

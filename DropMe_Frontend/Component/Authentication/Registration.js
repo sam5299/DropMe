@@ -17,6 +17,10 @@ import {
   IconButton,
   CloseIcon,
 } from "native-base";
+//import { Permissions, Notifications } from "expo";
+// import * as Permissions from 'expo-permissions';
+// import  * as Notifications from 'expo-notifications';
+
 import * as ImagePicker from "expo-image-picker";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { AuthContext } from "../Context";
@@ -43,7 +47,7 @@ const Registration = ({ navigation }) => {
     profile:
       "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png",
   };
-
+ // const [expoToken, setExpoToken] = useState(null);
   const reducer = (state, action) => {
     switch (action.type) {
       case "name":
@@ -88,11 +92,70 @@ const Registration = ({ navigation }) => {
     state: { name, email, mobileNumber, password },
   });
 
+  // Notifications.setNotificationHandler({
+  //   handleNotification: async () => ({
+  //     shouldShowAlert: true,
+  //     shouldPlaySound: false,
+  //     shouldSetBadge: false,
+  //   }),
+  // });
+
+  const registerForPushNotificationsAsync = async () => {
+
+    // const { status: existingStatus } = await Permissions.getAsync(
+    //   Permissions.NOTIFICATIONS
+    // );
+    // let finalStatus = existingStatus;
+
+    // // let tmp=Notifications.Push
+    // // only ask if permissions have not already been determined, because
+    // // iOS won't necessarily prompt the user a second time.
+    // if (existingStatus !== "granted") {
+    //   // Android remote notification permissions are granted during the app
+    //   // install, so this will only ask on iOS
+    //   const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    //   finalStatus = status;
+    // }
+
+    // // Stop here if the user did not grant permissions
+    // if (finalStatus !== "granted") {
+    //   return;
+    // }
+
+
+    try {
+      // Get the token that uniquely identifies this device
+      // let token = await Notifications.getExpoPushTokenAsync();
+    const settings = await Notifications.getPermissionsAsync();
+      console.log("Setting:",settings);
+      // Get the token that uniquely identifies this device
+     let token = await Notifications.getExpoPushTokenAsync();
+
+      console.log("2222",token);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     let mounted = true;
 
+    // // registerForPushNotificationsAsync().then(token => setExpoToken(token));
+    // let getPermission = async () => {
+    //   try {
+        
+    //     // Get the token that uniquely identifies this device
+    //     let token = await registerForPushNotificationsAsync();
+    //   //  console.log(token.data);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
+
+    // getPermission();
+
     return () => (mounted = false);
-  });
+  }, []);
 
   const uploadImage = async () => {
     try {
@@ -190,27 +253,18 @@ const Registration = ({ navigation }) => {
       alignItems={"center"}
       justifyContent={"center"}
       flex="1"
-      bg={"#F0F8FF"}
+      bg={"#e7feff"}
       minH="20%"
     >
       <Box
         width={"90%"}
         rounded="lg"
         overflow="hidden"
-        borderColor="coolGray.200"
+        borderColor="white"
         borderWidth="1"
-        _dark={{
-          borderColor: "coolGray.600",
-          backgroundColor: "gray.700",
-        }}
-        _web={{
-          shadow: 2,
-          borderWidth: 0,
-        }}
-        _light={{
-          backgroundColor: "gray.50",
-        }}
+        backgroundColor={"white"}
         alignItems={"center"}
+        shadow={3}
       >
         {showAlert ? AlertField : ""}
         <FormControl m={5} alignItems={"center"}>
@@ -234,7 +288,6 @@ const Registration = ({ navigation }) => {
                 uri: state.profile,
               }}
             >
-              Vehicle Image
               <Avatar.Badge bg="green.500" />
             </Avatar>
           </TouchableHighlight>

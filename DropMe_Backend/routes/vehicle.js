@@ -39,6 +39,12 @@ router.post("/addVehicle", auth, async (req, res) => {
   delete req.body.User;
   console.log("add Vehicle called....");
   try {
+    //check if vehicle with same number already present in database or not
+    let vehicle = await checkVehicleAlreadyExits(req.body.vehicleNumber);
+    if (vehicle != null && vehicle.isDeleted === false) {
+      return res.status(400).send("Vehicle already exists,cannot add!");
+    }
+
     if ("licenseNumber" in req.body && "licenseImage" in req.body) {
       console.log("licenseNumber and licenseImage is present");
       let { error } = await validateLicenseNumber({
@@ -50,7 +56,7 @@ router.post("/addVehicle", auth, async (req, res) => {
         req.body.licenseNumber
       );
       if (isLicenseNumberPresent)
-        return res.status(400).send("Licence number already present");
+        return res.status(400).send("License number already present");
       console.log("License number is not present");
       let updatedUser = await updateUserLicenseDetails(
         req.body.userId,
@@ -81,7 +87,7 @@ router.post("/addVehicle", auth, async (req, res) => {
     let { error } = validateVehicleDetails(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    let vehicle = await checkVehicleAlreadyExits(req.body.vehicleNumber);
+    // let vehicle = await checkVehicleAlreadyExits(req.body.vehicleNumber);
     if (vehicle != null) {
       if (vehicle.isDeleted == false)
         return res.status(400).send("Vehicle already exists, cannot add!");

@@ -6,34 +6,25 @@ import {
   Stack,
   Image,
   Text,
-  Icon,
   Button,
   ScrollView,
-  // Alert,
-  VStack,
-  HStack,
-  IconButton,
-  CloseIcon,
-  Fab,
   Spinner,
   useToast,
 } from "native-base";
 import axios from "axios";
 import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { Ionicons } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
+
 const ViewVehicles = () => {
   const [vehicleDetails, setVehicle] = useState([]);
   const [userToken, setToken] = useState(null);
 
   const { getUrl } = useContext(AuthContext);
   const url = getUrl();
-  const [isLoading, setIsLoading] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-  const [status, setStatus] = useState({ status: "", title: "" });
   const [fetching, setFetching] = useState(true);
 
+  const isFocused = useIsFocused();
   //toast field
   const toast = useToast();
 
@@ -55,36 +46,14 @@ const ViewVehicles = () => {
           setFetching(false);
         }
       } catch (error) {
-        console.log("Exception", error.response.data);
+        console.log("Exception in view vehicles", error.response.data);
         setFetching(false);
       }
     }
 
     getVehicleDetails();
     return () => (mounted = false);
-  }, []);
-
-  // let AlertField = (
-  //   <Alert w="100%" status={status.status}>
-  //     <VStack space={2} flexShrink={1} w="100%">
-  //       <HStack flexShrink={1} space={2} justifyContent="space-between">
-  //         <HStack space={2} flexShrink={1}>
-  //           <Alert.Icon mt="1" />
-  //           <Text fontSize="md" color="coolGray.800">
-  //             {status.title}
-  //           </Text>
-  //         </HStack>
-  //         <IconButton
-  //           variant="unstyled"
-  //           _focus={{
-  //             borderWidth: 0,
-  //           }}
-  //           icon={<CloseIcon size="3" color="coolGray.600" />}
-  //         />
-  //       </HStack>
-  //     </VStack>
-  //   </Alert>
-  // );
+  }, [isFocused]);
 
   const showConfirmDialog = (vehicle) => {
     return NewAlert.alert(
@@ -129,17 +98,10 @@ const ViewVehicles = () => {
         placement: "top",
       });
 
-      // setStatus({ status: "success", title: result.data });
-      // setShowAlert(true);
-      // setTimeout(() => {
-      //setShowAlert(false);
       let newVehicle = vehicleDetails.filter(
         (vehicleObj) => vehicleObj._id != vehicle._id
       );
       setVehicle(newVehicle);
-      // }, 2000);
-
-      setIsLoading(false);
     } catch (ex) {
       toast.show({
         render: () => {
@@ -152,19 +114,12 @@ const ViewVehicles = () => {
         placement: "top",
       });
       console.log(ex.response.data);
-      setIsLoading(false);
-
-      // setStatus({ status: "error", title: ex.response.data });
-      // setShowAlert(true);
-      // setTimeout(() => {
-      //   setShowAlert(false);
-      // }, 2000);
     }
   }
 
   function getVehicle() {
     return (
-      <ScrollView>
+      <ScrollView mb="12%">
         {vehicleDetails.map((vehicle) => (
           <Stack
             key={vehicle._id}
@@ -206,14 +161,10 @@ const ViewVehicles = () => {
             </Text>
             <Box>
               <Button
-                isLoadingText="Removing vehicle.."
                 size="md"
                 mt={5}
                 onPress={() => {
-                  // setStatus({ status: "error", title: "Remvoing vehicle.." });
-                  // setShowAlert(true);
                   showConfirmDialog(vehicle);
-                  //removeVehicle(vehicle);
                 }}
               >
                 <Text fontSize={"lg"} color="white">
@@ -241,7 +192,6 @@ const ViewVehicles = () => {
   } else {
     return (
       <Box flex={1} bg={"#F0F8FF"}>
-        <Box>{showAlert ? AlertField : ""}</Box>
         <Box flex={1} alignItems={"center"} justifyContent={"center"}>
           {vehicleDetails.length ? (
             getVehicle()
