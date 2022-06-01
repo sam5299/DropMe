@@ -133,10 +133,12 @@ const UserProfile = () => {
               p="2"
             >
               <Heading size="md">
-                {(
-                  userDetails.totalNumberOfRides /
-                  userDetails.totalNumberOfRatedRides
-                ).toPrecision(2)}
+                {userDetails.totalNumberOfRatedRides == 0
+                  ? 0
+                  : (
+                      userDetails.totalNumberOfRides /
+                      userDetails.totalNumberOfRatedRides
+                    ).toPrecision(2)}
               </Heading>
               <Text fontSize={"15"}>Rating</Text>
             </Box>

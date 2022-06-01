@@ -184,7 +184,7 @@ const AddVehicle = ({ route, navigation }) => {
         maxW="300"
         defaultValue={seatingCapacity}
         minValue={1}
-        maxValue={7}
+        maxValue={6}
         accessibilityLabel="Seating Capacity"
         step={1}
         onChange={(v) => {
@@ -301,7 +301,7 @@ const AddVehicle = ({ route, navigation }) => {
                     ]);
                   } else {
                     setFuelTypeArray(["Petrol", "Diesel", "CNG", "Electric"]);
-                    setVehicleClassArray(["HatchBack", "Sedan", "SUV"]);
+                    setVehicleClassArray(["Hatch Back", "Sedan", "SUV"]);
                   }
                 }}
               >

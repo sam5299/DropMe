@@ -31,7 +31,6 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
 import { useIsFocused } from "@react-navigation/native";
-import * as Notifications from 'expo-notifications';
 
 function TripBooked() {
   const [bookedTripList, setBookedTripList] = useState([]);
@@ -47,10 +46,6 @@ function TripBooked() {
 
   //toast field
   const toast = useToast();
-
-  //button disable 
-  const [showButton, setShowButton] = useState(true);
-  
 
   const showConfirmDialog = (tripRideId, amount, notificationToken) => {
     return NewAlert.alert(
@@ -121,14 +116,6 @@ function TripBooked() {
       console.log("Exception in TripBooked", ex.response.data);
     }
   }
-
-  //handle upcoming push notification event disable the button
-  let handleNotification = async(notification) => {
-      console.log("handle notification called in Trip booked..");
-      setShowButton(false);
-      
-    };
-
   useEffect(() => {
     let mounted = true;
     async function loadBookedList() {
@@ -146,24 +133,13 @@ function TripBooked() {
           setBookedTripList(result.data);
           setToken(parseUser.userToken);
           setIsBookedTripFetchDone(false);
-
-          //push notification wala thing handle here
-          Notifications.addNotificationReceivedListener(handleNotification);
-
-          Notifications.setNotificationHandler({
-            handleNotification: async () => ({
-              shouldShowAlert: true,
-              shouldPlaySound: true,
-              shouldSetBadge: false,
-            }),
-          });
-
         }
       } catch (ex) {
         console.log("Exception", ex.response.data);
         setIsBookedTripFetchDone(false);
       }
     }
+
     loadBookedList();
     return () => (mounted = false);
   }, [isFocused]);
@@ -256,13 +232,13 @@ function TripBooked() {
                           <Stack space={2} direction={"row"}>
                             <MaterialCommunityIcons
                               name="keyboard"
-                              size={20}
+                              size={25}
                               color="green"
                             />
                             <Text fontSize={18}>{trip.token}</Text>
                           </Stack>
 
-                          {showButton && trip.status==="Booked" ? (
+                          {trip.status === "Booked" ? (
                             <Button
                               size={"lg"}
                               bg={"#e8000d"}
@@ -523,4 +499,15 @@ function TripBooked() {
 
 export default TripBooked;
 
-
+const styles = StyleSheet.create({
+  details: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  riderDetails: {
+    fontSize: 16,
+    fontWeight: "bold",
+    margin: 3,
+  },
+  TripDetails: { fontSize: 15 },
+});
