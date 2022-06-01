@@ -111,7 +111,7 @@ function TripBooked() {
   let handleNotification = async(notification) => {
       console.log("handle notification called in Trip booked..");
       setShowButton(false);
-      ;
+      
     };
 
   useEffect(() => {
