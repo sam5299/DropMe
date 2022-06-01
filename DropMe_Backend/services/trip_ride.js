@@ -108,23 +108,19 @@ async function deleteBookedTrip(tripRideId) {
   let timeDifference = getTimeDifference(tripRideObj.date + ";" + currentTime);
   // console.log("time difference:" + timeDifference);
   //check if cancellation time is above 10 hrs then trip deposit will be refunded
-  if (timeDifference >= 10) {
+  if (timeDifference <= 10) {
     let depositAmount = parseInt(tripRideObj.amount * 0.1);
-    // console.log("penalty", depositAmount);
-
-    // update passengers used credits
-    let result = await updateUsedCredit(
-      tripRideObj.PassengerId._id,
-      tripRideObj.amount * -1
-    );
 
     // update passenger wallet by applying panelty
     let updateWalletResult = await updateWallet(
       tripRideObj.PassengerId._id,
       depositAmount * -1
     );
-    if (!result) console.log("error while adding deposit amount");
-
+    // console.log('====================================');
+    // console.log("Deposit amount",depositAmount * -1);
+    // console.log('====================================');
+      if(!updateWalletResult)
+      console.log("Error in update wallet in cancel trip");
     //add code to add new entry in wallet_history collection for deducted credit point
     let body = {
       User: tripRideObj.PassengerId._id,
@@ -139,10 +135,18 @@ async function deleteBookedTrip(tripRideId) {
     console.log("WalletHistory in trip ride deleteRide function");
   }
 
+   // update passengers used credits
+   let result = await updateUsedCredit(
+    tripRideObj.PassengerId._id,
+    tripRideObj.amount * -1
+  );
+  if (!result) console.log("error while adding used credit in cancel trip");
+
+
   let notificationDetails = {
     fromUser: tripRideObj.PassengerId._id,
     toUser: tripRideObj.RaiderId,
-    message: `Your booked trip from ${tripRideObj.rideId.source} to ${tripRideObj.rideId.destination} is canceled by ${tripRideObj.PassengerId.name}. `,
+    message: `Your booked trip from ${tripRideObj.rideId.source} to ${tripRideObj.rideId.destination} is cancelled by ${tripRideObj.PassengerId.name}. `,
     notificationType: "Ride",
   };
 
