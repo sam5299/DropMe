@@ -69,7 +69,14 @@ const AcceptRejectRequest = ({ route, navigation }) => {
       //  console.log(amount);
       const result = await axios.post(
         url + "/ride/acceptTripRequest",
-        { tripId, rideId, raiderName, amount, vehicleNumber,notificationToken },
+        {
+          tripId,
+          rideId,
+          raiderName,
+          amount,
+          vehicleNumber,
+          notificationToken,
+        },
         { headers: { "x-auth-token": token } }
       );
       {
@@ -134,7 +141,7 @@ const AcceptRejectRequest = ({ route, navigation }) => {
           raiderName,
           source,
           destination,
-          notificationToken
+          notificationToken,
         },
         { headers: { "x-auth-token": token } }
       );
