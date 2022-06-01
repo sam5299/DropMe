@@ -17,8 +17,8 @@ import {
   FontAwesome,
   Entypo,
   MaterialCommunityIcons,
+  Ionicons,
 } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
 import { Rating, AirbnbRating } from "react-native-ratings";
 import axios from "axios";
 import { AuthContext } from "../Context";

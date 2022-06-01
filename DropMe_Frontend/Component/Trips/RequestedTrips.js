@@ -3,15 +3,30 @@ import { Alert as NewAlert } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
 import {
   Box,
-  Button,
-  Image,
-  ScrollView,
-  Stack,
   Text,
+  Stack,
+  Image,
+  Button,
+  ScrollView,
+  Input,
   Spinner,
   useToast,
+  AspectRatio,
+  HStack,
+  Heading,
+  Divider,
+  Center,
   Modal,
 } from "native-base";
+import {
+  FontAwesome,
+  Entypo,
+  MaterialCommunityIcons,
+  Ionicons,
+  AntDesign,
+  EvilIcons,
+} from "@expo/vector-icons";
+
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
@@ -155,7 +170,57 @@ function RequestedTrips() {
             }}
           >
             <Box>
-              <Stack direction={"column"} space={2}>
+              <Stack p="4" space={3}>
+                <Text fontWeight="400">
+                  <Text fontSize={15} fontWeight="bold" color="black">
+                    <MaterialCommunityIcons
+                      name="ray-start-arrow"
+                      size={20}
+                      color="green"
+                    />
+                  </Text>
+                  <Text fontSize={15}>{trip.source}</Text>
+                </Text>
+                <Text fontWeight="400">
+                  <Text fontSize={20} fontWeight="bold" color="black">
+                    <MaterialCommunityIcons
+                      name="ray-start-end"
+                      size={18}
+                      color="green"
+                    />
+                  </Text>
+                  <Text fontSize={15}> {trip.destination}</Text>
+                </Text>
+                <Text fontWeight="400">
+                  <Text fontSize={18} fontWeight="bold" color="black">
+                    <Ionicons
+                      name="ios-location-outline"
+                      size={20}
+                      color="green"
+                    />
+                  </Text>
+                  <Text fontSize={15}> {trip.pickupPoint}</Text>
+                </Text>
+                <Text fontWeight="400">
+                  <Text fontSize={20} fontWeight="bold">
+                    <EvilIcons name="calendar" size={20} color="green" />
+                  </Text>
+                  <Text fontSize={15}>
+                    {trip.date}:{trip.time}
+                  </Text>
+                </Text>
+                <Button
+                  size={"md"}
+                  px={10}
+                  bg={"red.500"}
+                  onPress={() => showConfirmDialog(trip._id)}
+                  isDisabled={isButtonDisabled}
+                >
+                  Cancel Request
+                </Button>
+              </Stack>
+
+              {/* <Stack direction={"column"} space={2}>
                 <Text style={styles.details}>Source: </Text>
                 <Text style={styles.TripDetails}>{trip.source}</Text>
                 <Text style={styles.details}>Destination :</Text>
@@ -175,7 +240,7 @@ function RequestedTrips() {
                 >
                   Cancel Request
                 </Button>
-              </Stack>
+              </Stack> */}
             </Box>
           </Box>
         ))}
