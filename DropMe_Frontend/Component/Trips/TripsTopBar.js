@@ -8,6 +8,13 @@ import RequestedTrips from "./RequestedTrips";
 const Tab = createMaterialTopTabNavigator();
 
 export default function TripsTopBar() {
+
+  React.useEffect(()=>{
+    console.log("In Tripstopbar!");
+    let mounted = true;
+    return() => (mounted=false);
+  },[])
+
   return (
     <Box flex={1} mt={"1"}>
       <Tab.Navigator

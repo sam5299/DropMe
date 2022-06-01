@@ -18,6 +18,7 @@ const TripHistory = () => {
     let mounted = true;
     async function getHistory() {
       try {
+        console.log("In Trip History");
         const User = await AsyncStorage.getItem("User");
         const parseUser = JSON.parse(User);
         //console.log("getting history information.");

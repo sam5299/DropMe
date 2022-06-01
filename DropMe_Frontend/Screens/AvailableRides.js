@@ -19,6 +19,9 @@ const AvailableRides = ({ route, navigation }) => {
   const { source, destination, date, time, gender, seats, token, pickupPoint } =
     route.params;
   const { getUrl } = useContext(AuthContext);
+
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
   const [isLoading, setLoading] = useState(true);
   const url = getUrl();
 
@@ -57,6 +60,7 @@ const AvailableRides = ({ route, navigation }) => {
     tripDetails["rideId"] = ride._id;
     tripDetails["notificationToken"] = ride.User.notificationToken;
     try {
+      setIsButtonDisabled(true);
       const result = await axios.post(url + "/trip/requestRide", tripDetails, {
         headers: {
           "x-auth-token": token,
@@ -84,7 +88,9 @@ const AvailableRides = ({ route, navigation }) => {
         }
       });
       setRideDetails(newResult);
+      setIsButtonDisabled(false);
     } catch (error) {
+      setIsButtonDisabled(false);
       toast.show({
         render: () => {
           return (
@@ -189,7 +195,7 @@ const AvailableRides = ({ route, navigation }) => {
                   Free
                 </Text>
               )}
-              <Button px="10" mt={"2"} ml={2} onPress={() => sendRequest(ride)}>
+              <Button px="10" mt={"2"} ml={2} isDisabled={isButtonDisabled} onPress={() => sendRequest(ride)}>
                 <Text fontSize={"lg"} color="white">
                   Send Request
                 </Text>

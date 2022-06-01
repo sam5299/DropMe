@@ -38,7 +38,7 @@ export default function App() {
     }
     const token = (await Notifications.getExpoPushTokenAsync()).data;
     console.log(token);
-    setPushToken({ expoPushToken: token });
+    //setPushToken({ expoPushToken: token });
   
 
   if (Platform.OS === 'android') {

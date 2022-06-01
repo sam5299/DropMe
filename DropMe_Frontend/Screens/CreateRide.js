@@ -182,7 +182,7 @@ const CreateRide = ({ navigation }) => {
   } 
   };
   let handleNotificationResponse = response => {
-    //console.log("handle notification response called in create ride..");
+    console.log("handle notification response called in create ride..");
     let notificationType = response.notification.request.content.data.notificationType;
     //console.log("notification type:",notificationType);
     if(notificationType!="Login") {

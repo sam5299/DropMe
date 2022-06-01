@@ -15,6 +15,8 @@ import {
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
+import { useIsFocused } from "@react-navigation/native";
+import * as Notifications from 'expo-notifications';
 
 function TripBooked() {
   const [bookedTripList, setBookedTripList] = useState([]);
@@ -26,8 +28,14 @@ function TripBooked() {
   const [isBookedTripFetchingDone, setIsBookedTripFetchDone] = useState(true);
   let [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
+  const isFocused = useIsFocused();
+
   //toast field
   const toast = useToast();
+
+  //button disable 
+  const [showButton, setShowButton] = useState(true);
+  
 
   const showConfirmDialog = (tripRideId, amount, notificationToken) => {
     return NewAlert.alert(
@@ -40,7 +48,7 @@ function TripBooked() {
         {
           text: "Yes",
           onPress: () => {
-            CancelTrip(tripRideId,notificationToken);
+            CancelTrip(tripRideId, notificationToken);
           },
         },
         // The "No" button
@@ -55,7 +63,7 @@ function TripBooked() {
   async function CancelTrip(tripRideId, notificationToken) {
     try {
       setIsButtonDisabled(true);
-      console.log('notification token:',notificationToken);
+      console.log("notification token:", notificationToken);
       const User = await AsyncStorage.getItem("User");
       const parseUser = JSON.parse(User);
       //console.log("deleting booked ride");
@@ -98,6 +106,14 @@ function TripBooked() {
       console.log("Exception in TripBooked", ex.response.data);
     }
   }
+
+  //handle upcoming push notification event disable the button
+  let handleNotification = async(notification) => {
+      console.log("handle notification called in Trip booked..");
+      setShowButton(false);
+      ;
+    };
+
   useEffect(() => {
     let mounted = true;
     async function loadBookedList() {
@@ -115,23 +131,32 @@ function TripBooked() {
           setBookedTripList(result.data);
           setToken(parseUser.userToken);
           setIsBookedTripFetchDone(false);
+
+          //push notification wala thing handle here
+          Notifications.addNotificationReceivedListener(handleNotification);
+
+          Notifications.setNotificationHandler({
+            handleNotification: async () => ({
+              shouldShowAlert: true,
+              shouldPlaySound: true,
+              shouldSetBadge: false,
+            }),
+          });
+
         }
       } catch (ex) {
         console.log("Exception", ex.response.data);
         setIsBookedTripFetchDone(false);
       }
-      return () => (mounted = false);
     }
-
     loadBookedList();
     return () => (mounted = false);
-  }, []);
+  }, [isFocused]);
 
   function getBookedTrips() {
     return (
       <ScrollView w={"85%"} bg={"#F0F8FF"} mb="10%">
         {bookedTripList.map((trip) => (
-          
           <Box
             key={trip._id}
             display={"flex"}
@@ -192,15 +217,18 @@ function TripBooked() {
                         Token: {trip.token}
                       </Text>
 
-                      {trip.status === "Booked" ? (
+                      {showButton ? (
                         <Button
                           size={"lg"}
                           bg={"#e8000d"}
                           px={5}
                           disabled={isButtonDisabled}
-                          onPress={() =>{
-                          
-                            showConfirmDialog(trip._id, trip.amount,trip.RaiderId.notificationToken)
+                          onPress={() => {
+                            showConfirmDialog(
+                              trip._id,
+                              trip.amount,
+                              trip.RaiderId.notificationToken
+                            );
                           }}
                         >
                           Cancel trip

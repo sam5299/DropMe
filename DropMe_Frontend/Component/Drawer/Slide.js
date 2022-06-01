@@ -16,6 +16,7 @@ const Slide = ({route,navigation}) => {
 
 
   React.useEffect(()=> {
+    let mounted = true;
     if(route.params) {
       console.log("navigated to slide!");
       const {notificationType} = route.params;
@@ -40,8 +41,9 @@ const Slide = ({route,navigation}) => {
           break;
       }
     }
+    return() => (mounted=false);
   },[route.params])
-
+  // 
   return (
     <View style={{ flex: 1 }} collapsable={false}>
       <SliderStack.Navigator initialRouteName="Menu">
