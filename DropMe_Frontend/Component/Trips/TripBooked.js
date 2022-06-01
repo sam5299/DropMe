@@ -47,6 +47,8 @@ function TripBooked() {
   //toast field
   const toast = useToast();
 
+  const [showButton, setShowButton] = useState(true);
+
   const showConfirmDialog = (tripRideId, amount, notificationToken) => {
     return NewAlert.alert(
       "Are your sure?",
