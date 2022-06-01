@@ -14,6 +14,7 @@ import axios from "axios";
 import { AuthContext } from "../Component/Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AcceptRating from "./AcceptRating";
+import { useIsFocused } from "@react-navigation/native";
 
 const NotificationScreen = ({ navigation }) => {
   const [notificationList, setNotification] = useState([]);
@@ -25,6 +26,8 @@ const NotificationScreen = ({ navigation }) => {
   const url = getUrl();
   const [markReadNotificationObject, setMarkReadNotificationObject] =
     useState(null);
+
+  const isFocused = useIsFocused();
 
   async function markAllRead() {
     try {
@@ -126,7 +129,7 @@ const NotificationScreen = ({ navigation }) => {
 
     loadNotifications();
     return () => (mounted = false);
-  }, [isUpdated]);
+  }, [isUpdated, isFocused]);
 
   function getNotification() {
     return (
@@ -157,6 +160,7 @@ const NotificationScreen = ({ navigation }) => {
             borderRadius={10}
             bg={"white"}
             w="95%"
+            shadow={2}
           >
             <Box
               alignItems={"center"}

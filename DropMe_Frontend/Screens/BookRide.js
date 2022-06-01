@@ -18,7 +18,7 @@ import { useValidation } from "react-native-form-validator";
 import { AuthContext } from "../Component/Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import * as Notifications from 'expo-notifications';
+import * as Notifications from "expo-notifications";
 
 const initialState = {
   source: "",
@@ -104,9 +104,7 @@ const reducer = (state, action) => {
   }
 };
 
-
-
-const BookRide = ({route,navigation}) => {
+const BookRide = ({ route, navigation }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [gender, setGender] = useState("");
   const [token, setToken] = useState("");
@@ -122,18 +120,19 @@ const BookRide = ({route,navigation}) => {
   });
 
   //handle push notification thing
-  let handleNotificationResponse = response => {
+  let handleNotificationResponse = (response) => {
     console.log("handle notification response called in book ride..");
-    let notificationType = response.notification.request.content.data.notificationType;
-    console.log("notification object in book ride.js:",notificationType);
-    if(notificationType!="Login") {
-      navigation.navigate("Slide",{
-       notificationType:notificationType
+    let notificationType =
+      response.notification.request.content.data.notificationType;
+    console.log("notification object in book ride.js:", notificationType);
+    if (notificationType != "Login") {
+      navigation.navigate("Slide", {
+        notificationType: notificationType,
       });
     } //else {
-      // navigation.navigate("Slide",{
-      //   notificationType:notificationType
-      //  });
+    // navigation.navigate("Slide",{
+    //   notificationType:notificationType
+    //  });
     //}
   };
 
@@ -158,7 +157,9 @@ const BookRide = ({route,navigation}) => {
           dispatch({ type: "date", payload: todaysDate.toDateString() });
           dispatch({ type: "time", payload: time });
           //handling notification
-          Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
+          Notifications.addNotificationResponseReceivedListener(
+            handleNotificationResponse
+          );
         }
       } catch (error) {
         console.log("BookRide: ", error.response.data);
@@ -220,8 +221,16 @@ const BookRide = ({route,navigation}) => {
   };
 
   return (
-    <Box flex={1} bg={"#F0F8FF"} justifyContent="center">
-      <Box>
+    <Box flex={1} bg={"#e7feff"} justifyContent="center">
+      <Box
+        bg="white"
+        py={"5"}
+        mx={2}
+        borderRadius="10"
+        borderWidth={1}
+        borderColor={"white"}
+        shadow={3}
+      >
         <ScrollView>
           <FormControl p={1}>
             <SourceDestination dispatch={dispatch} />
