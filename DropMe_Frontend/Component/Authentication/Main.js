@@ -7,21 +7,19 @@ import Splash from "../Splash";
 import { AuthContext } from "../Context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Forgot from "./Forgot";
-import * as Notifications from 'expo-notifications';
+import * as Notifications from "expo-notifications";
 
 const Stack = createNativeStackNavigator();
 
-const Main = ({routingPath}) => {
-  const url = "http://192.168.43.180:3100";
+const Main = ({ routingPath }) => {
+  const url = "http://192.168.43.195:3100";
 
   const initialState = {
     userName: null,
     userToken: null,
     animating: true,
-  }
+  };
   let [pushToken, setPushToken] = useState("");
-
- 
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -88,46 +86,45 @@ const Main = ({routingPath}) => {
   );
 
   let registerForPushNotificationsAsync = async () => {
-   
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
-        return;
-      }
-      const token = (await Notifications.getExpoPushTokenAsync()).data;
-      //console.log(token);
-      setPushToken({ expoPushToken: token });
-    
-  
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    const token = (await Notifications.getExpoPushTokenAsync()).data;
+    //console.log(token);
+    setPushToken({ expoPushToken: token });
+
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
+        lightColor: "#FF231F7C",
       });
     }
-    };
+  };
 
-    // let handleNotification = notification => {
-    //   console.log("handle notification called in main..");
-    //   //this.setState({ notification: notification });
-    // };
-  
-    let handleNotificationResponse = response => {
-      //console.log("handle notification response called in main..");
-      //console.log(response);
-    };
+  // let handleNotification = notification => {
+  //   console.log("handle notification called in main..");
+  //   //this.setState({ notification: notification });
+  // };
+
+  let handleNotificationResponse = (response) => {
+    //console.log("handle notification response called in main..");
+    //console.log(response);
+  };
 
   useEffect(() => {
     let mounted = true;
     let userToken = null;
-    if(routingPath) {
+    if (routingPath) {
       console.log(routingPath);
     }
 
@@ -141,8 +138,10 @@ const Main = ({routingPath}) => {
 
         registerForPushNotificationsAsync();
         //Notifications.addNotificationReceivedListener(handleNotification);
-    
-        Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
+
+        Notifications.addNotificationResponseReceivedListener(
+          handleNotificationResponse
+        );
 
         Notifications.setNotificationHandler({
           handleNotification: async () => ({
@@ -151,7 +150,6 @@ const Main = ({routingPath}) => {
             shouldSetBadge: false,
           }),
         });
-        
       } catch (e) {
         console.log("main", e);
       }

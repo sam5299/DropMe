@@ -11,24 +11,25 @@ import HelpPage from "../../Screens/HelpPage";
 import UserProfile from "../Profile/UserProfile";
 const SliderStack = createNativeStackNavigator();
 
-const Slide = ({route,navigation}) => {
-
-
-
-  React.useEffect(()=> {
+const Slide = ({ route, navigation }) => {
+  React.useEffect(() => {
     let mounted = true;
-    if(route.params) {
+    if (route.params) {
       console.log("navigated to slide!");
-      const {notificationType} = route.params;
-      console.log("notificationType:",notificationType)
-      switch(notificationType) {
+      const { notificationType } = route.params;
+      console.log("notificationType:", notificationType);
+      switch (notificationType) {
         case "Ride":
           console.log("Ride notification and redirecting to Ride");
-          navigation.navigate("RideStack",{notificationType:notificationType})
+          navigation.navigate("RideStack", {
+            notificationType: notificationType,
+          });
           break;
         case "Trip":
           console.log("navigating to TripStack");
-          navigation.navigate("TripsStack",{notificationType:notificationType})
+          navigation.navigate("TripsStack", {
+            notificationType: notificationType,
+          });
           break;
         case "Wallet":
           navigation.navigate("WalletStack");

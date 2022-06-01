@@ -5,7 +5,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Slide from "./Drawer/Slide";
 import BookeRideStack from "../Screens/BookeRideStack";
 import Notification from "../Screens/NotificationScreen";
-import { Badge, VStack } from "native-base";
+import { Badge, Text, VStack } from "native-base";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -39,11 +39,13 @@ export default function BottomBar() {
             tabBarActiveBackgroundColor: "red",
             tabBarLabel: "Create Ride",
             tabBarIcon: ({ color, focused }) => (
-              <MaterialCommunityIcons
-                name="bike-fast"
-                color={color}
-                size={25}
-              />
+              <>
+                <MaterialCommunityIcons
+                  name="bike-fast"
+                  color={color}
+                  size={25}
+                />
+              </>
             ),
           }}
         />
@@ -64,23 +66,7 @@ export default function BottomBar() {
           options={{
             tabBarLabel: "Notifications",
             tabBarIcon: ({ color }) => (
-              <VStack>
-                <Badge // bg="red.400"
-                  colorScheme="green"
-                  rounded="full"
-                  mb={-4}
-                  mr={-4}
-                  zIndex={1}
-                  variant="solid"
-                  alignSelf="flex-end"
-                  _text={{
-                    fontSize: 10,
-                  }}
-                >
-                  {getNotificationCount()}
-                </Badge>
-                <MaterialCommunityIcons name="bell" color={color} size={26} />
-              </VStack>
+              <MaterialCommunityIcons name="bell" color={color} size={26} />
             ),
           }}
         />
