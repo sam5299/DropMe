@@ -118,6 +118,13 @@ function TripBooked() {
       console.log("Exception in TripBooked", ex.response.data);
     }
   }
+
+  //handle upcoming push notification event disable the button will be disabled and shown as ride inititated
+  let handleNotification = async (notification) => {
+    console.log("handle notification called in Trip booked..");
+    setShowButton(false);
+  };
+
   useEffect(() => {
     let mounted = true;
     async function loadBookedList() {
