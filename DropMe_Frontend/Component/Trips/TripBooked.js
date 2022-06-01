@@ -269,7 +269,7 @@ function TripBooked() {
                             />
                             <Text fontSize={18}>{trip.token}</Text>
                           </Box>
-
+                          {/* here condition checked for button */}
                           {showButton && trip.status==="Booked" ? (
                             <Button
                               size={"lg"}
