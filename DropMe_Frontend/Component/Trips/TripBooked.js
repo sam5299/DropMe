@@ -122,7 +122,7 @@ function TripBooked() {
     }
   }
 
-  //handle upcoming push notification event disable the button
+  //handle upcoming push notification event disable the button will be disabled and shown as ride inititated
   let handleNotification = async(notification) => {
       console.log("handle notification called in Trip booked..");
       setShowButton(false);
