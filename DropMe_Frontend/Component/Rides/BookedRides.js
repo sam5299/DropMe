@@ -60,8 +60,13 @@ const BookedRides = ({ navigation }) => {
     return () => (mounted = false);
   }, [isTripStarted, isFocused]);
 
-  const startTrip = async (tripRideId, tripId, status, token, notificationToken) => {
-    
+  const startTrip = async (
+    tripRideId,
+    tripId,
+    status,
+    token,
+    notificationToken
+  ) => {
     if (passengerToken === "" || passengerToken != token) {
       console.log(passengerToken);
       toast.show({
@@ -115,7 +120,13 @@ const BookedRides = ({ navigation }) => {
     }
   };
 
-  const endTrip = async (tripRideId, tripId, status, token, notificationToken) => {
+  const endTrip = async (
+    tripRideId,
+    tripId,
+    status,
+    token,
+    notificationToken
+  ) => {
     try {
       setIsButtonDisabled(true);
       //send notification to route in body
@@ -153,7 +164,13 @@ const BookedRides = ({ navigation }) => {
     }
   };
 
-  const showConfirmDialog = (tripRideId, tripId, status, amount, notificationToken) => {
+  const showConfirmDialog = (
+    tripRideId,
+    tripId,
+    status,
+    amount,
+    notificationToken
+  ) => {
     return NewAlert.alert(
       "Are your sure?",
       `Canceling a ride will reduce your safety points by ${parseInt(
@@ -328,7 +345,13 @@ const BookedRides = ({ navigation }) => {
                   bg={"#03c03c"}
                   w={"100%"}
                   onPress={() =>
-                    endTrip(ride._id, ride.tripId._id, "Completed", ride.token,ride.PassengerId.notificationToken)
+                    endTrip(
+                      ride._id,
+                      ride.tripId._id,
+                      "Completed",
+                      ride.token,
+                      ride.PassengerId.notificationToken
+                    )
                   }
                 >
                   <Text color="white">End Trip</Text>
@@ -354,7 +377,7 @@ const BookedRides = ({ navigation }) => {
     );
   } else {
     return (
-      <Box flex={1} alignItems={"center"} pb={"5"} bg={"#F0F8FF"}>
+      <Box flex={1} alignItems={"center"} pb={"5"} bg={"#e7feff"}>
         {bookedRides.length ? (
           allUserRides()
         ) : (
@@ -362,7 +385,7 @@ const BookedRides = ({ navigation }) => {
             flex={1}
             justifyContent="center"
             alignItems={"center"}
-            bg={"#F0F8FF"}
+            bg={"#e7feff"}
           >
             <Text>No Booked Rides</Text>
           </Box>

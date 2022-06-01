@@ -59,7 +59,7 @@ const TripHistory = () => {
 
   function getHistory() {
     return (
-      <ScrollView bg={"#F0F8FF"} mb="12%">
+      <ScrollView bg={"#e7feff"} mb="12%">
         {passengerHistory.map((trip) => (
           <Box alignItems="center" key={trip._id} my={7}>
             <Box
@@ -314,7 +314,7 @@ const TripHistory = () => {
   }
 
   return (
-    <Box flex={1} bg={"#F0F8FF"}>
+    <Box flex={1} bg={"#e7feff"}>
       {isHistoryFetchingDone ? (
         <Box flex={1} justifyContent="center" alignItems={"center"}>
           <Spinner size="lg" />

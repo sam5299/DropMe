@@ -257,7 +257,7 @@ const RequestRides = ({ navigation }) => {
     );
   } else {
     return (
-      <Box flex={1} alignItems={"center"} pb={"5"} bg={"#F0F8FF"}>
+      <Box flex={1} alignItems={"center"} pb={"5"} bg={"#e7feff"}>
         <Box flex={1} mt={2}>
           {allRides.length > 0 ? (
             allUserRides()

@@ -59,7 +59,7 @@ const Balance = ({ route, navigation }) => {
   }, [isFocused]);
 
   let reedeemSafetyPoints = async () => {
-  //  console.log("method called");
+    //  console.log("method called");
 
     //check if safety points greater than 0 to reedeem
     if (wallet.safetyPoint <= 0) {
@@ -139,13 +139,14 @@ const Balance = ({ route, navigation }) => {
     );
   } else {
     return (
-      <Box flex={1} alignItems={"center"} display={"flex"} bg={"#F0F8FF"}>
+      <Box flex={1} alignItems={"center"} display={"flex"} bg={"#e7feff"}>
         <Box
           justifyContent={"center"}
           borderRadius={10}
           flexDirection="row"
           rounded="lg"
           borderColor="coolGray.200"
+          shadow={2}
           mt="30%"
           _dark={{
             borderColor: "coolGray.600",
@@ -215,12 +216,23 @@ const Balance = ({ route, navigation }) => {
           rounded="lg"
         >
           <Box
-            backgroundColor={"blue.100"}
+            _dark={{
+              borderColor: "coolGray.600",
+              backgroundColor: "gray.500",
+            }}
+            _web={{
+              shadow: 2,
+              borderWidth: 0,
+            }}
+            _light={{
+              backgroundColor: "gray.100",
+            }}
             borderRadius={10}
             alignContent="center"
             alignItems="center"
-            bg={"#F0F8FF"}
             my={2}
+            px={2}
+            shadow={2}
           >
             <Text fontWeight={"bold"} mx={5} fontSize={30}>
               {wallet.usedCreditPoint}

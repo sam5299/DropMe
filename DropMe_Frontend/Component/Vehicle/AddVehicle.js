@@ -216,7 +216,7 @@ const AddVehicle = ({ route, navigation }) => {
   );
 
   return (
-    <ScrollView maxW="100%" h="80" bg={"#F0F8FF"} mt={"2"}>
+    <ScrollView maxW="100%" h="80" bg={"#e7feff"} mt={"2"} mb="15%">
       <Box
         alignItems={"center"}
         justifyContent={"center"}
@@ -230,6 +230,7 @@ const AddVehicle = ({ route, navigation }) => {
           overflow="hidden"
           borderColor={"coolGray.200"}
           borderWidth="1"
+          shadow={1}
           _dark={{
             borderColor: "coolGray.600",
             backgroundColor: "gray.700",

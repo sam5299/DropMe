@@ -147,7 +147,7 @@ const PaymentInterface = ({ navigation }) => {
       alignItems={"center"}
       justifyContent={"center"}
       flex="1"
-      bg={"#F0F8FF"}
+      bg={"#e7feff"}
     >
       <Box
         width={"90%"}
@@ -155,6 +155,7 @@ const PaymentInterface = ({ navigation }) => {
         overflow="hidden"
         borderColor="coolGray.200"
         borderWidth="1"
+        shadow={2}
         _dark={{
           borderColor: "coolGray.600",
           backgroundColor: "gray.700",

@@ -131,7 +131,7 @@ function TripBooked() {
 
   function getBookedTrips() {
     return (
-      <ScrollView w={"85%"} bg={"#F0F8FF"} mb="10%">
+      <ScrollView w={"85%"} bg={"#e7feff"} mb="12%">
         {bookedTripList.map((trip) => (
           <Box
             key={trip._id}
@@ -252,7 +252,7 @@ function TripBooked() {
   }
 
   return (
-    <Box flex={1} alignItems={"center"} bg={"#F0F8FF"}>
+    <Box flex={1} alignItems={"center"} bg={"#e7feff"}>
       {isBookedTripFetchingDone ? (
         <Box flex={1} justifyContent="center" alignItems={"center"}>
           <Spinner size="lg" />

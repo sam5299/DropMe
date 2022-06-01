@@ -130,7 +130,7 @@ function RequestedTrips() {
 
   function getBookedTrips() {
     return (
-      <ScrollView w={"85%"} bg={"#F0F8FF"}>
+      <ScrollView w={"85%"} bg={"#e7feff"}>
         {requestedTripList.map((trip) => (
           // console.log(trip.amount)
           <Box
@@ -184,7 +184,7 @@ function RequestedTrips() {
   }
 
   return (
-    <Box flex={1} alignItems={"center"} bg={"#F0F8FF"}>
+    <Box flex={1} alignItems={"center"} bg={"#e7feff"}>
       {isRequestedTripFetchingDone ? (
         <Box flex={1} justifyContent="center" alignItems={"center"}>
           <Spinner size="lg" />
