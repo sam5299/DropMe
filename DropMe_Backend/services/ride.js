@@ -58,7 +58,7 @@ async function getCreatedRides(
     )
     .populate(
       "Vehicle",
-      "_id vehicleNumber vehicleName vehicleImage vehicleClass",
+      "_id vehicleNumber vehicleName vehicleImage vehicleClass vehicleType",
       Vehicle
     )
     .find({ $or: [{ rideFor: gender }, { rideFor: "Both" }] });

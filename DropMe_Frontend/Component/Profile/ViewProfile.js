@@ -9,6 +9,7 @@ import {
   Divider,
   Heading,
   Flex,
+  Button,
 } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -102,6 +103,7 @@ const ViewProfile = () => {
                       ).toPrecision(2)}
                 </Text>
               </Flex>
+              <Button>Log Out</Button>
             </Box>
             {/* <Box
               display={"flex"}
