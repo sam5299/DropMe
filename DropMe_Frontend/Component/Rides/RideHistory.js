@@ -74,6 +74,7 @@ const RideHistory = () => {
               overflow="hidden"
               borderColor="coolGray.200"
               borderWidth="1"
+              shadow={1}
               _dark={{
                 borderColor: "coolGray.600",
                 backgroundColor: "gray.700",
@@ -332,7 +333,7 @@ const RideHistory = () => {
     );
   } else {
     return (
-      <Box flex={1} bg={"#F0F8FF"}>
+      <Box flex={1} bg={"#e7feff"}>
         {rideHistoryList.length ? (
           getHistory()
         ) : (

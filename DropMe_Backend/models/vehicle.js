@@ -12,7 +12,14 @@ const vehicleSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: true },
   vehicleClass: {
     type: String,
-    enum: ["SUV", "HatchBack", "Sedan", "Normal Bike", "Sport Bike", "Scooter"],
+    enum: [
+      "SUV",
+      "Hatch Back",
+      "Sedan",
+      "Normal Bike",
+      "Sport Bike",
+      "Scooter",
+    ],
     required: true,
   },
   vehicleType: {
@@ -44,7 +51,14 @@ function validateVehicleDetails(vehicleData) {
       .valid("Petrol", "Diesel", "CNG", "Electric")
       .required(),
     vehicleClass: Joi.string()
-      .valid("SUV", "HatchBack", "Sedan", "NormalBike", "SportBike", "Scooter")
+      .valid(
+        "SUV",
+        "Hatch Back",
+        "Sedan",
+        "Normal Bike",
+        "Sport Bike",
+        "Scooter"
+      )
       .required(),
     seatingCapacity: Joi.number().required().min(1).max(8),
     rcBookImage: Joi.string().required(),

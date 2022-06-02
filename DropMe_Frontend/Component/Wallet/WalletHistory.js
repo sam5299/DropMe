@@ -54,6 +54,7 @@ const WalletHistory = () => {
             borderColor={"coolGray.200"}
             borderWidth="1"
             p={1}
+            shadow={2}
           >
             <Box padding={2} borderRadius={50}>
               {transaction.type === "Credit" ? (
@@ -110,7 +111,7 @@ const WalletHistory = () => {
     );
   else
     return (
-      <Box flex={1} bg={"#F0F8FF"}>
+      <Box flex={1} bg={"#e7feff"}>
         <Box alignItems={"center"}>
           {historyList.length ? (
             getHistory()

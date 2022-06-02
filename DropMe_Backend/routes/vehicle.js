@@ -108,6 +108,7 @@ router.post("/addVehicle", auth, async (req, res) => {
     console.log("Backend vehicle add done.");
     return res.status(200).send(vehicle);
   } catch (ex) {
+    console.log(ex);
     return res.status(500).send("Something went wrong.");
   }
 });

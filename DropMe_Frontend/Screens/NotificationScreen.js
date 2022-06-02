@@ -208,7 +208,7 @@ const NotificationScreen = ({ navigation }) => {
         flex={1}
         flexDirection={"column"}
         alignItems={"center"}
-        bg={"#F0F8FF"}
+        bg={"#e7feff"}
         mb={"14%"}
       >
         {notificationList.length != 0 ? (

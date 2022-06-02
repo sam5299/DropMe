@@ -209,8 +209,9 @@ const RequestRides = ({ navigation }) => {
                 <Stack direction={"row"} justifyContent={"center"} space={4}>
                   <Button
                     mt={2}
-                    px={5}
-                    bg={"#03c03c"}
+                    px={6}
+                    borderRadius={10}
+                    bg={"green.600"}
                     onPress={() =>
                       navigation.navigate("ViewRequest", {
                         rideId: ride._id,
@@ -227,16 +228,21 @@ const RequestRides = ({ navigation }) => {
                         : false
                     }
                   >
-                    View Request
+                    <Text bold fontSize={12}>
+                      View Request
+                    </Text>
                   </Button>
                   <Button
                     mt={2}
-                    px={5}
+                    px={6}
+                    borderRadius={10}
                     bg={"#e8000d"}
                     isDisabled={ride.status == "Created" ? false : true}
                     onPress={() => showConfirmDialog(ride._id, ride.amount)}
                   >
-                    Cancel Ride
+                    <Text color={"white"} bold fontSize={12}>
+                      Cancel Ride
+                    </Text>
                   </Button>
                 </Stack>
               </Stack>
@@ -372,7 +378,7 @@ const RequestRides = ({ navigation }) => {
     );
   } else {
     return (
-      <Box flex={1} alignItems={"center"} pb={"5"} bg={"#F0F8FF"}>
+      <Box flex={1} alignItems={"center"} pb={"5"} bg={"#e7feff"}>
         <Box flex={1} mt={2}>
           {allRides.length > 0 ? (
             allUserRides()

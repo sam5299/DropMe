@@ -31,7 +31,6 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
 import { useIsFocused } from "@react-navigation/native";
-import * as Notifications from 'expo-notifications';
 
 function TripBooked() {
   const [bookedTripList, setBookedTripList] = useState([]);
@@ -48,9 +47,7 @@ function TripBooked() {
   //toast field
   const toast = useToast();
 
-  //button disable 
   const [showButton, setShowButton] = useState(true);
-  
 
   const showConfirmDialog = (tripRideId, amount, notificationToken) => {
     return NewAlert.alert(
@@ -123,11 +120,10 @@ function TripBooked() {
   }
 
   //handle upcoming push notification event disable the button will be disabled and shown as ride inititated
-  let handleNotification = async(notification) => {
-      console.log("handle notification called in Trip booked..");
-      setShowButton(false);
-      
-    };
+  let handleNotification = async (notification) => {
+    console.log("handle notification called in Trip booked..");
+    setShowButton(false);
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -146,31 +142,20 @@ function TripBooked() {
           setBookedTripList(result.data);
           setToken(parseUser.userToken);
           setIsBookedTripFetchDone(false);
-
-          //push notification wala thing handle here
-          Notifications.addNotificationReceivedListener(handleNotification);
-
-          Notifications.setNotificationHandler({
-            handleNotification: async () => ({
-              shouldShowAlert: true,
-              shouldPlaySound: true,
-              shouldSetBadge: false,
-            }),
-          });
-
         }
       } catch (ex) {
         console.log("Exception", ex.response.data);
         setIsBookedTripFetchDone(false);
       }
     }
+
     loadBookedList();
     return () => (mounted = false);
   }, [isFocused]);
 
   function getBookedTrips() {
     return (
-      <ScrollView w={"85%"} bg={"#F0F8FF"} mb="10%">
+      <ScrollView w={"85%"} bg={"#e7feff"} mb="12%">
         {bookedTripList.map((trip) => (
           <Box alignItems="center" key={trip._id} my={7} flex={1}>
             <Box
@@ -218,25 +203,17 @@ function TripBooked() {
                           {trip.RaiderId.name}
                         </Text>
                         <Stack direction={"column"} space={3}>
-                          <Box
-                            display={"flex"}
-                            flexDirection={"row"}
-                            alignItems={"center"}
-                          >
+                          <Stack space={2} direction={"row"}>
                             <AntDesign name="mobile1" size={20} color="green" />
                             <Text fontSize={18}>
                               {trip.RaiderId.mobileNumber}
                             </Text>
-                          </Box>
+                          </Stack>
 
-                          <Box
-                            display={"flex"}
-                            flexDirection={"row"}
-                            alignItems={"center"}
-                          >
+                          <Stack space={2} direction={"row"}>
                             <FontAwesome name="car" size={20} color="green" />
                             <Text fontSize={18}>{trip.vehicleNumber}</Text>
-                          </Box>
+                          </Stack>
 
                           <Box
                             display={"flex"}
@@ -250,7 +227,7 @@ function TripBooked() {
                                   size={19}
                                   color="green"
                                 />
-                                <Text color={"green.800"} fontSize={20}>
+                                <Text color={"green.700"} fontSize={20} bold>
                                   {trip.amount}
                                 </Text>
                               </>
@@ -261,20 +238,20 @@ function TripBooked() {
                             )}
                           </Box>
 
-                          <Box display={"flex"} flexDirection={"row"}>
+                          <Stack space={2} direction={"row"}>
                             <MaterialCommunityIcons
-                              name="form-textbox-password"
-                              size={20}
+                              name="keyboard"
+                              size={25}
                               color="green"
                             />
                             <Text fontSize={18}>{trip.token}</Text>
-                          </Box>
-                          {/* here condition checked for button */}
-                          {showButton && trip.status==="Booked" ? (
+                          </Stack>
+                          {showButton && trip.status === "Booked" ? (
                             <Button
                               size={"lg"}
                               bg={"#e8000d"}
                               px={5}
+                              borderRadius={10}
                               disabled={isButtonDisabled}
                               onPress={() => {
                                 showConfirmDialog(
@@ -284,7 +261,9 @@ function TripBooked() {
                                 );
                               }}
                             >
-                              Cancel trip
+                              <Text color={"white"} bold fontSize={15}>
+                                Cancel trip
+                              </Text>
                             </Button>
                           ) : (
                             <Button size={"lg"} px={10} isDisabled={true}>
@@ -378,6 +357,7 @@ function TripBooked() {
                   </Text>
                 </Text>
                 <Button
+                  borderRadius={10}
                   size={"md"}
                   px={10}
                   disabled={isButtonDisabled}
@@ -508,7 +488,7 @@ function TripBooked() {
   }
 
   return (
-    <Box flex={1} alignItems={"center"} bg={"#F0F8FF"}>
+    <Box flex={1} alignItems={"center"} bg={"#e7feff"}>
       {isBookedTripFetchingDone ? (
         <Box flex={1} justifyContent="center" alignItems={"center"}>
           <Spinner size="lg" />
@@ -527,4 +507,15 @@ function TripBooked() {
 
 export default TripBooked;
 
-
+const styles = StyleSheet.create({
+  details: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  riderDetails: {
+    fontSize: 16,
+    fontWeight: "bold",
+    margin: 3,
+  },
+  TripDetails: { fontSize: 15 },
+});

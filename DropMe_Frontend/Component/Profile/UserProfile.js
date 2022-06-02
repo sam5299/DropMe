@@ -50,7 +50,7 @@ const UserProfile = () => {
     return (
       <Box
         flex={1}
-        bg={"#F0F8FF"}
+        bg={"#e7feff"}
         justifyContent="center"
         alignItems={"center"}
       >
@@ -79,7 +79,7 @@ const UserProfile = () => {
             borderColor="#48b1bf"
             borderTopRadius={10}
             borderWidth="1"
-            backgroundColor={"#48b1bf"}
+            backgroundColor={"#20b2aa"}
             width="100%"
             height="35%"
           >
@@ -132,7 +132,14 @@ const UserProfile = () => {
               alignItems="center"
               p="2"
             >
-              <Heading size="md">{userDetails.sumOfRating}</Heading>
+              <Heading size="md">
+                {userDetails.totalNumberOfRatedRides == 0
+                  ? 0
+                  : (
+                      userDetails.totalNumberOfRides /
+                      userDetails.totalNumberOfRatedRides
+                    ).toPrecision(2)}
+              </Heading>
               <Text fontSize={"15"}>Rating</Text>
             </Box>
           </Stack>

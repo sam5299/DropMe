@@ -12,43 +12,45 @@ import {
 import { AuthContext } from "../Component/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import * as Notifications from 'expo-notifications';
+import * as Notifications from "expo-notifications";
 
 const Menu = ({ route, navigation }) => {
   const { signOut } = useContext(AuthContext);
 
-  let handleNotificationResponse = response => {
+  let handleNotificationResponse = (response) => {
     console.log("handle notification response called in menu page..");
-    let notificationType = response.notification.request.content.data.notificationType;
-    console.log("notification type in menu page:",notificationType);
-    if(notificationType!="Login") {
+    let notificationType =
+      response.notification.request.content.data.notificationType;
+    console.log("notification type in menu page:", notificationType);
+    if (notificationType != "Login") {
       console.log("navigating to slide");
-      navigation.navigate("Slide",{
-       notificationType:notificationType
+      navigation.navigate("Slide", {
+        notificationType: notificationType,
       });
     }
-  }
-  
-  useEffect(()=> {
-    if(route.params) {
+  };
+
+  useEffect(() => {
+    if (route.params) {
       // const {notificationType} = route.params;
       // console.log("notificationType:",notificationType);
 
+      Notifications.addNotificationResponseReceivedListener(
+        handleNotificationResponse
+      );
 
-      Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
-
-        Notifications.setNotificationHandler({
-          handleNotification: async () => ({
-            shouldShowAlert: true,
-            shouldPlaySound: false,
-            shouldSetBadge: false,
-          }),
-        });
+      Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: true,
+          shouldPlaySound: false,
+          shouldSetBadge: false,
+        }),
+      });
     }
-  })
-  
+  });
+
   return (
-    <VStack flex={1} mt={1} bg={"#F0F8FF"}>
+    <VStack flex={1} mt={1} bg={"#e7feff"}>
       <Pressable
         justifyContent={"space-between"}
         w="100%"

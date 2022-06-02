@@ -319,12 +319,12 @@ const UploadDocumentForVehicle = ({ route, navigation }) => {
     );
   } else {
     return (
-      <ScrollView mt={5}>
+      <ScrollView mt={5} mb="10%">
         <Box
           alignItems={"center"}
           justifyContent={"center"}
           flex="1"
-          bg={"#F0F8FF"}
+          bg={"#e7feff"}
         >
           <Box
             rounded="lg"

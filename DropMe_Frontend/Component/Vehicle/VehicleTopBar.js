@@ -12,7 +12,7 @@ export default function VehicleTopBar() {
       <Tab.Navigator
         screenOptions={{
           tabBarLabelStyle: { fontSize: 12 },
-          tabBarStyle: { backgroundColor: "#F0F8FF" },
+          tabBarStyle: { backgroundColor: "#e7feff" },
         }}
         initialRouteName="Vehicles"
       >
