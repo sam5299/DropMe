@@ -12,7 +12,7 @@ import * as Notifications from "expo-notifications";
 const Stack = createNativeStackNavigator();
 
 const Main = ({ routingPath }) => {
-  const url = "http://192.168.43.87:3100";
+  const url = "http://192.168.43.195:3100";
 
   const initialState = {
     userName: null,

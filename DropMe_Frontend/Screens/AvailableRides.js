@@ -1,15 +1,30 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
   Box,
-  Stack,
   Text,
+  Stack,
   Image,
   Button,
   ScrollView,
+  Input,
   Spinner,
   useToast,
+  AspectRatio,
+  HStack,
+  Heading,
+  Divider,
+  Center,
+  Modal,
 } from "native-base";
-import { Entypo, FontAwesome } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  Entypo,
+  MaterialCommunityIcons,
+  Ionicons,
+  AntDesign,
+  EvilIcons,
+} from "@expo/vector-icons";
+
 import axios from "axios";
 import { AuthContext } from "../Component/Context";
 
@@ -135,7 +150,7 @@ const AvailableRides = ({ route, navigation }) => {
               direction={"column"}
               m={2}
               alignItems={"center"}
-              space={5}
+              space={2}
               mt={5}
             >
               <Box
@@ -178,24 +193,63 @@ const AvailableRides = ({ route, navigation }) => {
                 size={"xl"}
                 borderRadius={10}
               />
-              <Text fontWeight={"bold"} color={"black"} fontSize={18}>
+              <Stack
+                direction={"row"}
+                alignItems={"center"}
+                space={2}
+                justifyContent={"center"}
+              >
+                <Text fontWeight={"bold"} color={"green"} fontSize={20}>
+                  {ride.Vehicle.vehicleName}
+                </Text>
+                <Text fontSize={15} color={"green"} fontWeight={"bold"}>
+                  ({ride.Vehicle.vehicleClass})
+                </Text>
+              </Stack>
+
+              {/* <Text fontWeight={"bold"} color={"black"} fontSize={18}>
                 {ride.Vehicle.vehicleName}
               </Text>
               <Text fontWeight={"bold"} color={"black"} fontSize={18}>
                 {ride.Vehicle.vehicleClass}
-              </Text>
+              </Text> */}
+              {/* {console.log("@@@", ride.Vehicle.vehicleType)}  */}
+              {ride.amount > 0 ? (
+                <Stack
+                  direction={"row"}
+                  alignItems={"center"}
+                  space={1}
+                  justifyContent={"center"}
+                >
+                  <FontAwesome name="rupee" size={19} color="green" />
+                  <Text color={"green"} fontSize={20} bold>
+                    {ride.amount}
+                  </Text>
+                </Stack>
+              ) : (
+                <Text color={"green.800"} fontSize={20} bold>
+                  Free
+                </Text>
+              )}
 
+              {/* 
               {ride.amount > 0 ? (
                 <Text fontSize={18} fontWeight="bold">
-                  <FontAwesome name="rupee" size={18} color="black" />
-                  {ride.amount * seats}
+                  <FontAwesome name="rupee" size={18} color="green" />
+                  <Text color={"green"}>{ride.amount * seats}</Text>
                 </Text>
               ) : (
                 <Text fontSize={18} fontWeight="bold" color={"green.500"}>
                   Free
                 </Text>
-              )}
-              <Button px="10" mt={"2"} ml={2} isDisabled={isButtonDisabled} onPress={() => sendRequest(ride)}>
+              )} */}
+              <Button
+                px="10"
+                mt={"2"}
+                ml={2}
+                isDisabled={isButtonDisabled}
+                onPress={() => sendRequest(ride)}
+              >
                 <Text fontSize={"lg"} color="white">
                   Send Request
                 </Text>
