@@ -136,7 +136,7 @@ const UserProfile = () => {
                 {userDetails.totalNumberOfRatedRides == 0
                   ? 0
                   : (
-                      userDetails.totalNumberOfRides /
+                      userDetails.sumOfRating /
                       userDetails.totalNumberOfRatedRides
                     ).toPrecision(2)}
               </Heading>

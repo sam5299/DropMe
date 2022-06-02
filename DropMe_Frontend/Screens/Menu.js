@@ -191,6 +191,7 @@ const Menu = ({ route, navigation }) => {
           color="rgba(6,182,212,1.00)"
         />
       </Pressable>
+      {/*
       <Pressable
         justifyContent={"space-between"}
         w="100%"
@@ -219,7 +220,7 @@ const Menu = ({ route, navigation }) => {
           color="rgba(6,182,212,1.00)"
         />
       </Pressable>
-
+  */}
       <Pressable
         justifyContent={"space-between"}
         w="100%"

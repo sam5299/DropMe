@@ -31,6 +31,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Context";
 import { useIsFocused } from "@react-navigation/native";
+import * as Notifications from "expo-notifications";
 
 function TripBooked() {
   const [bookedTripList, setBookedTripList] = useState([]);
@@ -142,6 +143,17 @@ function TripBooked() {
           setBookedTripList(result.data);
           setToken(parseUser.userToken);
           setIsBookedTripFetchDone(false);
+
+          //push notification wala thing handle here
+          Notifications.addNotificationReceivedListener(handleNotification);
+
+          Notifications.setNotificationHandler({
+            handleNotification: async () => ({
+              shouldShowAlert: true,
+              shouldPlaySound: true,
+              shouldSetBadge: true,
+            }),
+          });
         }
       } catch (ex) {
         console.log("Exception", ex.response.data);

@@ -69,7 +69,7 @@ const RideHistory = () => {
         {rideHistoryList.map((trip) => (
           <Box alignItems="center" key={trip._id} my={7}>
             <Box
-              maxW="80"
+              w={"80%"}
               rounded="lg"
               overflow="hidden"
               borderColor="coolGray.200"
@@ -177,6 +177,14 @@ const RideHistory = () => {
                   </Text>
                   <Text fontSize={15}> {trip.tripId.pickupPoint}</Text>
                 </Text>
+                <Stack space={2} direction={"row"}>
+                  <MaterialCommunityIcons
+                    name="calendar-arrow-right"
+                    size={20}
+                    color="green"
+                  />
+                  <Text fontSize={15}>{trip.date}</Text>
+                </Stack>
                 <HStack
                   alignItems="center"
                   space={4}

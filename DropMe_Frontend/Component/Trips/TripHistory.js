@@ -69,6 +69,7 @@ const TripHistory = () => {
               overflow="hidden"
               borderColor="coolGray.200"
               borderWidth="1"
+              shadow={2}
               _dark={{
                 borderColor: "coolGray.600",
                 backgroundColor: "gray.700",

@@ -36,7 +36,6 @@ export default function BottomBar() {
           name="Create Ride"
           component={CreateRide}
           options={{
-            tabBarActiveBackgroundColor: "red",
             tabBarLabel: "Create Ride",
             tabBarIcon: ({ color, focused }) => (
               <>

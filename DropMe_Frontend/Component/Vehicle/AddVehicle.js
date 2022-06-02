@@ -103,15 +103,17 @@ const AddVehicle = ({ route, navigation }) => {
       setPictureError(false);
     }
     if (!pattern.test(vehicleNumber)) {
-      //  console.log("not matched");
+      console.log("not matched");
       // isFieldInError.vehicleNumber = "Please enter valid vehicle number.";
       setErrorVehicleNumber(true);
       return;
     } else {
       setErrorVehicleNumber(false);
     }
+    console.log(isTrue);
 
     if (isTrue) {
+      console.log("Move to upload document");
       // navigation.setOptions = {
       //   clearFields: (props) => clearFields,
       // };

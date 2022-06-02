@@ -147,6 +147,7 @@ const RequestRides = ({ navigation }) => {
               overflow="hidden"
               borderColor="coolGray.200"
               borderWidth="1"
+              shadow={2}
               _dark={{
                 borderColor: "coolGray.600",
                 backgroundColor: "gray.700",
@@ -197,6 +198,14 @@ const RequestRides = ({ navigation }) => {
                   </Text>
                   <Text fontSize={15}> {ride.destination}</Text>
                 </Text>
+                <Stack space={2} direction={"row"}>
+                  <MaterialCommunityIcons
+                    name="calendar-arrow-right"
+                    size={20}
+                    color="green"
+                  />
+                  <Text fontSize={15}>{ride.date}</Text>
+                </Stack>
 
                 <Text fontWeight="400">
                   <Text fontSize={18} fontWeight="bold" color="green">
