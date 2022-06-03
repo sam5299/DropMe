@@ -84,16 +84,16 @@ async function calculateTripAmount(vehicleId, distance) {
     case "Electric":
       classFactor = 1.5;
       break;
-    case "NormalBike":
+    case "Normal Bike":
       classFactor = 2;
       break;
     case "Scooter":
       classFactor = 2.5;
       break;
-    case "SportBike":
+    case "Sport Bike":
       classFactor = 3;
       break;
-    case "HatchBack":
+    case "Hatch Back":
       classFactor = 3.2;
       break;
     case "Sedan":
