@@ -121,7 +121,7 @@ const AvailableRides = ({ route, navigation }) => {
 
   function getRides() {
     return (
-      <ScrollView bg={"#F0F8FF"}>
+      <ScrollView bg={"#e7feff"} mb={"15%"}>
         {RideDetails.map((ride) => (
           <Box
             key={ride._id}
@@ -134,6 +134,7 @@ const AvailableRides = ({ route, navigation }) => {
             w="90%"
             borderColor="coolGray.200"
             borderWidth="1"
+            shadow={2}
             _dark={{
               borderColor: "coolGray.600",
               backgroundColor: "gray.700",
@@ -199,10 +200,10 @@ const AvailableRides = ({ route, navigation }) => {
                 space={2}
                 justifyContent={"center"}
               >
-                <Text fontWeight={"bold"} color={"green"} fontSize={20}>
+                <Text fontWeight={"bold"} fontSize={20}>
                   {ride.Vehicle.vehicleName}
                 </Text>
-                <Text fontSize={15} color={"green"} fontWeight={"bold"}>
+                <Text fontSize={15} bold>
                   ({ride.Vehicle.vehicleClass})
                 </Text>
               </Stack>
@@ -221,8 +222,8 @@ const AvailableRides = ({ route, navigation }) => {
                   space={1}
                   justifyContent={"center"}
                 >
-                  <FontAwesome name="rupee" size={19} color="green" />
-                  <Text color={"green"} fontSize={20} bold>
+                  <FontAwesome name="rupee" size={20} color="green" />
+                  <Text color={"green.700"} fontSize={20} bold>
                     {ride.amount}
                   </Text>
                 </Stack>
@@ -263,13 +264,13 @@ const AvailableRides = ({ route, navigation }) => {
 
   if (isLoading) {
     return (
-      <Box flex={1} justifyContent="center" alignItems={"center"}>
+      <Box flex={1} justifyContent="center">
         <Spinner size="lg" />
       </Box>
     );
   } else {
     return (
-      <>
+      <Box flex={1} bg={"#e7feff"}>
         {RideDetails.length ? (
           getRides()
         ) : (
@@ -277,7 +278,7 @@ const AvailableRides = ({ route, navigation }) => {
             <Text>No Rides Found</Text>
           </Box>
         )}
-      </>
+      </Box>
     );
   }
 };

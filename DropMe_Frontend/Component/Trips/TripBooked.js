@@ -227,7 +227,16 @@ function TripBooked() {
                             <Text fontSize={18}>{trip.vehicleNumber}</Text>
                           </Stack>
 
-                          <Box
+                          <Stack space={2} direction={"row"}>
+                            <MaterialCommunityIcons
+                              name="keyboard"
+                              size={25}
+                              color="green"
+                            />
+                            <Text fontSize={18}>{trip.token}</Text>
+                          </Stack>
+
+                          <Center
                             display={"flex"}
                             flexDirection={"row"}
                             alignItems={"center"}
@@ -248,16 +257,8 @@ function TripBooked() {
                                 Free
                               </Text>
                             )}
-                          </Box>
+                          </Center>
 
-                          <Stack space={2} direction={"row"}>
-                            <MaterialCommunityIcons
-                              name="keyboard"
-                              size={25}
-                              color="green"
-                            />
-                            <Text fontSize={18}>{trip.token}</Text>
-                          </Stack>
                           {showButton && trip.status === "Booked" ? (
                             <Button
                               size={"lg"}

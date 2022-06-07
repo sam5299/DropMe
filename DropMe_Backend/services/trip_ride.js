@@ -4,7 +4,7 @@ const { Trip } = require("../models/trip");
 const { TripRide } = require("../models/trip_ride");
 const { User } = require("../models/user");
 const { WalletHistory } = require("../models/wallet_history");
-const { createNotification,sendPushNotification } = require("./notification");
+const { createNotification, sendPushNotification } = require("./notification");
 const {
   getTimeDifference,
   reduceAvailableSeats,
@@ -25,10 +25,10 @@ async function addAcceptedTrip(body) {
 
 async function getTripDetailsByRideIdAndStatus(rid, status) {
   return await TripRide.find({ rideId: rid, status: status }).populate({
-    path:"tripId",
-    model:Trip,
-    select:"-_id User source destination",
-})
+    path: "tripId",
+    model: Trip,
+    select: "-_id User source destination",
+  });
 }
 
 //function to return passengers booked trip with detail's
@@ -49,7 +49,11 @@ async function getAllBookedRides(raiderId) {
     RaiderId: raiderId,
     $or: [{ status: "Booked" }, { status: "Initiated" }],
   })
-    .populate("PassengerId", "_id profile name mobileNumber notificationToken", User)
+    .populate(
+      "PassengerId",
+      "_id profile name mobileNumber notificationToken",
+      User
+    )
     .populate("tripId", "_id source destination pickupPoint date", Trip)
     .sort({ _id: -1 });
 }
@@ -60,7 +64,11 @@ async function getAllBookedTrips(passengerId) {
     PassengerId: passengerId,
     $or: [{ status: "Booked" }, { status: "Initiated" }],
   })
-    .populate("RaiderId", "_id profile name mobileNumber notificationToken", User)
+    .populate(
+      "RaiderId",
+      "_id profile name mobileNumber notificationToken",
+      User
+    )
     .populate("tripId", "_id source destination pickupPoint date time", Trip)
     .sort({ _id: -1 });
 }
@@ -172,7 +180,7 @@ async function deleteBookedTrip(tripRideId, notificationToken) {
     sound: "default",
     title: "Trip cancelled",
     body: `Your booked trip from ${tripRideObj.rideId.source} to ${tripRideObj.rideId.destination} is cancelled by ${tripRideObj.PassengerId.name}. `,
-    data: {notificationType:"Ride"}
+    data: { notificationType: "Ride" },
   };
 
   //send push notification
@@ -221,6 +229,11 @@ async function updateTripStatus(tripRideId, tripId, status, notificationToken) {
     toUserId = TripRideObj.PassengerId._id;
     (messageContent = `Your trip from ${TripRideObj.rideId.source} to ${TripRideObj.rideId.destination} is initiated.`),
       (notificationTypeName = "Trip");
+
+    let rideObj = await Ride.findOne({ _id: TripRideObj.rideId._id });
+    rideObj.status = status;
+    let saveRes = await rideObj.save();
+    if (!saveRes) console.log("Error in update ride status initated");
   } else if (status == "Completed") {
     // console.log("In Completd...!");
     TripRideObj.endTime = currentTime;
@@ -357,7 +370,7 @@ async function updateTripStatus(tripRideId, tripId, status, notificationToken) {
   let message = {
     to: notificationToken,
     sound: "default",
-    title: "Trip "+status,
+    title: "Trip " + status,
     body: messageContent,
   };
 

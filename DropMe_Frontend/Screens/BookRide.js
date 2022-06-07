@@ -285,6 +285,7 @@ const BookRide = ({ route, navigation }) => {
               </Slider>
             </Box>
             <Button
+              borderRadius={10}
               isLoading={isLoading}
               isLoadingText="Searching for rides.."
               size="md"
